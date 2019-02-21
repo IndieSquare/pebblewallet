@@ -1,0 +1,55 @@
+<Alloy>
+	<View id="mainView" focusable="true">
+		<View id="backView"/>
+		<View id="boxView" focusable="true">
+			<View id="form" layout="vertical" focusable="true">
+
+				<Label id="titleLabel">L('open_channel_title')</Label>
+				<View id="items" layout="vertical">
+					<TextField id="peerField"/>
+
+					<View class="fieldView" top="30" focusable="true">
+						<TextField id="amountField" onKeypressed="updateAmount" onChange="androidChangeValue" focusable="true">
+							<KeyboardToolbar platform="ios">
+								<Toolbar>
+									<Items>
+										<Button title="Done" onClick="hideKeyboard"/>
+									</Items>
+								</Toolbar>
+							</KeyboardToolbar>
+						</TextField>
+						<Label id="cryptoSymbol"></Label>
+					</View>
+
+					<View class="fieldView" top="10">
+						<TextField id="amountFieldFiat" onKeypressed="updateAmountFiat" onChange="androidChangeValueFiat" focusable="true">
+							<KeyboardToolbar platform="ios">
+								<Toolbar>
+									<Items>
+										<Button title="Done" onClick="hideKeyboard"/>
+									</Items>
+								</Toolbar>
+							</KeyboardToolbar>
+						</TextField>
+						<Label id="fiatSymbol"></Label>
+					</View>
+					<Button id="recButton" class="buttonStyle" onClick="setRec"/>
+
+				</View>
+
+				<View id="peerFieldView" layout="horizontal">
+					<Button id="qrButton" class="buttonStyle" onClick="startScan"/>
+					<Button id="openChannelButton" class="buttonStyle" onClick="startOpenChannel"/>
+				</View>
+
+			</View>
+			<View id="status">
+
+				<Label id="statusLabel">L('label_loading')</Label>
+
+			</View>
+			<Button id="closeButton" onClick="close"/>
+		</View>
+	</View>
+
+</Alloy>

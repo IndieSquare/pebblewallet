@@ -1,0 +1,9 @@
+<Alloy>
+
+	<View id="main">
+		<View class="topBarTop" id="topBarTop"/>
+		<Require src="components/component_dapps_bar"/>
+		<View id="web"></View>
+	</View>
+
+</Alloy>

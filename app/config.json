@@ -1,0 +1,32 @@
+{
+  "global": {},
+  "env:development": {
+    "isLocal": false,
+    "isDevelopment": true,
+    "api_uri": "https://api3.indiesquare.me/",
+    "dapp_store_url": "https://discover.indiesquare.net/",
+    "network": "mainnet"
+  },
+  "env:test": {
+    "isLocal": false,
+    "isDevelopment": true,
+    "api_uri": "https://api3.indiesquare.me/",
+    "dapp_store_url": "https://discover.indiesquare.net/",
+    "network": "mainnet"
+  },
+  "env:production": {
+    "isLocal": false,
+    "isDevelopment": false,
+    "api_uri": "https://api3.indiesquare.me/",
+    "dapp_store_url": "https://discover.indiesquare.me/",
+    "network": "mainnet"
+  },
+  "os:android": {
+    "scheme_url": "Ti.Android.currentActivity.intent.data"
+  },
+  "os:blackberry": {},
+  "os:ios": {},
+  "os:mobileweb": {},
+  "os:windows": {},
+  "dependencies": {}
+}

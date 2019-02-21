@@ -1,0 +1,23 @@
+<Alloy>
+
+	<View class="mainView">
+
+		<ActivityIndicator id="firstLoader"/>
+		<TableView id="table">
+
+			<HeaderView >
+				<View class="headerView">
+					<Label id="addChannelButton" onClick="openChannelForm">L('label_open_channel')</Label>
+				</View>
+			</HeaderView>
+
+			<FooterView>
+				<View height="70">
+					<Label id="connectToPebbleHUB" onClick="connectToPebbleHUB">L('connect_pebble_hub')</Label>
+				</View>
+			</FooterView>
+		</TableView>
+
+	</View>
+
+</Alloy>

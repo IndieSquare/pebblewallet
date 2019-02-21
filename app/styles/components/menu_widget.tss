@@ -1,0 +1,181 @@
+".mainView" : {
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
+	bottom: 0,
+	right: 0,
+	touchEnabled: false
+}
+".darkView" : {
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL,
+	bottom: 0,
+	right: 0,
+	backgroundColor: "black",
+	opacity: 0.0,
+	touchEnabled: false
+}
+".bookmarkList" : {
+	borderRadius: 10,
+	width: 140,
+	height: 300,
+	bottom: 10,
+	left: 5,
+	backgroundColor: "white",
+	separatorStyle: Titanium.UI.TABLE_VIEW_SEPARATOR_STYLE_NONE
+}
+".bookmarkList[platform=ios]" : {
+	selectionStyle: Titanium.UI.iOS.TableViewCellSelectionStyle.NONE
+}
+".bookmarkList[platform=android]" : {
+	selectionStyle: 'none'
+}
+".bookmarkList[if=Alloy.Globals.isSmallScreen]" : {
+	bottom: 70,
+	width: 140
+}
+".mainViewOuter" : {
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
+	bottom: 0,
+	right: 0,
+	touchEnabled: false
+}
+".buttonView" : {
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	bottom: 15,
+	right: 15
+}
+".lnPayButton" : {
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	bottom: 15,
+	right: 75,
+	visible: false
+}
+".lnGameButton" : {
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	bottom: 15,
+	right: 138,
+	visible: false
+}
+".buttonImage" : {
+	width: 50,
+	image: Alloy.Globals.currentMenuButton
+}
+".aModeView" : {
+	right: 15,
+	top: 10,
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE
+}
+".innerLabel" : {
+	textAlign: "center",
+	top: 7,
+	font: {
+		fontSize: 12,
+		fontFamily: "Gil sans"
+	},
+	color: "white",
+	right: 35,
+	width: 115
+}
+".aModeShadow" : {
+	top: 2,
+	right: 2,
+	opacity: 0.2,
+	width: 150,
+	height: 30,
+	backgroundColor: "black",
+	borderRadius: 15
+}
+".aModeLeft" : {
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	top: 5
+}
+".modeImage" : {
+	top: 0,
+	width: 35,
+	height: 35
+}
+".modeImageLarge" : {
+	top: 0,
+	width: 40,
+	height: 40
+}
+".aModeInnerView" : {
+	top: 0,
+	width: 150,
+	height: 30,
+	borderRadius: 15
+}
+"#lightningInnerView" : {
+	backgroundColor: "#918f8f"
+}
+"#xcpInnerView" : {
+	backgroundColor: Alloy.Globals.bitcoinColor
+}
+"#ethInnerView" : {
+	backgroundColor: Alloy.Globals.ethereumColor
+}
+".modesView" : {
+	bottom: 90,
+	right: 0,
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	touchEnabled: false,
+	layout: "vertical"
+}
+".aModeIconView" : {
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	right: 0
+}
+".aModeIconShadowView" : {
+	top: 2,
+	right: 2,
+	opacity: 0.2,
+	width: 35,
+	height: 35,
+	backgroundColor: "black",
+	borderRadius: 17.5
+}
+".aModeIconShadowViewLarge" : {
+	top: 2,
+	right: 2,
+	opacity: 0.2,
+	width: 40,
+	height: 40,
+	backgroundColor: "black",
+	borderRadius: 20
+}
+".othersView" : {
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	bottom: 15,
+	right: 70,
+	touchEnabled: false,
+	layout: "horizontal"
+}
+"#historyIcon" : {
+	left: 10,
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE
+}
+"#settingsIcon" : {
+	left: 10,
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE
+}
+"#linkIcon" : {
+	left: 10,
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE
+}
+"#qrScanIcon" : {
+	left: 10,
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE
+}

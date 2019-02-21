@@ -1,0 +1,67 @@
+"#win" : {
+	"orientationModes": [Ti.UI.PORTRAIT],
+	"navBarHidden": true,
+	"backgroundColor": "transparent"
+}
+"#win[platform=android]" : {
+	"windowSoftInputMode": Ti.UI.Android.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+}
+"#topbar" : {
+	height: Alloy.Globals.topBarHeight,
+	top: 0
+}
+".mainView" : {
+	width: "100%",
+	left: Alloy.Globals.display.width
+}
+".mainView[platform=android]" : {
+	width: "100%",
+	left: 0
+}
+".background" : {
+	backgroundColor: "#000000",
+	opacity: 0
+}
+".scrollView" : {
+	backgroundColor: "#ececec"
+}
+".subtitle" : {
+	width: Ti.UI.FILL,
+	height: 40,
+	top: 0
+}
+".box" : {
+	width: Ti.UI.FILL,
+	height: Ti.UI.SIZE,
+	top: 10,
+	backgroundColor: "transparent"
+}
+".mainBox" : {
+	width: Ti.UI.FILL,
+	height: 40,
+	backgroundColor: "#ffffff"
+}
+".icon" : {
+	height: 40
+}
+"#version" : {
+	top: 10,
+	width: Ti.UI.FILL,
+	textAlign: 'center'
+}
+".settingLabel" : {
+	width: "70%",
+	left: 50,
+	textAlign: "left"
+}
+".arrow" : {
+	height: 15
+}
+"#autoPilotImage" : {
+	height: 15,
+	right: 5
+}
+".description" : {
+	top: 5,
+	left: 10
+}

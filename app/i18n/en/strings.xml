@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+  <string name="label_recover_wallet">recover wallet</string>
+  <string name="label_host">host</string>
+  <string name="label_chain">chain</string>
+  <string name="deposit">deposit</string>
+  <string name="deposit_help">funds to the address below and the wallet will load them into the lightning network behind the scenes, it may take some time to do this, so check out the channels section to open your own channels</string>
+  <string name="channels_help">channels are used to connect your funds to the lightning network, by default the wallet will manage this for you but you can also manually open channels</string>
+  <string name="online">online</string>
+  <string name="offline">offline</string>
+  <string name="closing">closing</string>
+  <string name="closed">closed</string>
+  <string name="blocks_can_claim">blocks until can claim</string>
+  <string name="link_info">not sure how to link your node?\nclick here to find out how</string>
+  <string name="still_synchronizing">still syncing (make take some time)</string>
+  <string name="label_settings_logs">view logs</string>
+
+  <string name="label_settings_logs_description">view the internal LNDs logs for errors</string>
+
+  <string name="label_settings_autopilot">enable/disable auto pilot</string>
+
+  <string name="label_settings_autopilot_description">enable/disable auto pilot for automatic channel management</string>
+
+  <string name="hops">hops</string>
+  <string name="connect_pebble_hub">connect to pebble hub</string>
+  <string name="generate_deposit">generate deposit address</string>
+  <string name="enter_payment_amount_sat">enter amount in sats</string>
+
+  <string name="enter_payment_amount_fiat">enter {currency} amount</string>
+
+  <string name="intro_sync_title">Hi there!</string>
+  <string name="intro_sync_description">Privacy is important in Bitcoin\n\ninorder to ensure this your wallet needs to take some time to sync with the network\n\nwhilst this is happening check out the menu button and deposit some funds!</string>
+  <string name="check_notification">You haven't synced in a while, make sure to open every couple of days!</string>
+  <string name="network_change">network change detected, please wait whilst we reload</string>
+  <string name="confirm_request">If you request a payment you will need to open and sync the app once every few days, we are working on an upgrade so this is not needed in the near future</string>
+
+  <string name="just_now">just now</string>
+
+  <string name="mins_ago">mins ago</string>
+  <string name="hours_ago">hours ago</string>
+
+  <string name="enter_grpc_config">enter config url below</string>
+
+  <string name="unconfirmed">unconfirmed</string>
+
+  <string name="enter_config_url">enter config url</string>
+  <string name="enter_grpc_url">config url</string>
+
+  <string name="error_parsing_config">Error parsing config</string>
+
+  <string name="set_rec_channel">set recommended</string>
+  <string name="label_enter_funding_hint_fiat">enter {currency} amount</string>
+  <string name="expiry_description">invoice expiry</string>
+  <string name="expiry_time">{time} min</string>
+  <string name="enter_invoice">paste invoice</string>
+  <string name="enter_payment_request_description">enter an invoice below</string>
+  <string name="enter_payment_request">enter invoice...</string>
+  <string name="local_wallet_description">connect to a locally running instance of LND</string>
+  <string name="synchronizing">synchronizing...</string>
+  <string name="initializing_wallet">starting up...</string>
+  <string name="connect_lndmobile">local wallet</string>
+
+  <string name="wallet_info">wallet info</string>
+
+  <string name="label_connect">connect</string>
+
+  <string name="label_accounts">accounts</string>
+  <string name="add_account">add account</string>
+  <string name="channel_opening">opening channel</string>
+  <string name="open_channel_text">open</string>
+  <string name="open_channel_title">open a channel</string>
+  <string name="error_connecting">Error connecting, try again?</string>
+  <string name="label_tryagain">try again</string>
+  <string name="onchain_description">onchain funds</string>
+  <string name="loading_balance">loading balance...</string>
+  <string name="enter_amount_request">please enter a request amount in satoshis</string>
+  <string name="waiting_payment">waiting for payment...</string>
+  <string name="invoice_paid">Paid!</string>
+  <string name="label_closechannel_confirm_title">Close channel</string>
+  <string name="label_closechannel_confirm_description">Are you sure you would like to close this channel?</string>
+  <string name="label_closechannel_confirm_force_description">Seems like the other party is not responding, would you like to force close this channel?</string>
+  <string name="label_force_close">force close</string>
+  <string name="label_enter_nodeid">enter node uri</string>
+  <string name="label_enter_funding_hint">funding amount in satoshis</string>
+  <string name="label_enter_funding_amt">Please enter a funding amount in satoshis</string>
+  <string name="label_onchain_description">on chain funds</string>
+  <string name="label_channel_opening">Channel opening!</string>
+  <string name="label_details">details</string>
+  <string name="label_deposit">deposit/withdraw</string>
+  <string name="label_open_channel">+ open channel</string>
+  <string name="label_channels">channels</string>
+  <string name="label_settings_connect_btcpay_lnd">connect to BTCPay/LND</string>
+  <string name="label_settings_connect_btcpay_lnd_description">connect to your remote BTCPay or LND instance</string>
+  <string name="language">en</string>
+  <string name="label_or">or</string>
+  <string name="appname">pebble</string>
+
+  <string name="label_reload">Reload</string>
+
+  <string name="channels_funds_option">deposit/channels</string>
+  <string name="pay_option">pay</string>
+  <string name="request_option">request</string>
+  <string name="request_title">request</string>
+  <string name="request_memo">optional: enter a description</string>
+  <string name="lapp_browser_option">LAPP browser</string>
+
+  <string name="enter_valid_address">Please enter a valid address</string>
+  <!-- dapp browser !-->
+  <string name="label_funds_description">deposit funds here</string>
+
+  <string name="label_withdraw_button">withdraw/send to other wallet</string>
+  <string name="label_withdraw">withdraw</string>
+  <string name="text_request_pay_ln_no_amount">Send payment</string>
+  <string name="text_request_pay_ln">Send payment of\n\n{value} satoshis</string>
+  <string name="text_request_pay_ln_memo">Send payment of\n\n{value} satoshis\n\n"{memo}"</string>
+
+  <string name="text_request_pay_ln_memo_no_amount">Send payment\n\n"{memo}"</string>
+  <string name="label_browser_enterurl">enter url...</string>
+  <string name="text_request_open_channel_web">Would you like to open a channel with "{url}"?\n\nURI\n\n"{uri}""</string>
+  <string name="text_request_pay_ln_web_no_amount">"{url}"\n\nis requesting payment of\n\n{value} satoshis</string>
+  <string name="text_request_pay_ln_web">"{url}"\n\nis requesting payment of\n\n{value} satoshis</string>
+  <string name="text_request_pay_ln_memo_web">"{url}"\n\nis requesting payment of\n\n{value} satoshis\n\n"{memo}"</string>
+
+  <string name="text_request_pay_ln_memo_web_no_amount">"{url}"\n\nis requesting payment\n\n"{memo}"</string>
+  <string name="text_request_send_transaction">Sending: {amount} {token} to {destination}</string>
+  <!-- common labels !-->
+  <string name="text_conf_sent">{token} sent</string>
+  <string name="label_quantity_send">Please enter an amount</string>
+  <string name="label_text_sent">Transaction Sent!</string>
+
+  <string name="label_please_wait">please wait...</string>
+  <string name="label_apply">Apply</string>
+  <string name="label_approx">approx</string>
+  <string name="label_add">Add</string>
+  <string name="label_cancel">cancel</string>
+  <string name="label_close">close</string>
+  <string name="label_continue">Continue</string>
+  <string name="label_create">Create</string>
+  <string name="label_completed">Completed</string>
+  <string name="label_del">DEL</string>
+  <string name="label_done">Done</string>
+  <string name="label_erase">Erase</string>
+  <string name="label_faq">FAQ</string>
+  <string name="label_fee">fee</string>
+  <string name="label_fee_eth">Max Transaction Fee</string>
+  <string name="label_fee_priority">Fee Priority</string>
+  <string name="label_goback">back</string>
+  <string name="label_loading">please wait...</string>
+  <string name="label_ok">OK</string>
+  <string name="label_password">Password</string>
+  <string name="label_recoveryphrase">Recovery phrase</string>
+  <string name="label_send">Send</string>
+  <string name="label_settings">settings</string>
+  <string name="label_show">Show</string>
+  <string name="label_unconfirmed">Unconfirmed</string>
+  <string name="label_confirm">confirm</string>
+  <string name="label_fingerprint">Authenticate to continue</string>
+  <string name="label_admin_error">Failed...</string>
+  <string name="label_admin_error_message">Failed to authenticate. Please try again.</string>
+  <string name="label_pincode_change">Change PIN</string>
+  <string name="label_pincode_change_message">Are you sure you want to change your PIN?</string>
+  <string name="label_pincode_changed">PIN updated</string>
+
+  <!-- priority !-->
+  <string name="label_priority_high">High Priority</string>
+  <string name="label_priority_high_description">Estimated confirmation time: 10 min</string>
+  <string name="label_priority_med">Medium Priority</string>
+  <string name="label_priority_med_description">Estimated confirmation time: 30 min - several hours</string>
+  <string name="label_priority_low">Low Priority</string>
+  <string name="label_priority_low_description">Estimated confirmation time: over 24 hours</string>
+  <string name="label_priority_custom">Custom Fee</string>
+  <string name="label_priority_custom_description">Custom setting for advanced users</string>
+  <string name="label_inputcustom">Custom fee</string>
+  <string name="label_inputcustom_message">Please enter the custom fee in SAT/BYTE unit. (eg: 10)</string>
+  <string name="label_inputcustom_error">Please enter only the number for the custom fee</string>
+
+  <string name="label_intro_wroteitdown">I wrote it down</string>
+  <string name="label_intro_skip">Skip</string>
+  <string name="label_intro_setpincode">Set a PIN</string>
+  <string name="label_intro_settouchid">Use touch ID</string>
+  <string name="label_intro_complete">Start</string>
+  <string name="label_intro_success_title">Account succesfully created!</string>
+  <string name="label_intro_success_text">You're almost ready to get started!\nWe just need to set up a few things.</string>
+  <string name="label_intro_passphrase_title">Your Recovery Phrase</string>
+  <string name="label_intro_passphrase_text1">Write down this recovery phrase!</string>
+  <string name="label_intro_passphrase_text2">If you lose your device or the app you need this to recover your bitcoin. You can check it later in the settings.</string>
+  <string name="label_intro_passphrase_text3">KEEP IT SAFE AND SECRET!</string>
+  <string name="label_intro_passphrase_text4">If somebody has this phrase they WILL be able to steal your bitcoin.</string>
+  <string name="label_intro_pincode_title">Set a PIN</string>
+  <string name="label_intro_pincode_text">this will be your pin code for the app allowing you to authorize transactions</string>
+  <string name="label_intro_touchid_title">Set up touch ID</string>
+  <string name="label_intro_touchid_text">If your device supports it you can use touch ID instead of a PIN.</string>
+  <string name="label_intro_push_title">Push Notification</string>
+  <string name="label_intro_push_button">Allow</string>
+  <string name="label_intro_push_text">Receive transaction status and the latest information via push notifications</string>
+  <string name="label_intro_complete_title">Let's get started!</string>
+  <string name="label_intro_complete_text"></string>
+
+  <!-- Settings !-->
+  <string name="label_confirm_showpassphrase">Show the Recovery phrase?\n\nPlease do not show it to anybody. Also, screenshots may be seen by others by unexpected synchronization.\n\nPlease note on paper and keep it in a safe place.</string>
+  <string name="label_settings_important">Important</string>
+  <string name="label_settings_recoveryphrase">Recovery Phrase</string>
+  <string name="label_settings_recoveryphrase_description">Check your Recovery phrase</string>
+  <string name="label_settings_currency_description">Choose your preferred currency</string>
+  <string name="label_settings_touchid">Touch ID</string>
+  <string name="label_settings_touchid_description">Authorize transactions using your fingerprint</string>
+  <string name="label_settings_pincode">PIN code</string>
+  <string name="label_settings_pincode_description">Change your PIN code</string>
+  <string name="label_settings_signout">sign out</string>
+  <string name="label_settings_signout_description">sign out from your account</string>
+  <string name="label_settings_signout_message">Are you sure you want to sign out? if you are running a local wallet on this device any lightning channels cannot be recovered via the passphrase so we recommend closing any open channels first</string>
+  <string name="label_settings_signout_message_local">Are you sure you want to sign out? any funds in lightning channels cannot be recovered via the passphrase so we recommend closing any open channels first</string>
+
+  <!-- specified labels !-->
+  <string name="label_mnemonic_24">Invalid Passphrase, please double check and try again</string>
+  <string name="label_mnemonic_invalidpassphrase">Invalid word entered.\nPlease check the phrase located at {pos}.</string>
+  <string name="label_word_incorrect">Word incorrect, please input again.</string>
+  <string name="label_receive_copy">tap to copy</string>
+  <string name="label_copied">Copied to clipboard</string>
+  <string name="label_newwallet">Create a New Wallet</string>
+  <string name="label_signin">Sign In</string>
+
+  <string name="label_connectnode">click below to connect to your\nLND or BTCPay node</string>
+  <string name="label_loginasuser">Recover Wallet or Link Node</string>
+  <string name="label_privecypolicy">Privacy Policy &amp; Terms of Service</string>
+  <string name="label_privecypolicy_description">By using this app I agree to the above.</string>
+  <string name="label_createaccount_message">Are you sure you would like to create new account?</string>
+  <string name="label_inputverify_number">Input {name} with numbers</string>
+  <string name="label_inputverify_equal">{name} doesn't match</string>
+  <string name="label_inputverify_empty">Enter {name}</string>
+  <string name="label_inputverify_more">{name} requires more than {over} letters</string>
+  <string name="label_inputverify_shouldvalue">{name} is invalid</string>
+  <string name="label_signin_inputbyeach">INPUT WORD BY WORD</string>
+  <string name="label_word_num">WORD {num}</string>
+  <string name="label_inputbyeach_next">NEXT</string>
+  <string name="label_inputbyeach_prev">PREV</string>
+  <string name="label_signin_cancel">CANCEL</string>
+  <string name="label_enter_destination">Please enter a destination address</string>
+  <string name="label_send_destination">Destination</string>
+  <string name="label_send_confirmation">Send\n{amount} {token}\n{amount2} to {address}</string>
+
+</resources>

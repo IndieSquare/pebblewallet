@@ -1,0 +1,40 @@
+<Alloy>
+  <Window class="container" id="win">
+    <View id="main">
+      <View class="back">
+        <View class="group">
+          <ImageView class="logo"/>
+          <Label id="instructionLabel"/>
+          <View class="marks">
+            <ImageView class="comp_marks" id="m1"/>
+            <ImageView class="comp_marks" id="m2"/>
+            <ImageView class="comp_marks" id="m3"/>
+            <ImageView class="comp_marks" id="m4"/>
+          </View>
+          <View class="buttons">
+            <View class="buttonRow">
+              <Button class="aButton" id="n1" onClick="pressedButton"/>
+              <Button class="aButton" id="n2" onClick="pressedButton"/>
+              <Button class="aButton" id="n3" onClick="pressedButton"/>
+            </View>
+            <View class="buttonRow">
+              <Button class="aButton" id="n4" onClick="pressedButton"/>
+              <Button class="aButton" id="n5" onClick="pressedButton"/>
+              <Button class="aButton" id="n6" onClick="pressedButton"/>
+            </View>
+            <View class="buttonRow">
+              <Button class="aButton" id="n7" onClick="pressedButton"/>
+              <Button class="aButton" id="n8" onClick="pressedButton"/>
+              <Button class="aButton" id="n9" onClick="pressedButton"/>
+            </View>
+            <View class="buttonRow">
+              <Button class="aButton" id="c" onClick="pressedButton"/>
+              <Button class="aButton" id="n0" onClick="pressedButton"/>
+              <Button class="aButton" id="e" onClick="pressedButton"/>
+            </View>
+          </View>
+        </View>
+      </View>
+    </View>
+  </Window>
+</Alloy>

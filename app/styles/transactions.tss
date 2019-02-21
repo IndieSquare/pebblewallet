@@ -1,0 +1,30 @@
+".mainView" : {
+	backgroundColor: "#e3e3e3",
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL,
+	top: Alloy.Globals.btclnTopHeight
+}
+".paymentList" : {
+	top: 0,
+	backgroundColor: "transparent",
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL,
+	separatorStyle: Titanium.UI.TABLE_VIEW_SEPARATOR_STYLE_NONE
+}
+".paymentList[platform=ios]" : {
+	selectionStyle: Titanium.UI.iOS.TableViewCellSelectionStyle.NONE
+}
+".paymentList[platform=android]" : {
+	selectionStyle: 'none'
+}
+".indicatorDark" : {
+	indicatorColor: Alloy.Globals.mainColor,
+	tintColor: "red"
+}
+"#initialLoading" : {
+	indicatorColor: Alloy.Globals.mainColor,
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
+	style: Ti.UI.ActivityIndicatorStyle.PLAIN,
+	top: 30
+}

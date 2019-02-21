@@ -1,0 +1,38 @@
+<Alloy>
+	<Window class="container" onPostlayout="didLoad" id="win">
+
+		<Require src="transactions"/>
+
+		<View class="topbar" id="tokenTopBar">
+
+			<View class="topBarTop" id="topBarTop">
+
+				<View id="syncStatus">
+					<ImageView id="syncIcon" image="/images/syncIcon.png"/>
+					<Label id="syncText">L('syncing_text')</Label>
+				</View>
+
+				<ImageView id="notConnected" image="/images/notConnected.png"/>
+				<Label id="statusText"></Label>
+				<View class="info" id="info">
+					<View class="infoInner">
+						<Label class="cryptoValue" id="totalBalance"></Label>
+						<Label class="fiatValue" id="totalBalanceFiat"></Label>
+					</View>
+				</View>
+				<Label id="walletName" onClick="showNodeInfo"></Label>
+			</View>
+
+		</View>
+
+		<View id="nodeInfo">
+			<Require src="node_info"/>
+		</View>
+		<Require src="components/menu_widget"/>
+
+		<View id="discover">
+			<Require src="dapps"/>
+		</View>
+
+	</Window>
+</Alloy>

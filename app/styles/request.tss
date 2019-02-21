@@ -1,0 +1,216 @@
+"#win" : {
+	"orientationModes": [Ti.UI.PORTRAIT],
+	"navBarHidden": true,
+	"backgroundColor": "transparent"
+}
+"#win[platform=android]" : {
+	"windowSoftInputMode": Ti.UI.Android.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+}
+".background" : {
+	backgroundColor: "#000000",
+	opacity: 0
+}
+"#blockingView" : {
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL
+}
+".mainView" : {
+	width: "100%",
+	left: Alloy.Globals.display.width
+}
+".mainView[platform=android]" : {
+	left: 0
+}
+"#requestSpinner" : {
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
+	indicatorColor: "white"
+}
+"#requestSpinner[platform=ios]" : {
+	style: Titanium.UI.ActivityIndicatorStyle.BIG,
+	indicatorColor: "white"
+}
+".topSection" : {
+	width: Ti.UI.FILL,
+	height: 185,
+	top: 0,
+	backgroundColor: Alloy.Globals.mainColor
+}
+".inputMemo" : {
+	width: "100%",
+	height: 40,
+	padding: {
+		right: 7,
+		left: 7
+	},
+	textAlign: "left",
+	backgroundColor: "#ffffff"
+}
+".amountView" : {
+	top: 0
+}
+".amountSat" : {
+	bottom: 5
+}
+".fiat" : {
+	top: 45
+}
+".balance" : {
+	top: 10
+}
+".switchIcon" : {
+	height: 30,
+	top: 100,
+	right: 10
+}
+".keypad" : {
+	backgroundColor: "#ececec"
+}
+".padrow" : {
+	width: Ti.UI.FILL,
+	height: "20%"
+}
+"#padrowtop" : {
+	width: Ti.UI.FILL,
+	height: "14%"
+}
+".numberPad" : {
+	backgroundColor: "transparent",
+	width: "33.2%",
+	height: Ti.UI.FILL,
+	color: Alloy.Globals.mainColor,
+	font: {
+		fontSize: 28,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	}
+}
+"#expiry" : {
+	width: "66.5%",
+	height: Ti.UI.FILL
+}
+"#expiryInner" : {
+	width: Ti.UI.FILL,
+	height: Ti.UI.SIZE,
+	layout: 'vertical'
+}
+"#expiryControls" : {
+	top: 5,
+	height: Ti.UI.SIZE,
+	layout: 'horizontal'
+}
+"#expiryDescription" : {
+	height: Ti.UI.SIZE,
+	width: Ti.UI.FILL,
+	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+	color: Alloy.Globals.mainColor,
+	font: {
+		fontSize: 20,
+		fontFamily: 'Gill Sans',
+		fontWeight: 'light'
+	}
+}
+".plusminus" : {
+	width: "33.2%",
+	height: Ti.UI.SIZE,
+	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+	color: Alloy.Globals.mainColor,
+	font: {
+		fontSize: 25,
+		fontFamily: 'Gill Sans',
+		fontWeight: 'bold'
+	}
+}
+"#time" : {
+	height: Ti.UI.SIZE,
+	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+	width: "33.2%",
+	color: Alloy.Globals.mainColor,
+	font: {
+		fontSize: 20,
+		fontFamily: 'Gill Sans',
+		fontWeight: 'light'
+	}
+}
+".text" : {
+	color: Alloy.Globals.mainColor,
+	font: {
+		fontFamily: 'Gill Sans',
+		fontWeight: 'light'
+	}
+}
+"#requestLabel" : {
+	backgroundColor: 'transparent',
+	title: L("request_title"),
+	color: 'white',
+	font: {
+		fontSize: 25,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	}
+}
+"#numberPadDel" : {
+	title: L('label_del')
+}
+"#gobackButton" : {
+	top: 0,
+	height: Alloy.Globals.topBarHeight,
+	left: 10
+}
+"#numberPadRequest" : {
+	backgroundColor: Alloy.Globals.mainColorLighter,
+	width: "33.2%",
+	height: Ti.UI.FILL,
+	font: {
+		fontSize: 28,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	}
+}
+"#qrcode" : {
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL
+}
+".qrCodeBackground" : {
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL,
+	backgroundColor: "#000000",
+	opacity: 0.6
+}
+".qrCodeOuter" : {
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
+	layout: 'vertical'
+}
+"#qrCodeInner" : {
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE
+}
+".statusView" : {
+	top: 10,
+	layout: 'horizontal',
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE
+}
+"#statusSpinner" : {
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
+	style: Ti.UI.ActivityIndicatorStyle.PLAIN,
+	indicatorColor: Alloy.Globals.mainColor
+}
+"#statusText" : {
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
+	left: 5,
+	color: 'white',
+	font: {
+		fontSize: 18,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	}
+}
+"#closeButton" : {
+	top: 0,
+	height: Alloy.Globals.topBarHeight,
+	left: 10
+}

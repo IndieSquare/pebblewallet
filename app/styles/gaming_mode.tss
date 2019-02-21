@@ -1,0 +1,35 @@
+".background": {
+	backgroundColor: "#000000",
+	opacity: 0
+}
+
+
+".mainView": {
+	width: "100%",
+	left: 0
+}
+
+"#balanceText":{
+  color:"white",
+  font:{
+    fontSize: 18
+  }
+}
+
+
+"#closeButton":{
+  color:"white",
+  bottom:10,
+  font:{
+    fontSize: 10
+  }
+}
+
+"#amountLab":{
+  opacity: 0,
+  color:"#e94f5f",
+  font:{
+    fontSize: 50
+  },
+top:200,
+}

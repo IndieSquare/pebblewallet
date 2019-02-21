@@ -1,0 +1,94 @@
+".details" : {
+	top: 0,
+	left: 5,
+	width: "75%",
+	height: Ti.UI.SIZE
+}
+".activeTitle" : {
+	top: 5,
+	color: Alloy.Globals.fontColor1,
+	left: 0,
+	font: {
+		fontSize: 15,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	}
+}
+".pubKeyTitle" : {
+	left: 0,
+	top: 5,
+	color: Alloy.Globals.fontColor1,
+	font: {
+		fontSize: 9,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	}
+}
+"#alias" : {
+	left: 0,
+	top: 3,
+	color: Alloy.Globals.fontColor1,
+	font: {
+		fontSize: 18,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	}
+}
+".amounts" : {
+	height: Ti.UI.SIZE,
+	right: 5,
+	top: 25,
+	width: "20%",
+	color: Alloy.Globals.fontColor1
+}
+"#buttonView" : {
+	bottom: 0,
+	left: 5,
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE
+}
+"#loadingSpinner" : {
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	indicatorColor: Alloy.Globals.mainColor,
+	visible: false
+}
+"#closeChannelButton" : {
+	height: 20,
+	textAlign: "center",
+	color: Alloy.Globals.cancelColor,
+	borderColor: Alloy.Globals.cancelColor,
+	borderWidth: 1,
+	borderRadius: 10,
+	font: {
+		fontSize: 15,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	}
+}
+".cell" : {
+	height: "100%",
+	backgroundColor: "#0AFFFFFF"
+}
+".localAmountTitle" : {
+	width: "100%",
+	textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT,
+	textAlign: "right",
+	color: Alloy.Globals.fontColor1,
+	font: {
+		fontSize: 15,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	}
+}
+".remoteAmountTitle" : {
+	width: "100%",
+	textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT,
+	textAlign: "right",
+	color: Alloy.Globals.fontColor1,
+	font: {
+		fontSize: 15,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	}
+}

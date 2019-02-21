@@ -1,0 +1,73 @@
+".cell" : {
+	height: 55,
+	width: "100%"
+}
+".cell[platform=android]" : {
+	height: 60,
+	width: "100%"
+}
+".details[platform=android]" : {
+	backgroundColor: "transparent",
+	top: 10,
+	width: "100%",
+	height: 50
+}
+".details" : {
+	backgroundColor: "transparent",
+	top: 10,
+	width: "100%",
+	height: 45
+}
+"#date" : {
+	color: Alloy.Globals.fontColor1,
+	right: 5,
+	textAlign: "right",
+	font: {
+		fontSize: 12,
+		fontFamily: 'GillSans-light',
+		fontWeight: 'light'
+	}
+}
+"#memo" : {
+	color: Alloy.Globals.fontColor1,
+	left: 35,
+	height: 10,
+	bottom: 4,
+	font: {
+		fontSize: 13,
+		fontFamily: 'GillSans-italic',
+		fontWeight: 'light'
+	}
+}
+"#memo[platform=android]" : {
+	left: 35,
+	height: Ti.UI.SIZE,
+	bottom: 4
+}
+"#type" : {
+	image: "/images/boltSymbol.png",
+	height: 24,
+	left: 5
+}
+"#value" : {
+	color: Alloy.Globals.fontColor1,
+	left: 35,
+	textAlign: "left",
+	font: {
+		fontSize: 22,
+		fontFamily: 'GillSans-light',
+		fontWeight: 'light'
+	}
+}
+"#paymentHash" : {
+	top: 5,
+	visible: false,
+	color: Alloy.Globals.fontColor1,
+	left: 5,
+	textAlign: "left",
+	font: {
+		fontSize: 11,
+		fontFamily: 'GillSans-light',
+		fontWeight: 'light'
+	}
+}

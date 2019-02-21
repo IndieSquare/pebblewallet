@@ -1,0 +1,110 @@
+"#win" : {
+  orientationModes: [Ti.UI.PORTRAIT],
+  navBarHidden: true,
+  backgroundColor: "transparent",
+  width: Ti.UI.FILL,
+  height: Alloy.Globals.display.height
+}
+"#win[platform=android]" : {
+  theme: "Theme.AppCompat.Translucent.NoTitleBar",
+  windowSoftInputMode: Ti.UI.Android.SOFT_INPUT_STATE_ALWAYS_HIDDEN,
+  height: Ti.UI.FILL
+}
+"#main" : {
+  width: Ti.UI.FILL,
+  height: Alloy.Globals.display.height,
+  top: Alloy.Globals.display.height
+}
+"#main[platform=android]" : {
+  width: Ti.UI.FILL,
+  height: Ti.UI.FILL,
+  top: Alloy.Globals.display.height
+}
+".back" : {
+  width: Ti.UI.FILL,
+  height: Ti.UI.FILL,
+  top: 0,
+  backgroundColor: "#ffffff",
+  opacity: 0.95
+}
+".comp_marks" : {
+  image: "/images/image_easyinput_none.png",
+  width: 12
+}
+"#m1" : {
+  left: 0
+}
+"#m2" : {
+  left: 20
+}
+"#m3" : {
+  left: 40
+}
+"#m4" : {
+  left: 60
+}
+".logo" : {
+  image: "/images/icon_logo.png",
+  width: 70,
+  top: 0
+}
+".group" : {
+  layout: "vertical",
+  width: Ti.UI.SIZE,
+  height: Ti.UI.SIZE
+}
+".marks" : {
+  top: 10,
+  width: Ti.UI.SIZE,
+  height: Ti.UI.SIZE
+}
+"#instructionLabel" : {
+  color: Alloy.Globals.mainColor,
+  font: {
+    fontSize: 12
+  },
+  top: 10,
+  color: Alloy.Globals.mainColor,
+  textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+  text: "dfdfdfd"
+}
+".aButton" : {
+  borderColor: Alloy.Globals.mainColor,
+  borderWidth: 1.5,
+  backgroundImage: "/images/image_blank.png",
+  width: 60,
+  height: 60,
+  left: 10,
+  title: "wewew",
+  titleColor: Alloy.Globals.mainColor,
+  font: {
+    fontSize: 22
+  },
+  color: Alloy.Globals.mainColor
+}
+".buttonRow" : {
+  layout: "horizontal",
+  width: Ti.UI.SIZE,
+  height: Ti.UI.SIZE,
+  top: 10
+}
+".buttons" : {
+  layout: "vertical",
+  width: Ti.UI.SIZE,
+  height: Ti.UI.SIZE
+}
+"#c" : {
+  borderWidth: 0,
+  font: {
+    fontSize: 12
+  },
+  width: 60
+}
+"#e" : {
+  borderWidth: 0,
+  font: {
+    fontSize: 12
+  },
+  width: 60,
+  backgroundImage: "/images/image_blank.png"
+}

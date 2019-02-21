@@ -1,0 +1,12 @@
+<Alloy>
+  <View id="depositAddressViewOuter">
+    <View id="depositAddressViewBackgroundOuter"/>
+    <ActivityIndicator id="spinner"></ActivityIndicator>
+    <View id="depositAddressView" layout="vertical">
+      <Label id="description">L('label_funds_description')</Label>
+      <View class="qrcodeImage" id="qrcode" onClick="copyClipboard"/>
+      <Label class="bold blue address" id="address"></Label>
+      <Label class="size15 white" id="closeButton" onClick="closeQR">L("label_close")</Label>
+    </View>
+  </View>
+</Alloy>

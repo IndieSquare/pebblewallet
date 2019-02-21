@@ -1,0 +1,138 @@
+"#win" : {
+	backgroundColor: Alloy.Globals.windowColor
+}
+"#walletName" : {
+	width: Ti.UI.SIZE,
+	left: 10,
+	top: Alloy.Globals.dappBarTop,
+	color: "white",
+	font: {
+		fontFamily: "Gil sans",
+		fontSize: 13
+	},
+	textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT
+}
+ 
+"#syncStatus" : {
+	height: 50,
+	width: Ti.UI.SIZE,
+	left: 10,
+	top: Alloy.Globals.dappBarTop,
+	layout: 'horizontal',
+	visible: false
+}
+"#syncIcon" : {
+	height: 25,
+	left: 5
+}
+"#syncText" : {
+	left: 5,
+	color: "white",
+	font: {
+		fontFamily: "Gil sans",
+		fontSize: 13
+	},
+	textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT
+}
+"#scroller" : {}
+".topBarTop" : {
+	height: Alloy.Globals.btclnTopBarHeight,
+	width: "100%",
+	backgroundImage: "/images/gradient.jpg"
+}
+".info" : {
+	height: "100%"
+}
+".infoInner" : {
+	layout: "vertical",
+	height: Ti.UI.SIZE
+}
+".refresh" : {
+	width: 25,
+	height: 25,
+	top: 28,
+	margin: 10
+}
+".refresh[if=Alloy.Globals.isiPhoneX]" : {
+	top: 41
+}
+".refresh[platform=android]" : {
+	top: 12
+}
+".addToken" : {
+	top: 21,
+	left: 5,
+	width: 50,
+	height: '100%'
+}
+".addToken[if=Alloy.Globals.isiPhoneX]" : {
+	top: 33
+}
+".addToken[platform=android]" : {
+	top: 9
+}
+".addTokenIcon" : {
+	width: 25,
+	height: 25
+}
+".addTokenLabel" : {
+	top: 2,
+	color: 'white',
+	width: '100%'
+}
+".topBarBottom" : {
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	backgroundColor: "#ededed"
+}
+".topBarTab" : {
+	width: "24.9%",
+	height: "100%",
+	backgroundColor: "#ededed"
+}
+"#nodeInfo" : {
+	top: 0,
+	height: Ti.UI.FILL,
+	width: Ti.UI.FILL,
+	backgroundColor: 'maroon'
+}
+".topbar" : {
+	top: 0,
+	layout: "vertical",
+	height: Ti.UI.SIZE
+}
+".topTabLabel" : {
+	color: "#bebebe",
+	font: {
+		fontSize: 12,
+		fontFamily: "Gil Sans"
+	}
+}
+".currentTab" : {
+	width: "24.99%",
+	height: 1,
+	bottom: 0,
+	backgroundColor: Alloy.Globals.mainColor
+}
+".topBarOuter" : {
+	layout: "horizontal",
+	width: "100%",
+	height: 0
+}
+"#notConnected" : {
+	visible: true,
+	width: "20%"
+}
+"#statusText" : {
+	color: "white",
+	font: {
+		fontFamily: "Gil sans",
+		fontSize: 16
+	}
+}
+".fiatValue" : {
+	color: "white"
+}
+".cryptoValue" : {
+	color: "white"
+}

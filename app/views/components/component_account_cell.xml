@@ -1,0 +1,16 @@
+<Alloy>
+  <View class="cell">
+    <View class="details" layout="vertical">
+      <Label id="alias"/>
+      <Label id="pubKey"/>
+    </View>
+    <View class="buttons">
+      <ImageView id="removeButton" onClick="remove"/>
+      <View class="wrapper">
+        <Label id="selectButton" onClick="connect"/>
+      </View>
+    </View>
+    <View class="bottomLine"></View>
+  </View>
+
+</Alloy>

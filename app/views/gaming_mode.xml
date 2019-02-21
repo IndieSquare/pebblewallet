@@ -1,0 +1,12 @@
+<Alloy>
+	<View class="transparent">
+		<View class="tifill background" id="background"></View>
+		<Label id="amountLab">+1</Label>
+		<View class="tifill mainView" id="mainView">
+			<Label id="balanceText"></Label>
+			<Label id="closeButton" onClick="close">close</Label>
+		</View>
+
+	</View>
+
+</Alloy>

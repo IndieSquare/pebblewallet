@@ -1,0 +1,60 @@
+<Alloy>
+	<Window class="container">
+		<View class="tifill wrapper" id="wrapper">
+			<ScrollView class="tisize" id="signinView" layout="vertical" scrollType="vertical">
+				<ImageView class="logo" id="logo" image="/images/icon_logo_white.png"/>
+				<ActivityIndicator id="loadingSpinner"></ActivityIndicator>
+				<View id="buttons" visible="false">
+					<View class="button newwallet" id="newwalletButton" onClick="createNewAccount">
+						<Label class="size25 white">L("label_newwallet")</Label>
+					</View>
+					<View class="button-thin hasuser" id="hasuserButton" onClick="hasPassphrase">
+						<Label class="size15 white">L("label_loginasuser")</Label>
+					</View>
+
+					<View class="tisize inputs" id="inputs" visible="false">
+						<View id="recoverView">
+							<Label class="recoverTitle">L("label_recover_wallet")</Label>
+							<TextField class="inputEachphrase" id="inputEachphrase" passwordMask="true" visible="false"/>
+							<TextField class="inputEachphrase" id="inputEachphrase2" passwordMask="true" visible="false"/>
+							<View class="tisize textmenues">
+								<View class="tisize" id="signinInputEach" layout="horizontal" visible="false">
+									<Label class="size15 white" id="signinPrev">L("label_inputbyeach_prev")</Label>
+									<Label class="p size15 white">|</Label>
+
+									<Label class="p size15 white" id="signinNext">L("label_inputbyeach_next")</Label>
+								</View>
+
+							</View>
+							<Label class="orTitle">L("label_or")</Label>
+						</View>
+						<View id="linkView">
+							<View class="tisize link" id="link">
+
+								<Label class="connectNodeTitle">L("label_connectnode")</Label>
+								<View id="connectView">
+									<ActivityIndicator id="loadingSpinnerConnect"/>
+									<View class="tisize icons" id="icons" onClick="startLink">
+										<ImageView class="btcPayIcon"></ImageView>
+										<ImageView class="lndIcon"></ImageView>
+									</View>
+								</View>
+								<Label class="foundOutMore" onClick="goToLinkInfo">L("link_info")</Label>
+
+								<Label class="cancelLabel" onClick="cancel">L("label_goback")</Label>
+
+							</View>
+
+						</View>
+					</View>
+
+				</View>
+			</View>
+
+		</ScrollView>
+		<View class="tisize" id="privacypolicy" layout="vertical" visible="false" onClick="goToPrivacy">
+			<Label class="size12 white">L("label_privecypolicy")</Label>
+			<Label class="size8 white">L("label_privecypolicy_description")</Label>
+		</View>
+	</Window>
+</Alloy>

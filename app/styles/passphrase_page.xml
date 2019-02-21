@@ -1,0 +1,44 @@
+<Alloy>
+	<Window class="container">
+		<ImageView class="backgroundImage" image="/images/orangeBack.jpg"/>
+
+		<View class="logoSection" id="logoSection">
+			<ImageView class="middlePart" image="/images/orangeMiddlePart.png"/>
+		</View>
+
+		<View class="title">
+		<Label class="insertTitle" touchEnabled="false">L('label_recovery_phrase')</Label>
+		<ImageView   class="important"/>
+		</View>
+
+		<ScrollableView class="scrollView" id="scrollableView">
+			<View class="scrollPage" id="pageOne">
+
+				<View class="enterPhraseView"    layout="vertical">
+
+					<TextArea class="phraseField" id="phraseFieldNew"></TextArea>
+					<Label class="infoLabel" id="infoLabel" touchEnabled="false"></Label>
+						</View>
+					<View class="aButton"   onClick="showPassphrase">
+						<Label class="showPassphraseButton" id="showPassphraseButton" touchEnabled="false">L('label_next')</Label>
+					</View>
+
+
+			</View>
+
+			<View class="scrollPage" id="pagetwo">
+
+					<TextArea class="phraseField2" id="phraseFieldNew2"></TextArea>
+
+					<View id="bottomButtons">
+					<ActivityIndicator id="loadingSpinner" visible="false"/>
+					<View class="aButton" id="showPassphraseButtonOuter" onClick="finish">
+						<Label class="showPassphraseButton" id="showPassphraseButton" touchEnabled="false">L('label_wrote_down')</Label>
+					</View>
+					</View>
+
+
+			</View>
+		</ScrollableView>
+	</Window>
+</Alloy>

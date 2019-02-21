@@ -1,0 +1,14 @@
+<Alloy>
+
+	<View class="receiveViewOuter">
+
+		<View class="receiveView">
+			<View id="buttonsView">
+				<Label id="generateDepositAddress" onClick="generateDepositAddress">L('generate_deposit')</Label>
+				<Label id="withdraw" onClick="goToWithdraw">L('label_withdraw_button')</Label>
+			</View>
+		</View>
+
+	</View>
+
+</Alloy>

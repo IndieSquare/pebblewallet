@@ -1,0 +1,146 @@
+"#mainView" : {
+	top: 0
+}
+"#backView" : {
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL,
+	backgroundColor: 'black',
+	opacity: 0.3
+}
+"#items" : {
+	width: "80%",
+	height: Ti.UI.SIZE
+}
+"#boxView" : {
+	width: "90%",
+	height: 360,
+	backgroundColor: Alloy.Globals.windowColor,
+	borderRadius: 10
+}
+"#peerFieldView" : {
+	top: 20,
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE
+}
+"#peerField" : {
+	width: "100%",
+	height: 40,
+	top: 15,
+	left: 0,
+	focusable: true,
+	hintTextColor: "gray",
+	hintText: L('label_enter_nodeid')
+}
+"#amountField" : {
+	width: "85%",
+	height: 40,
+	left: 0,
+	focusable: true,
+	hintTextColor: "gray",
+	hintText: L('label_enter_funding_hint'),
+	keyboardType: Ti.UI.KEYBOARD_TYPE_DECIMAL_PAD
+}
+"#amountFieldFiat" : {
+	width: "85%",
+	height: 40,
+	left: 0,
+	hintTextColor: "gray",
+	keyboardType: Ti.UI.KEYBOARD_TYPE_DECIMAL_PAD
+}
+"#qrButton" : {
+	color: Alloy.Globals.fontColor1,
+	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+	width: 60,
+	height: 60,
+	backgroundImage: '/images/icon_qrcode.png'
+}
+"#closeButton" : {
+	right: 10,
+	top: 10,
+	width: 25,
+	height: 25,
+	backgroundImage: '/images/closeButtonMain.png'
+}
+"#statusLabel" : {
+	color: Alloy.Globals.mainColor,
+	font: {
+		fontSize: 20,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	},
+	backgroundImage: '/images/image_blank.png'
+}
+"#titleLabel" : {
+	top: 20,
+	color: Alloy.Globals.fontColor1,
+	font: {
+		fontSize: 20,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	},
+	backgroundImage: '/images/image_blank.png'
+}
+"#openChannelButton" : {
+	color: Alloy.Globals.mainColor,
+	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+	width: Ti.UI.SIZE,
+	height: 40,
+	left: 10,
+	borderRadius: 20,
+	borderWidth: 2,
+	borderColor: Alloy.Globals.mainColor,
+	font: {
+		fontSize: 20,
+		fontFamily: 'GillSans-regular',
+		fontWeight: 'regular'
+	},
+	backgroundImage: '/images/image_blank.png'
+}
+"#recButton" : {
+	color: Alloy.Globals.mainColor,
+	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+	width: Ti.UI.SIZE,
+	height: 30,
+	top: 10,
+	left: 0,
+	borderRadius: 15,
+	borderWidth: 2,
+	borderColor: Alloy.Globals.mainColor,
+	font: {
+		fontSize: 15,
+		fontFamily: 'GillSans-regular',
+		fontWeight: 'regular'
+	},
+	backgroundImage: '/images/image_blank.png'
+}
+"#recButton[platform=android]" : {
+	height: 40,
+	borderRadius: 20
+}
+".fieldView" : {
+	layout: 'horizontal',
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE
+}
+"#cryptoSymbol" : {
+	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+	height: Ti.UI.SIZE,
+	width: "15%",
+	color: Alloy.Globals.mainColor,
+	font: {
+		fontSize: 14,
+		fontFamily: 'GillSans-regular',
+		fontWeight: 'regular'
+	}
+}
+"#fiatSymbol" : {
+	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+	height: Ti.UI.SIZE,
+	width: "15%",
+	color: Alloy.Globals.mainColor,
+	font: {
+		fontSize: 14,
+		fontFamily: 'GillSans-regular',
+		fontWeight: 'regular'
+	}
+}

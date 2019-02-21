@@ -1,0 +1,30 @@
+<Alloy>
+  <Window id="win">
+    <View class="transparent">
+      <View class="tifill background" id="background"></View>
+      <View class="tifill mainView" id="mainView">
+        <View class="topbar" id="topbar">
+          <Label class="size15 white pull-left pull-bottom" id="gobackButton" onClick="close">L("label_goback")</Label>
+          <Label class="title">L("label_accounts")</Label>
+
+        </View>
+        <TableView class="accountsList" id="accountsList">
+          <FooterView>
+
+            <View class="tableViewFooter" id="tableViewFooter" visible="true">
+
+              <View class="tisize" onClick="addNewAccount">
+
+                <ActivityIndicator id="connectSpinner" class="indicatorDark" visible="false"/>
+                <View class="wrapper" id="addAccount">
+                  <Label id="addAccountLabel">L("add_account")</Label>
+                </View>
+              </View>
+            </View>
+          </FooterView>
+        </TableView>
+
+      </View>
+    </View>
+  </Window>
+</Alloy>

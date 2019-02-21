@@ -1,0 +1,337 @@
+CURRENT_TASK = null;
+
+CURRENT_CALLBACK = null;
+
+CLEAR_TASK = function() {
+
+	CURRENT_TASK = null;
+
+}
+CLEAR_CALLBACK = function(error) {
+
+	CURRENT_CALLBACK(error, null);
+
+}
+
+START_CALLBACK = function(response) {
+
+	CLEAR_TASK();
+
+	try {
+
+		var data = JSON.parse(response);
+
+		if (CURRENT_CALLBACK != null) {
+
+			if (data.chain == "eth") {
+
+				if (data.type == "getAccount") {
+
+					CURRENT_CALLBACK(null, [data.data]);
+
+				} else if (data.type == "signPersonalMessage") {
+
+					CURRENT_CALLBACK(null, data.data);
+
+				} else if (data.type == "signMessage") {
+
+					CURRENT_CALLBACK(null, data.data);
+
+				} else if (data.type == "signTransaction") {
+
+					CURRENT_CALLBACK(null, data.data);
+
+				} else if (data.type == "sendTransaction") {
+
+					CURRENT_CALLBACK(null, data.data);
+
+				}
+
+			} else if (data.chain == "XCP") {
+				if (data.type == "getAccount") {
+
+					CURRENT_CALLBACK(null, data.data);
+
+				} else if (data.type == "signMessage") {
+
+					CURRENT_CALLBACK(null, data.data);
+
+				} else if (data.type == "signTransaction") {
+
+					CURRENT_CALLBACK(null, data.data);
+
+				}
+
+			} else if (data.chain == "utils") {
+
+				if (data.type == "useCamera") {
+
+					CURRENT_CALLBACK(null, data.data);
+
+				} else if (data.type == "getUserID") {
+
+					CURRENT_CALLBACK(null, data.data);
+
+				}
+
+			} else if (data.chain == "lnbtc") {
+
+				if (data.type == "createInvoice") {
+
+					CURRENT_CALLBACK(null, data.data);
+
+				} else if (data.type == "lookUpInvoice") {
+
+					CURRENT_CALLBACK(null, data.data);
+
+				} else if (data.type == "payInvoice") {
+
+					CURRENT_CALLBACK(null, data.data);
+
+				}
+
+			} else {
+				return "callback null";
+			}
+
+		}
+	} catch (e) {
+		console.error("callback error", e);
+		return "error " + e;
+	}
+
+}
+
+GET_CURRENT_TASK = function() {
+
+	if (CURRENT_TASK == null) {
+		return null;
+	}
+
+	var currentTaskCopy = CURRENT_TASK + "";
+	CURRENT_TASK = null;
+	return currentTaskCopy;
+
+}
+
+
+try {
+
+	mobileUtils = [];
+	mobileUtils.platform = "IndieSquareWallet";
+
+	mobileUtils.callURLScheme = function(data, cb) {
+
+		var data = {
+			"chain": "utils",
+			"type": "urlScheme",
+			"data": data
+		};
+		CURRENT_CALLBACK = cb;
+		try {
+			console.log("sending to webkit")
+
+			webkit.messageHandlers.setTask.postMessage(data)
+
+		} catch (e) {
+			//not ios, webkit not found
+			console.error(e)
+			WebViewMessageInterface.postMessage(JSON.stringify(data));
+		}
+
+	};
+
+	mobileUtils.openUrl = function(data, cb) {
+
+		var data = {
+			"chain": "utils",
+			"type": "openUrl",
+			"data": data
+		};
+		CURRENT_CALLBACK = cb;
+		try {
+			console.log("sending to webkit")
+
+			webkit.messageHandlers.setTask.postMessage(data)
+
+		} catch (e) {
+			//not ios, webkit not found
+			console.error(e)
+			WebViewMessageInterface.postMessage(JSON.stringify(data));
+		}
+
+	};
+
+	mobileUtils.getUserID = function(cb) {
+
+		var data = {
+			"chain": "utils",
+			"type": "getUserID",
+			"data": ""
+		};
+		CURRENT_CALLBACK = cb;
+		try {
+			console.log("sending to webkit")
+
+			webkit.messageHandlers.setTask.postMessage(data)
+
+		} catch (e) {
+			//not ios, webkit not found
+			console.error(e)
+			WebViewMessageInterface.postMessage(JSON.stringify(data));
+		}
+
+	};
+
+	mobileUtils.useCamera = function(cb) {
+
+		var data = {
+			"chain": "utils",
+			"type": "useCamera"
+		};
+		CURRENT_CALLBACK = cb;
+		try {
+			console.log("sending to webkit")
+
+			webkit.messageHandlers.setTask.postMessage(data)
+
+		} catch (e) {
+			//not ios, webkit not found
+			console.error(e)
+			WebViewMessageInterface.postMessage(JSON.stringify(data));
+		}
+
+	};
+
+} catch (e) {
+	console.error(e);
+	alert("mobileTools: " + e);
+}
+
+try {
+
+	webLN = [];
+
+	webLN.createInvoice = function(data, cb) {
+
+		var data = {
+			"chain": "lnbtc",
+			"type": "createInvoice",
+			"data": data
+		};
+		CURRENT_CALLBACK = cb;
+		try {
+			console.log("sending to webkit")
+
+			webkit.messageHandlers.setTask.postMessage(data)
+
+		} catch (e) {
+			//not ios, webkit not found
+			console.error(e);
+			WebViewMessageInterface.postMessage(JSON.stringify(data));
+		}
+
+	};
+
+	webLN.lookUpInvoice = function(data, cb) {
+
+		var data = {
+			"chain": "lnbtc",
+			"type": "lookUpInvoice",
+			"data": data
+		};
+		CURRENT_CALLBACK = cb;
+		try {
+			console.log("sending to webkit")
+
+			webkit.messageHandlers.setTask.postMessage(data)
+
+		} catch (e) {
+			//not ios, webkit not found
+			console.error(e)
+			WebViewMessageInterface.postMessage(JSON.stringify(data));
+		}
+
+	};
+
+	webLN.payInvoice = function(data, cb) {
+
+		var data = {
+			"chain": "lnbtc",
+			"type": "payInvoice",
+			"data": data
+		};
+		CURRENT_CALLBACK = cb;
+		try {
+			console.log("sending to webkit")
+
+			webkit.messageHandlers.setTask.postMessage(data)
+
+		} catch (e) {
+			//not ios, webkit not found
+			console.error(e)
+			WebViewMessageInterface.postMessage(JSON.stringify(data));
+		}
+
+	};
+
+} catch (e) {
+	console.error(e);
+	alert("webLN: " + e);
+}
+
+function checkForLN() {
+	console.log("checking for ln");
+	var allLinks = document.links;
+	for (var i = 0, n = allLinks.length; i < n; i++) {
+		allLinks[i].onclick = function(e) {
+			console.log(e);
+			var lnURI = '';
+			try {
+				if (e.srcElement.href != undefined) {
+					lnURI = e.srcElement.href
+				} else if (e.srcElement.parentElement.href != undefined) {
+					lnURI = e.srcElement.parentElement.href
+				}
+				if (lnURI.indexOf('lightning:') != -1) {
+					if (lnURI.indexOf('@') != -1) {
+						var data = {
+							"chain": "lnbtc",
+							"type": "openChannel",
+							"data": lnURI
+						};
+					} else if (lnURI.indexOf('lightning:ln') != -1) {
+						var data = {
+							"chain": "lnbtc",
+							"type": "payInvoice",
+							"data": lnURI
+						};
+					} else {
+						return;
+					}
+
+					try {
+						console.log("sending to webkit")
+						webkit.messageHandlers.setTask.postMessage(data)
+
+					} catch (e) {
+						//not ios, webkit not found
+						console.error(e)
+						WebViewMessageInterface.postMessage(JSON.stringify(data));
+					}
+
+				}
+			} catch (e) {
+				console.error(e);
+			}
+		};
+	}
+
+	setTimeout(function() {
+		checkForLN();
+	}, 2000);
+
+}
+setTimeout(function() {
+	checkForLN();
+}, 2000);

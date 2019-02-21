@@ -1,0 +1,10 @@
+<Alloy>
+  <View class="mainView" id="mainView" onClick="close">
+    <View id="colorView"></View>
+    <View id="infoView">
+      <ImageView id="checkIcon" class="checkIcon"/>
+      <Label class="statusLabel" id="statusLabel"></Label>
+    </View>
+    <Label id="okLabel" onClick="close">L('label_ok')</Label>
+  </View>
+</Alloy>

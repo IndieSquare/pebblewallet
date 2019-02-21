@@ -1,0 +1,59 @@
+".mainView" : {
+  width: Ti.UI.FILL,
+  height: Ti.UI.FILL,
+  top: 0
+}
+"#bottom" : {
+  bottom: 0,
+  height: Ti.UI.SIZE
+}
+"#backButton" : {
+  right: 5,
+  color: 'white',
+  font: {
+    fontSize: 20,
+    fontFamily: 'GillSans',
+    fontWeight: 'bold'
+  }
+}
+"#table" : {
+  top: 0,
+  backgroundColor: "transparent",
+  width: Ti.UI.FILL,
+}
+".headerView" : {
+  backgroundColor: Alloy.Globals.mainColor,
+  height: 35,
+  width: "100%"
+}
+"#showPeersButton" : {
+  color: 'white',
+  font: {
+    fontSize: 20,
+    fontFamily: 'GillSans',
+    fontWeight: 'bold'
+  },
+  top: 25,
+  left: 5
+}
+"#addChannelButton" : {
+  color: 'white',
+  font: {
+    fontSize: 18,
+    fontFamily: 'GillSans',
+    fontWeight: 'bold'
+  },
+  right: 5
+}
+"#connectToPebbleHUB" : {
+  color: Alloy.Globals.mainColor,
+  font: {
+    fontSize: 18,
+    fontFamily: 'GillSans',
+    fontWeight: 'bold'
+  }
+}
+"#firstLoader" : {
+  indicatorColor: Alloy.Globals.mainColor,
+  style: Ti.UI.ActivityIndicatorStyle.BIG
+}

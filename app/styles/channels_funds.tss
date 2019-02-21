@@ -1,0 +1,99 @@
+"#win" : {
+  "orientationModes": [Ti.UI.PORTRAIT],
+  "navBarHidden": true
+}
+"#gobackButton" : {
+  top: 0,
+  height: Alloy.Globals.topBarHeight,
+  left: 10
+}
+"#win[platform=android]" : {
+  "windowSoftInputMode": Ti.UI.Android.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+}
+"#channelsFunds" : {
+  top: Alloy.Globals.btclnTopBarHeight
+}
+"#channels" : {
+  top: 0,
+  height: Ti.UI.FILL
+}
+"#funds" : {
+  visible: false
+}
+".topBarTop" : {
+  top: 0,
+  height: Alloy.Globals.btclnTopBarHeight,
+  width: "100%",
+  backgroundImage: "/images/gradient.jpg"
+}
+".mainView" : {
+  width: "100%",
+  left: Alloy.Globals.display.width,
+  backgroundColor: "#e3e3e3"
+}
+".mainView[platform=android]" : {
+  width: "100%",
+  left: 0
+}
+".background" : {
+  backgroundColor: "#000000",
+  opacity: 0
+}
+"#statusText" : {
+  color: "white",
+  font: {
+    fontFamily: "Gil sans",
+    fontSize: 16
+  }
+}
+".fiatValue" : {
+  color: "white"
+}
+".cryptoValue" : {
+  color: "white",
+  width: "100%",
+  textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER
+}
+".info" : {
+  height: "100%",
+  width: "100%"
+}
+".infoInner" : {
+  layout: "vertical",
+  height: Ti.UI.SIZE,
+  width: "100%",
+  textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER
+}
+".switchTab" : {
+  width: "100%",
+  height: 40,
+  top: 0,
+  layout: 'horizontal'
+}
+".aSwitch" : {
+  width: "50%",
+  height: "100%",
+  font: {
+    fontFamily: Alloy.Globals.lightFont,
+    fontSize: 16
+  },
+  textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER
+}
+".balanceTitle" : {
+  color: "white",
+  font: {
+    fontFamily: Alloy.Globals.lightFont,
+    fontSize: 16
+  }
+}
+"#channelsTab" : {
+  color: Alloy.Globals.fontColor1,
+  text: L('label_channels'),
+  backgroundColor: Alloy.Globals.mainColorDarker
+}
+"#fundsTab" : {
+  color: Alloy.Globals.fontColor1,
+  text: L('label_deposit'),
+  backgroundColor: Alloy.Globals.mainColorLighter,
+  opacity: 0.5
+}

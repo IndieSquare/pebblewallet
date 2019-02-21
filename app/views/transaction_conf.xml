@@ -1,0 +1,66 @@
+<Alloy>
+  <View class="transparent">
+
+    <View class="background2" id="background"></View>
+    <ScrollView id="mainView">
+
+      <ImageView id="img"></ImageView>
+      <View class="confBox" id="confBox">
+        <View id="loading">
+          <ActivityIndicator id="loadingSpinner"></ActivityIndicator>
+        </View>
+        <Button id="cancelButtonSmall" onClick="cancelPayment"/>
+        <View id="paid">
+          <ImageView class="paidImg"></ImageView>
+        </View>
+        <View id="notpaid">
+          <ImageView class="notPaidImg"></ImageView>
+        </View>
+        <View id="mainInfo">
+
+          <View layout="vertical" class="info" id="info">
+
+            <Label class="font" id="message"></Label>
+
+            <Label class="lab font" id="feeText"></Label>
+
+            <TextField id="channelAmount"></TextField>
+            <TextField id="paymentRequest"></TextField>
+            <TextField id="configField"></TextField>
+            <View id="customPayment">
+              <TextField id="paymentAmount" onKeypressed="updateAmount" onChange="androidChangeValue">
+                <KeyboardToolbar platform="ios">
+                  <Toolbar>
+                    <Items>
+                      <Button title="Done" onClick="hideKeyboard"/>
+                    </Items>
+                  </Toolbar>
+                </KeyboardToolbar>
+              </TextField>
+              <TextField id="paymentAmountFiat" onKeypressed="updateAmountFiat" onChange="androidChangeValueFiat">
+                <KeyboardToolbar platform="ios">
+                  <Toolbar>
+                    <Items>
+                      <Button title="Done" onClick="hideKeyboard"/>
+                    </Items>
+                  </Toolbar>
+                </KeyboardToolbar>
+              </TextField>
+            </View>
+
+            <View layout="horizontal" class="buttonsView">
+
+              <Button id="cancelButton" class="buttons font" onClick="cancel"/>
+              <Button id="confirmButton" class="buttons font" onClick="confirm"/>
+            </View>
+
+          </View>
+
+        </View>
+
+      </View>
+
+    </ScrollView>
+  </View>
+
+</Alloy>

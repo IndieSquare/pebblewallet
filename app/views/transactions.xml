@@ -1,0 +1,18 @@
+<Alloy>
+	<View class="mainView">
+		<TableView class="paymentList" id="paymentList">
+			<FooterView>
+
+				<View class="tableViewFooter" id="tableViewFooter" visible="false">
+
+					<View class="tisize" layout="horizontal">
+
+						<ActivityIndicator class="indicatorDark" visible="true"/>
+						<Label class="loadingLabelFooter">L("label_loading")</Label>
+					</View>
+				</View>
+			</FooterView>
+		</TableView>
+		<ActivityIndicator id="initialLoading"/>
+	</View>
+</Alloy>
