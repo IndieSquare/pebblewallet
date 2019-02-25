@@ -1,5 +1,5 @@
 var args = arguments[0] || {};
-
+var didShowTestnetWarning = false;
 $.privacypolicy.top = globals.display.height - 60;
 $.signinView.top = (globals.display.height - 400) / 2;
 
@@ -45,7 +45,7 @@ function createAccount(passphrase, fromPrevious) {
     globals.decryptedPassphrase = passphrase;
     globals.encryptedPassphrase = globals.decryptedPassphrase;
 
-    if (fromPrevious) {
+    if (fromPrevious == false) {
 
       Alloy.createController("introscreens", {
           fromPrevious: fromPrevious
@@ -231,10 +231,29 @@ $.privacypolicy.show();
 
 function createNewAccount() {
 
-  if (OS_ANDROID) {
+  if (OS_ANDROID && !Alloy.CFG.isDevelopment) {
     alert("Not yet implemented but comming soon!, on the mean time please connect to your existing node");
     return;
   }
+
+  if (OS_IOS && didShowTestnetWarning == false) {
+    var dialog = globals.util.createDialog({
+      title: L("label_confirm"),
+      message: L("label_try_testnet"),
+      buttonNames: [L("label_close"), L("label_ok")]
+    });
+    dialog.addEventListener("click", function(e) {
+      if (e.index != e.source.cancel) {
+        didShowTestnetWarning = true;
+        createNewAccount();
+
+      }
+
+    });
+    dialog.show();
+    return;
+  }
+
 
   showLoading(true);
   setTimeout(function() {
@@ -262,9 +281,6 @@ function createNewAccount() {
         }
 
         globals.lnGRPC.generateSeed(function(error, response) {
-
-          globals.console.log("seed1 error ", error);
-          globals.console.log("seed1 res", response);
 
           if (error == true) {
             alert(response);
@@ -427,7 +443,7 @@ function signInFromExisting(passphrase) {
 
   /*double check all the words are valid*/
 
-  var passphraseWords = passphrase.split(" ");
+  var passphraseWords = passphrase.split(",");
   for (var i = 0; i < passphraseWords.length; i++) {
     var aWordToCheck = passphraseWords[i];
     if (aezeedWordList.indexOf(aWordToCheck) == -1) {
@@ -436,9 +452,7 @@ function signInFromExisting(passphrase) {
     }
   }
 
-  passphrase = passphrase.split(" ").join();
-
-  globals.console.log("dev:", passphrase);
+  passphrase = passphrase.split(",").join();
 
   if (false == isCreatingAccount) {
     isCreatingAccount = true;
@@ -537,6 +551,6 @@ function goToLinkInfo() {
   Ti.Platform.openURL("https://pebble.indiesquare.me/remotenode");
 }
 
-if (OS_ANDROID) {
+if (OS_ANDROID && !Alloy.CFG.isDevelopment) {
   $.inputs.remove($.recoverView);
 }

@@ -5,7 +5,10 @@ globals.lndMobileStarted = false;
 globals.alreadyUnlocked = false;
 globals.stopHyperloop = false; //needed as live view doesnt work when hyperloop libs are used so slows down dev
 globals.lnGRPC = require("/requires/lnrpc_controller");
-
+globals.blockHeight = {
+  "mainnet": 564591,
+  "testnet": 1454877
+};
 if (Ti.App.Properties.getInt("autoPilot", 3) == 3) { //no record
   Ti.App.Properties.setInt("autoPilot", 1);
 }
@@ -375,4 +378,33 @@ if (OS_IOS) {
       Alloy.createController("/components/logs_view").getView().open();
     }
   });
+}
+
+globals.getBlockchainHeight = function() {
+  globals.networkAPI.connectBlockchainInfo(function(error, res) {
+    if (error != null) {
+      globals.blockHeight.testnet = res.height;
+    }
+  });
+}
+
+
+globals.tryStopLND = function(callback) {
+
+  if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
+    globals.console.log("stopping LND");
+    globals.lnGRPC.stopLND(function(error, response) {
+      if (error == true) {
+        globals.console.error(response);
+
+      }
+
+      callback();
+
+    });
+
+  } else {
+
+    callback();
+  }
 }

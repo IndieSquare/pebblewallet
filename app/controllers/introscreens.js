@@ -107,7 +107,7 @@ function complete() {
       }
 
       if (globals.savePassphrase(globals.decryptedPassphrase, globals.userKey)) {
-
+        globals.console.log("setting lnd mobile");
         Ti.App.Properties.setString("mode", "lndMobile");
         globals.alreadyUnlocked = true; //because we created a new wallet so no need to unlock
         Alloy.createController("frame")

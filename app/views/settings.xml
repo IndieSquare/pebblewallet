@@ -34,7 +34,6 @@
 						</View>
 						<Label class="size10 gray description">L("label_settings_logs_description")</Label>
 					</View>
-					<Label id="version" class="size10 gray description"></Label>
 
 					<View id="autoPilot" class="box" layout="vertical" onClick="autoPilot">
 						<View class="mainBox" id="logsButton">
@@ -43,15 +42,6 @@
 							<Label class="size12 settingLabel">L("label_settings_autopilot")</Label>
 						</View>
 						<Label class="size10 gray description">L("label_settings_autopilot_description")</Label>
-					</View>
-					<Label id="version" class="size10 gray description"></Label>
-
-					<View class="box" layout="vertical" onClick="goToSignOut">
-						<View class="mainBox" id="signoutButton">
-							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png"/>
-							<Label class="size12 settingLabel">L("label_settings_signout")</Label>
-						</View>
-						<Label class="size10 gray description">L("label_settings_signout_description")</Label>
 					</View>
 					<Label id="version" class="size10 gray description"></Label>
 

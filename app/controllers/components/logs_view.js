@@ -1,8 +1,19 @@
 var args = arguments[0] || {};
 var lastLength = -1;
+var logsString = "";
+var updateTimeout = null;
+
+function share() {
+  var emailDialog = Ti.UI.createEmailDialog()
+  emailDialog.subject = "logs";
+  emailDialog.messageBody = "logs";
+  var f = Ti.Filesystem.getFile(globals.dataDir);
+  emailDialog.addAttachment(f);
+  emailDialog.open();
+}
 
 function close(e) {
-
+  clearTimeout(updateTimeout);
   if (OS_ANDROID) {
     $.win.close();
     return;
@@ -56,6 +67,7 @@ function loadLogs() {
 
     var logs = f.read().text;
     var logsArray = logs.split("\n");
+    logsString = logs;
 
     if (lastLength == -1) {
       lastLength = logsArray.length;
@@ -81,7 +93,7 @@ function loadLogs() {
       $.logs_text.text += "\n" + nextLog;
     }
 
-    $.scrollView.scrollToBottom();
+    //  $.scrollView.scrollToBottom();
     updateLogs();
   } catch (e) {
     globals.console.error(e);
@@ -91,9 +103,9 @@ function loadLogs() {
 }
 
 function updateLogs() {
-  setTimeout(function() {
+  updateTimeout = setTimeout(function() {
     loadLogs()
 
-  }, 500);
+  }, 100);
 }
 updateLogs()

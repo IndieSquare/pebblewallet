@@ -4,6 +4,17 @@
 	height: Ti.UI.FILL,
 	top: Alloy.Globals.btclnTopHeight
 }
+"#noTransactions":{
+	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+	width: "80%",
+	color: 'gray',
+	top:25,
+	visible: false,
+	font:{
+		fontFamily: Alloy.Globals.lightFont,
+		fontSize: 18,
+	}
+}
 ".paymentList" : {
 	top: 0,
 	backgroundColor: "transparent",

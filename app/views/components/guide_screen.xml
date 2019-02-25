@@ -1,13 +1,13 @@
 <Alloy>
 	<Window id="win">
 		<View id="mainView" onClick="close">
-
+<ImageView class="background"></ImageView>
 			<View id="detailsView">
 				<Label id="guide_title"></Label>
 
 				<Label id="guide_text"></Label>
 
-				<Label id="backButton">L("label_close")</Label>
+				<Label id="backButton"></Label>
 
 			</View>
 

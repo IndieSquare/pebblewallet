@@ -5,19 +5,33 @@ if (args.onlyOne == true) {
 }
 
 if (args.isLNDMobile == true) {
+
   $.removeButton.hide();
 
   $.pubKey.text = L("local_wallet_description");
 
   $.alias.text = L('connect_lndmobile')
 
+  if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
+    $.selectButtonOuter.hide();
+  } else {
+    $.selectButtonOuter.show();
+    $.selectButton.text = L('label_connect')
+  }
+
+
   function connect() {
+
+
     globals.closeAccounts();
 
     globals.closeSettings();
 
     globals.startLNDMobile();
+
+
   }
+
 
 } else {
 
@@ -29,7 +43,6 @@ if (args.isLNDMobile == true) {
   $.alias.text = args.alias;
 
   function connect() {
-
     var config = globals.decryptConfig(args.config, globals.userKey);
     if (config != undefined) {
       globals.closeAccounts();

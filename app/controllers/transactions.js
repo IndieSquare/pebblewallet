@@ -1,12 +1,18 @@
+globals.transactions = [];
+globals.didGetTransactionsOnce = false;
 globals.showTransactionsLoader = function() {
   $.initialLoading.show();
 }
-
+globals.hideNoTransactions = function() {
+  $.noTransactions.hide();
+}
+$.noTransactions.hide();
 globals.clearTransactionsTable = function() {
   $.paymentList.data = [];
 }
 
 function listPayments(dontShowSpinner) {
+  $.noTransactions.hide();
   if (dontShowSpinner == undefined || dontShowSpinner == false) {
     globals.showTransactionsLoader();
   }
@@ -123,6 +129,13 @@ function listPayments(dontShowSpinner) {
         var transactions = paymentsAndInvoices.concat(fitleredTransactions).sort(function(x, y) {
           return y.creation_date - x.creation_date;
         });
+
+        globals.transactions = transactions;
+        globals.didGetTransactionsOnce = true;
+        if (globals.transactions.length == 0) {
+
+          $.noTransactions.show();
+        }
 
         addPayments(transactions);
 

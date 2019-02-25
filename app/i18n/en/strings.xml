@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
 
+  <string name="label_reload">reload</string>
+  <string name="label_try_testnet">Are you sure you want to try testnet beta? it won't use real bitcoin and has known bugs we are working on fixing\n\nin the mean time you can link to your own mainnet LND or BTCPay server node instead</string>
+  <string name="label_logs">logs</string>
+  <string name="label_share">share</string>
+  <string name="got_it">got it</string>
+  <string name="no_transactions">you don't have any transactions yet\n\npress the menu button bottom right to deposit some bitcoin and get started!</string>
+  <string name="block_height_sync">[block:{height}]</string>
   <string name="label_recover_wallet">recover wallet</string>
   <string name="label_host">host</string>
   <string name="label_chain">chain</string>
   <string name="deposit">deposit</string>
-  <string name="deposit_help">funds to the address below and the wallet will load them into the lightning network behind the scenes, it may take some time to do this, so check out the channels section to open your own channels</string>
-  <string name="channels_help">channels are used to connect your funds to the lightning network, by default the wallet will manage this for you but you can also manually open channels</string>
+  <string name="deposit_help">funds to the address below and the wallet will load them into the lightning network behind the scenes\n\nit may take some time to do this\nso check out the channels section to open your own channels</string>
+  <string name="channels_help">channels are used to connect your funds to the lightning network\n\nby default the wallet will manage this for you but you can also manually open channels\n\nthe easiest way to get started is to 'connect to pebble hub' which will link you to most of the lightning network </string>
   <string name="online">online</string>
   <string name="offline">offline</string>
   <string name="closing">closing</string>
@@ -57,7 +64,7 @@
   <string name="enter_payment_request_description">enter an invoice below</string>
   <string name="enter_payment_request">enter invoice...</string>
   <string name="local_wallet_description">connect to a locally running instance of LND</string>
-  <string name="synchronizing">synchronizing...</string>
+  <string name="synchronizing">synchronizing</string>
   <string name="initializing_wallet">starting up...</string>
   <string name="connect_lndmobile">local wallet</string>
 
@@ -96,7 +103,6 @@
   <string name="label_or">or</string>
   <string name="appname">pebble</string>
 
-  <string name="label_reload">Reload</string>
 
   <string name="channels_funds_option">deposit/channels</string>
   <string name="pay_option">pay</string>
@@ -135,7 +141,7 @@
   <string name="label_add">Add</string>
   <string name="label_cancel">cancel</string>
   <string name="label_close">close</string>
-  <string name="label_continue">Continue</string>
+  <string name="label_continue">continue</string>
   <string name="label_create">Create</string>
   <string name="label_completed">Completed</string>
   <string name="label_del">DEL</string>
@@ -147,9 +153,9 @@
   <string name="label_fee_priority">Fee Priority</string>
   <string name="label_goback">back</string>
   <string name="label_loading">please wait...</string>
-  <string name="label_ok">OK</string>
+  <string name="label_ok">ok</string>
   <string name="label_password">Password</string>
-  <string name="label_recoveryphrase">Recovery phrase</string>
+  <string name="label_recoveryphrase">recovery phrase</string>
   <string name="label_send">Send</string>
   <string name="label_settings">settings</string>
   <string name="label_show">Show</string>
@@ -198,7 +204,7 @@
   <string name="label_intro_complete_text"></string>
 
   <!-- Settings !-->
-  <string name="label_confirm_showpassphrase">Show the Recovery phrase?\n\nPlease do not show it to anybody. Also, screenshots may be seen by others by unexpected synchronization.\n\nPlease note on paper and keep it in a safe place.</string>
+  <string name="label_confirm_showpassphrase">Show the Recovery phrase?\n\nPlease do not show it to anybody. Also, screenshots are not secure as they may be seen by other apps.\n\nPlease note on paper and keep it in a safe place.</string>
   <string name="label_settings_important">Important</string>
   <string name="label_settings_recoveryphrase">Recovery Phrase</string>
   <string name="label_settings_recoveryphrase_description">Check your Recovery phrase</string>
@@ -218,13 +224,13 @@
   <string name="label_word_incorrect">Word incorrect, please input again.</string>
   <string name="label_receive_copy">tap to copy</string>
   <string name="label_copied">Copied to clipboard</string>
-  <string name="label_newwallet">Create a New Wallet</string>
+  <string name="label_newwallet">create a new wallet (testnet)</string>
   <string name="label_signin">Sign In</string>
 
   <string name="label_connectnode">click below to connect to your\nLND or BTCPay node</string>
-  <string name="label_loginasuser">Recover Wallet or Link Node</string>
-  <string name="label_privecypolicy">Privacy Policy &amp; Terms of Service</string>
-  <string name="label_privecypolicy_description">By using this app I agree to the above.</string>
+  <string name="label_loginasuser">recover wallet or link node</string>
+  <string name="label_privecypolicy">privacy policy &amp; terms of service</string>
+  <string name="label_privecypolicy_description">by using this app I agree to the above.</string>
   <string name="label_createaccount_message">Are you sure you would like to create new account?</string>
   <string name="label_inputverify_number">Input {name} with numbers</string>
   <string name="label_inputverify_equal">{name} doesn't match</string>

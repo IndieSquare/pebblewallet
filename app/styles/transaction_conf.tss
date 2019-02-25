@@ -15,6 +15,9 @@
 	indicatorColor: Alloy.Globals.mainColor,
 	style: Ti.UI.ActivityIndicatorStyle.BIG_DARK
 }
+"#loadingSpinner[platform=ios]" : {
+	style: Ti.UI.ActivityIndicatorStyle.BIG
+}
 ".loadingFont" : {
 	textAlign: "center"
 }

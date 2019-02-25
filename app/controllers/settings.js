@@ -45,24 +45,6 @@ if (OS_IOS) {
   });
 }
 
-function signin() {
-  if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
-    globals.lnGRPC.stopLND(function(error, response) {
-      Alloy.createController("signin")
-        .getView()
-        .open();
-      $.win.close();
-    });
-  } else {
-    Alloy.createController("signin")
-      .getView()
-      .open();
-    $.win.close();
-
-  }
-
-}
-
 if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
   globals.console.log("is lndmobile ") + Ti.App.Properties.getInt("autoPilot", 1);
   if (Ti.App.Properties.getInt("autoPilot", 0) == 1) {
@@ -129,42 +111,7 @@ function showPassPhrase() {
   dialog.show();
 }
 
-function goToSignOut() {
 
-  var passphrase = Ti.App.Properties.getString("passphrase", undefined);
-  if (passphrase) {
-    var signoutText = L("label_settings_signout_message_local")
-  } else {
-    var signoutText = L("label_settings_signout_message")
-  }
-  var dialog = globals.util.createDialog({
-    title: L("label_settings_signout"),
-    message: signoutText,
-    buttonNames: [L("label_cancel"), L("label_settings_signout")]
-  });
-  dialog.addEventListener("click", function(e) {
-    if (e.index != e.source.cancel) {
-
-      globals.removeEverything(function(success) {
-        if (success) {
-
-          var loading = globals.util.showLoading($.mainView, {
-            "width": Ti.UI.FILL,
-            "height": Ti.UI.FILL,
-            "style": "dark",
-            "message": L("label_loading")
-          });
-          signin();
-
-        } else {
-          globals.console.error("error removing from keychain");
-        }
-      });
-    }
-
-  });
-  dialog.show();
-};
 var version = 'ver ' + Ti.App.version + ((Alloy.CFG.isDevelopment) ? ' dev' : '') + '\n\n' + '(c) 2019 IndieSquare Inc';
 
 $.version.text = version;

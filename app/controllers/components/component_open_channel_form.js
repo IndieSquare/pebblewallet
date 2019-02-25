@@ -165,6 +165,7 @@ function startOpenChannel() {
 
         globals.console.log(pubKey);
         var amount = $.amountField.value;
+        globals.console.log("trying to open channel");
         globals.lnGRPC.openChannel(pubKey, amount,
           function(error, res) {
             globals.console.log("error", error);

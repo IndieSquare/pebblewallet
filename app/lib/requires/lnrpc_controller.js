@@ -73,8 +73,8 @@ module.exports = (function() {
   self.deleteData = function(callback) {
     if (OS_IOS) {
       lndMobileObj.deleteData(function(error, response) {
-        console.log("deleteData ", error);
-        console.log("deleteData", response);
+        globals.console.log("deleteData ", error);
+        globals.console.log("deleteData", response);
 
         var _res = formatResponse(error, response)
         error = _res[0];
@@ -88,13 +88,15 @@ module.exports = (function() {
   self.stopLND = function(callback) {
     if (OS_IOS) {
       lndMobileObj.stopLND(function(error, response) {
-        console.log("stopLND err ", error);
-        console.log("stopLND", response);
+        globals.console.log("stopLND err ", error);
+        globals.console.log("stopLND", response);
 
         var _res = formatResponse(error, response)
         error = _res[0];
         response = _res[1];
-        callback(error, response);
+        setTimeout(function() { //not perfect but give it time to shut down
+          callback(error, response);
+        }, 1000);
       });
     } else {
       callback(null, null);
@@ -105,8 +107,8 @@ module.exports = (function() {
   self.createWallet = function(password, seed, callback) {
     if (OS_IOS) {
       lndMobileObj.createWalletAndSeedAndCompletion(password, seed, function(error, response) {
-        console.log("create wallet ", error);
-        console.log("create wallet", response);
+        globals.console.log("create wallet ", error);
+        globals.console.log("create wallet", response);
 
         var _res = formatResponse(error, response)
         error = _res[0];
@@ -118,10 +120,14 @@ module.exports = (function() {
   }
 
   self.unlockWallet = function(password, callback) {
+    if (globals.lndMobileStarted) {
+      callback(false, "already started");
+      return;
+    }
     if (OS_IOS) {
       lndMobileObj.unlockWalletAndCompletion(password, function(error, response) {
-        console.log("unlock wallet ", error);
-        console.log("unlock walle", response);
+        globals.console.log("unlock wallet ", error);
+        globals.console.log("unlock walle", response);
         var _res = formatResponse(error, response)
         error = _res[0];
         response = _res[1];
@@ -153,6 +159,11 @@ module.exports = (function() {
   }
 
   self.startLNDMobile = function(callback) {
+
+    if (globals.lndMobileStarted) {
+      callback(false, "already started");
+      return;
+    }
     if (OS_IOS) {
 
       lndMobileObj.setUpEnvironment(function(error, response) {
@@ -167,8 +178,8 @@ module.exports = (function() {
         globals.util.saveLNDConf();
 
         lndMobileObj.startLND(function(error, response) {
-          console.log("start lnd error", error);
-          console.log("start lnd", response);
+          globals.console.log("start lnd error", error);
+          globals.console.log("start lnd", response);
           var _res = formatResponse(error, response)
           error = _res[0];
           response = _res[1];
@@ -183,12 +194,12 @@ module.exports = (function() {
   self.generateSeed = function(callback) {
     if (OS_IOS) {
 
-      console.log("generating seed");
+      globals.console.log("generating seed");
       lndMobileObj.generateSeed(function(error, response) {
-        console.log("seed error ", error);
-        console.log("seed ", response);
+        globals.console.log("seed error ", error);
+        globals.console.log("seed ", response);
         var _res = formatResponse(error, response)
-        console.log("res is", _res);
+        globals.console.log("res is", _res);
         error = _res[0];
         response = _res[1];
         callback(error, response);
@@ -533,7 +544,7 @@ module.exports = (function() {
       }));
     } else if (OS_IOS) {
       lndController.newAddressAndCompletion(type, function(error, response) {
-        console.log("get address", error, response, type);
+        globals.console.log("get address", error, response, type);
         var _res = formatResponse(error, response)
         error = _res[0];
         response = _res[1];
@@ -862,9 +873,9 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
       globals.console.log("closing channel", txid + " " + output + " " + force);
-      console.log("output is", output)
+      globals.console.log("output is", output)
       output = parseInt(output);
-      console.log("output is", output)
+      globals.console.log("output is", output)
       lndController.closeChannelAndOutputAndForceAndCompletion(txid, output, force, function(error, response) {
 
         globals.console.log("close channel", "error:" + error + " res:" + response);

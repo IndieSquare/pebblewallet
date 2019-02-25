@@ -6,10 +6,10 @@
 				<ActivityIndicator id="loadingSpinner"></ActivityIndicator>
 				<View id="buttons" visible="false">
 					<View class="button newwallet" id="newwalletButton" onClick="createNewAccount">
-						<Label class="size25 white">L("label_newwallet")</Label>
+						<Label class="size20 white">L("label_newwallet")</Label>
 					</View>
 					<View class="button-thin hasuser" id="hasuserButton" onClick="hasPassphrase">
-						<Label class="size15 white">L("label_loginasuser")</Label>
+						<Label class="size18 white">L("label_loginasuser")</Label>
 					</View>
 
 					<View class="tisize inputs" id="inputs" visible="false">

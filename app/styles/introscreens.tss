@@ -62,6 +62,14 @@
 	top: 10,
 	width: "95%"
 }
+"#passphraseLabel":{
+	color: 'white',
+	font: {
+		fontFamily: "Helvetica Neue",
+		fontSize: 20,
+		fontWeight: "normal"
+	}
+}
 ".passphraseBack" : {
 	width: Ti.UI.FILL,
 	height: 200,

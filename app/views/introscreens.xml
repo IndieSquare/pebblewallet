@@ -4,13 +4,13 @@
 			<View class="tifill passphrase" id="passphrase">
 				<View class="groupings">
 					<ImageView class="icon" id="passphraseIcon" image="/images/icon_intro_passphrase.png"/>
-					<Label class="size18 white bold title" id="passphraseLabel">L("label_intro_passphrase_title")</Label>
+					<Label class="size18 white bold title">L("label_intro_passphrase_title")</Label>
 				</View>
 				<View class="tisize" layout="vertical">
 					<Label class="size15 white">L("label_intro_passphrase_text1")</Label>
 					<View class="passphraseBack">
 						<View class="passphraseBackIn">
-							<Label class="size25 bold white" id="passphraseLabel"></Label>
+							<Label id="passphraseLabel"></Label>
 						</View>
 					</View>
 					<Label class="size10 white textMargin">L("label_intro_passphrase_text2")</Label>

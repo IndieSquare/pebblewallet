@@ -12,12 +12,12 @@
 	top: 0
 }
 "#recoverView":{
-		width: Ti.UI.SIZE,
-		height: Ti.UI.SIZE,
+	width: Ti.UI.FILL,
+	height: Ti.UI.SIZE,
 }
 "#linkView":{
-		width: Ti.UI.SIZE,
-		height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
 }
 ".button" : {
 	width: "90%",
@@ -130,7 +130,7 @@
 }
 "#connectView" : {
 	top: 20,
-	width: Ti.UI.SIZE,
+	width: Ti.UI.FILL,
 	height: Ti.UI.SIZE
 }
 "#loadingSpinnerConnect" : {

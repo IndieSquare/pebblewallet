@@ -189,7 +189,7 @@ function selectChannels() {
   $.funds.hide();
 
   if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
-    if (Ti.App.Properties.getBool("didShowGuideScreenChannels", false) == false) {
+    if (Ti.App.Properties.getBool("didShowGuideScreenChannels", false) == false || globals.allwaysShowGuides) {
       Ti.App.Properties.setBool("didShowGuideScreenChannels", true)
       setTimeout(function() {
         Alloy.createController("/components/guide_screen", {
@@ -216,7 +216,7 @@ selectFunds();
 
 if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
 
-  if (Ti.App.Properties.getBool("didShowGuideScreenDeposit", false) == false) {
+  if (Ti.App.Properties.getBool("didShowGuideScreenDeposit", false) == false || globals.allwaysShowGuides) {
     setTimeout(function() {
       Ti.App.Properties.setBool("didShowGuideScreenDeposit", true)
       Alloy.createController("/components/guide_screen", {

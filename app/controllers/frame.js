@@ -5,8 +5,9 @@ $.nodeInfo.width = globals.util.getDisplayWidth();
 var didGetArguments = false;
 var walletConfirmedBalance = 0;
 var channelConfirmedBalance = 0;
-
+var andTimeSince100 = 0;
 var totalConfirmedBalance = 0;
+var continueSyncTimeout = null;
 globals.nodeInfo = null;
 globals.lnConnected = false;
 
@@ -37,6 +38,10 @@ function setMainnet() {
 }
 
 globals.connectLNDGRPC = function(config) {
+  globals.didGetTransactionsOnce = false;
+  globals.hideNoTransactions();
+  stopSyncUI();
+  clearTimeout(continueSyncTimeout);
   if (OS_IOS) {
     Ti.App.iOS.cancelLocalNotification("check");
   }
@@ -464,6 +469,8 @@ if (globals.tikerLoaded == false) {
 }
 
 globals.startLNDMobile = function() {
+  globals.didGetTransactionsOnce = false;
+  globals.console.log("starting lnd");
   globals.nodeInfo = null;
   $.walletName.text = "";
   $.statusText.text = "";
@@ -491,6 +498,8 @@ function startLoadFromCache() {
     $.syncStatus.visible = false;
     $.statusText.text = L("initializing_wallet");
 
+    globals.getBlockchainHeight();
+
     if (globals.alreadyUnlocked == false) {
       globals.console.log("starting lnd mobile");
       globals.lnGRPC.startLNDMobile(function(error, response) {
@@ -514,13 +523,16 @@ function startLoadFromCache() {
 
           globals.alreadyUnlocked = true;
 
+
           setTimeout(function() {
-
-            Alloy.createController("/components/guide_screen", {
-              title: L("intro_sync_title"),
-              text: L("intro_sync_description")
-            }).getView().open();
-
+            if (Ti.App.Properties.getBool("didShowGuideScreenSync", false) == false || globals.allwaysShowGuides) {
+              Ti.App.Properties.setBool("didShowGuideScreenSync", true)
+              Alloy.createController("/components/guide_screen", {
+                title: L("intro_sync_title"),
+                text: L("intro_sync_description")
+              }).getView().open();
+            }
+            andTimeSince100 = 0;
             checkSyncStatus()
 
           }, 1000);
@@ -531,7 +543,7 @@ function startLoadFromCache() {
 
     } else {
       setTimeout(function() {
-
+        andTimeSince100 = 0;
         checkSyncStatus()
 
       }, 1000);
@@ -571,6 +583,10 @@ function startLoadFromCache() {
   }
 }
 
+function stopSyncUI() {
+  $.syncStatus.visible = false;
+}
+
 function setSyncingUI() {
 
   $.syncStatus.visible = true;
@@ -595,8 +611,8 @@ function setSyncingUI() {
 function checkSyncStatus() {
 
   globals.lnGRPC.getInfo("", function(error, response) {
-    console.log("getInfo1", error);
-    console.log("getInfo1", response);
+    globals.console.log("getInfo1", error);
+    globals.console.log("getInfo1", response);
 
     if (error == true) {
       alert(response);
@@ -615,16 +631,27 @@ function checkSyncStatus() {
       if (percentage > 100) {
         percentage = 100;
       }
-      if (percentage < 100) {
-        $.syncText.text = percentage + "% " + L("synchronizing");
+      if (percentage == 100) {
+        andTimeSince100++;
+      }
+
+      if (percentage < 100 && andTimeSince100 < 20) {
+        $.syncText.text = percentage + "% " + L("synchronizing") + " " + L("block_height_sync").format({
+          height: response.block_height
+        });
       } else {
         $.syncText.text = L("still_synchronizing");
       }
 
-      setTimeout(function() {
+      continueSyncTimeout = setTimeout(function() {
         globals.console.log("continue check sync")
         checkSyncStatus()
       }, 6000);
+
+      if (globals.didGetTransactionsOnce == false) { //kind of heavy so only grab once whilst syncing
+        setBalances();
+        globals.listPayments();
+      }
 
     } else {
       if (response.synced_to_chain == 1) {

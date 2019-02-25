@@ -911,8 +911,10 @@ module.exports = (function() {
     var confString = "[Application Options]\n\n";
     confString += "debuglevel=info\n"
     confString += "nolisten=1\n"
-    confString += "alias=pebble2\n"
 
+    confString += "maxlogfiles=3\n"
+    confString += "maxlogfilesize=10\n"
+    confString += "debuglevel=trace\n"
 
     confString += "\n[Bitcoin]\n"
     confString += "bitcoin.active=1\n"
@@ -940,7 +942,6 @@ module.exports = (function() {
     var filePath = Ti.Filesystem.applicationSupportDirectory + "lnd/lnd.conf";
     var file = Ti.Filesystem.getFile(filePath);
     file.write(confString);
-    globals.console.log(file.read().text);
 
   }
 
@@ -983,15 +984,8 @@ module.exports = (function() {
 
   self.getCurrentNetworkBlockHeight = function(network) {
 
-    var lastHeight = Ti.App.Properties.getInt("latest_block_height_" + network, 0);
-
-    if (lastHeight == 0) {
-      if (network == "testnet") {
-        lastHeight = 1454877;
-      } else {
-        lastHeight = 561040;
-      }
-    }
+    var lastHeight = globals.blockHeight[network];
+    globals.console.log("lastheight", lastHeight);
 
     var lastTimeStamp = Ti.App.Properties.getInt("latest_time_stamp_" + network, 1548240202);
 

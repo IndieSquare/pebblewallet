@@ -13,6 +13,7 @@
 				</View>
 			</FooterView>
 		</TableView>
+		<Label id="noTransactions">L("no_transactions")</Label>
 		<ActivityIndicator id="initialLoading"/>
 	</View>
 </Alloy>

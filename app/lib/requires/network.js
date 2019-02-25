@@ -68,6 +68,34 @@ module.exports = (function() {
     return xhr;
   };
 
+  self.connectBlockchainInfo = function(callback) {
+
+    var xhr = Ti.Network.createHTTPClient();
+
+    var url = "https://api.blockcypher.com/v1/btc/test3";
+
+    xhr.open("GET", url);
+
+    xhr.onload = function() {
+        var results = "";
+        try {
+          results = JSON.parse(this.responseText);
+          callback(null, results);
+        } catch (e) {
+          callback(e, null);
+        }
+
+      },
+      xhr.onerror = function(e) {
+
+        globals.console.error("GET Method: " + params.method);
+        callback(e, null);
+      };
+    xhr.send();
+
+    return xhr;
+  };
+
   self.connectGET = function(params) {
 
     var xhr = Ti.Network.createHTTPClient({

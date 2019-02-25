@@ -85,6 +85,8 @@ Alloy.Globals.btclnTopBarHeight = 200;
 Alloy.Globals.btclnTopHeight = Alloy.Globals.btclnTopBarHeight;
 Alloy.Globals.btclnAddressBarTop = 30;
 Alloy.Globals.lightFont = 'GillSans-light';
+Alloy.Globals.boldFont = 'GillSans-bold';
+Alloy.Globals.normalFont = 'GillSans';
 
 Alloy.Globals.lightFontItalic = 'GillSans-Light Italic';
 

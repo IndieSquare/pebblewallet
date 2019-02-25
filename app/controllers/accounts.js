@@ -110,14 +110,14 @@ function addNewAccount() {
 
             if (success) {
 
-              //		globals.lnGRPC.stopLND(function(error, response) {
+              globals.tryStopLND(function() {
 
-              globals.closeSettings();
-              globals.connectLNDGRPC(config);
+                globals.closeSettings();
+                globals.connectLNDGRPC(config);
 
-              close();
+                close();
 
-              //	});
+              });
             } else {
               $.connectSpinner.hide();
               $.addAccount.show();
