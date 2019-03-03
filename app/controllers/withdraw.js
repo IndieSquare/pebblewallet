@@ -80,7 +80,6 @@ $.amountToken.text = globals.LNCurrency;
 
 $.keypad.height = globals.display.height - 225;
 
-$.balance.text = args.balance + " " + globals.LNCurrency;
 
 function setFeeLabel(fee) {
   currentFee = fee;
@@ -89,18 +88,11 @@ function setFeeLabel(fee) {
 
 }
 
-function set(fiatBalance) {
-
-  $.balance.text = args.balance + " " + globals.LNCurrency;
-
-}
 
 function checkAndSetValue() {
   globals.console.log("checkAndSetValue");
   if (globals.tiker) {
     clearInterval(timer);
-
-    set(globals.tiker.to("BTC", args.balance, currencyFiat));
 
     updateFields({
       source: {
@@ -263,3 +255,29 @@ function continueSend(quantity, fee) {
 
 var currentFee = Ti.App.Properties.getString("currentFee", "half_hour_fee");
 setFeeLabel(currentFee);
+
+if (args.destination != undefined) {
+  $.inputDestination.value = args.destination;
+}
+
+if (args.amount != undefined) {
+  updateFields(null, args.amount);
+}
+
+
+$.balance.text = L("loading");
+
+setTimeout(function() {
+  globals.lnGRPC.getWalletBalance(function(error, response) {
+
+    if (response.confirmed_balance != undefined) {
+      globals.console.log("blance ", response.confirmed_balance)
+
+      globals.console.log("blance ", parseInt(response.confirmed_balance))
+      globals.currentOnchainBalance = parseInt(response.confirmed_balance);
+      $.balance.text = globals.util.satToBtc(globals.currentOnchainBalance) + " " + globals.LNCurrency;
+    }
+
+  });
+
+}, 1000);

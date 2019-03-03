@@ -659,28 +659,20 @@ module.exports = (function() {
   };
 
   self.qrcodeCallback = function(e, params) {
-    var uri = bitcoin.URI((e.barcode.indexOf("bitcoin:") >= 0) ? e.barcode : "bitcoin:" + e.barcode);
-    if (uri == null) uri = globals._parseCip2(e.barcode);
+    var uri = bitcoin.decodeBip21((e.barcode.indexOf("bitcoin:") >= 0) ? e.barcode : "bitcoin:" + e.barcode);
     if (uri == null) {
-      if (e.barcode.match(/^indiewallet:\/\//)) {
-        globals.console.log("parsing arguments", e.barcode);
-        globals._parseArguments(e.barcode, {
-          qrcode: true,
-          completemessage: true
-        });
-      } else {
-        var matches = e.barcode.match(/[a-zA-Z0-9]{27,34}/);
-        var vals = {};
-        vals.address = (matches != null) ? matches[0] : null;
-        if (e.barcode.indexOf("&") >= 0) {
-          var args = e.barcode.split("&");
-          for (var i = 1; i < args.length; i++) {
-            var a = args[i].split("=");
-            vals[a[0]] = a[1];
-          }
+      var matches = e.barcode.match(/[a-zA-Z0-9]{27,34}/);
+      var vals = {};
+      vals.address = (matches != null) ? matches[0] : null;
+      if (e.barcode.indexOf("&") >= 0) {
+        var args = e.barcode.split("&");
+        for (var i = 1; i < args.length; i++) {
+          var a = args[i].split("=");
+          vals[a[0]] = a[1];
         }
-        uri = vals;
       }
+      uri = vals;
+
     }
     if (uri != null) params.callback(uri);
   };

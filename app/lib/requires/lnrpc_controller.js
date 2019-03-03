@@ -106,7 +106,8 @@ module.exports = (function() {
 
   self.createWallet = function(password, seed, callback) {
     if (OS_IOS) {
-      lndMobileObj.createWalletAndSeedAndCompletion(password, seed, function(error, response) {
+
+      lndMobileObj.createWalletAndRecoveryWindowAndSeedAndCompletion(password, 1000, seed, function(error, response) {
         globals.console.log("create wallet ", error);
         globals.console.log("create wallet", response);
 

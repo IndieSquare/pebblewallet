@@ -31,7 +31,7 @@
 	top: 40,
 	width: 270,
 	height: 40,
-	borderRadius: 25,
+	borderRadius: 20,
 	borderWidth: 1,
 	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
 	color: Alloy.Globals.mainColorDarker,

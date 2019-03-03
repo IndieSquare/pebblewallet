@@ -126,6 +126,10 @@ function updateChannelsList() {
       height: 90
     });
 
+    if (OS_IOS) {
+      row.selectionStyle = Ti.UI.iOS.TableViewCellSelectionStyle.NONE;
+    }
+
     var aChannel = openChannels[i];
     var openChannel = Alloy.createController('components/component_open_channel', aChannel);
     row.add(openChannel.getView());
@@ -166,6 +170,9 @@ function updateChannelsList() {
       rowIndex: i,
       height: 120
     });
+    if (OS_IOS) {
+      row.selectionStyle = Ti.UI.iOS.TableViewCellSelectionStyle.NONE;
+    }
 
     var aChannel = pendingChannels[i];
     var pendingChannel = Alloy.createController('components/component_pending_channel', aChannel);
@@ -208,6 +215,9 @@ function updateChannelsList() {
       rowIndex: i,
       height: 120
     });
+    if (OS_IOS) {
+      row.selectionStyle = Ti.UI.iOS.TableViewCellSelectionStyle.NONE;
+    }
 
     var aChannel = closingChannels[i];
     var closingChannel = Alloy.createController('components/component_closing_channel', aChannel);
@@ -250,6 +260,9 @@ function updateChannelsList() {
       rowIndex: i,
       height: 90
     });
+    if (OS_IOS) {
+      row.selectionStyle = Ti.UI.iOS.TableViewCellSelectionStyle.NONE;
+    }
 
     var aChannel = forceClosingChannels[i];
     var forceClosingChannel = Alloy.createController('components/component_force_closing_channel', aChannel);

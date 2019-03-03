@@ -178,7 +178,9 @@ globals.loadMainScreen = function(dontShowSpinner) {
       globals.processArgs();
     }
 
+
   });
+
 }
 
 function startSubscribeInvoices() {
@@ -344,13 +346,33 @@ globals.launchPayScan = function() {
 };
 
 globals.continuePay = function(req) {
-  globals.continuePay(req);
-}
-
-globals.continuePay = function(req) {
 
   var bitcoin = require("requires/bitcoin");
   globals.console.log(req);
+
+  if (req.indexOf("bitcoin:") != -1) {
+    var decodedURI = bitcoin.decodeBip21(req);
+
+    if (decodedURI.address != undefined) {
+      try {
+        Alloy.createController("withdraw", {
+          destination: decodedURI.address,
+          amount: decodedURI.amount
+        }).getView().open();
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    return;
+  }
+
+  if (bitcoin.validateAddress(req, Alloy.Globals.network) == true) {
+
+    Alloy.createController("withdraw", {
+      destination: req,
+    }).getView().open();
+    return;
+  }
 
   if (req.indexOf("lightning:") != -1) {
     req = req.replace("lightning:", '');

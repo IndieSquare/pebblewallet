@@ -20,7 +20,7 @@
   <string name="closed">closed</string>
   <string name="blocks_can_claim">blocks until can claim</string>
   <string name="link_info">not sure how to link your node?\nclick here to find out how</string>
-  <string name="still_synchronizing">still syncing (make take some time)</string>
+  <string name="still_synchronizing">still syncing...</string>
   <string name="label_settings_logs">view logs</string>
 
   <string name="label_settings_logs_description">view the internal LNDs logs for errors</string>
@@ -153,6 +153,7 @@
   <string name="label_fee_priority">Fee Priority</string>
   <string name="label_goback">back</string>
   <string name="label_loading">please wait...</string>
+  <string name="loading">loading...</string>
   <string name="label_ok">ok</string>
   <string name="label_password">Password</string>
   <string name="label_recoveryphrase">recovery phrase</string>
@@ -243,7 +244,7 @@
   <string name="label_inputbyeach_prev">PREV</string>
   <string name="label_signin_cancel">CANCEL</string>
   <string name="label_enter_destination">Please enter a destination address</string>
-  <string name="label_send_destination">Destination</string>
+  <string name="label_send_destination">destination</string>
   <string name="label_send_confirmation">Send\n{amount} {token}\n{amount2} to {address}</string>
 
 </resources>

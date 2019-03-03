@@ -98,7 +98,7 @@ function complete() {
 
     var seedArray = globals.decryptedPassphrase.split(","); //convert to string array
 
-    globals.lnGRPC.createWallet("password", seedArray, function(error, response) {
+    globals.lnGRPC.createWallet(globals.userKey, seedArray, function(error, response) {
       console.log("create wallet", error);
       console.log("create wallet", response);
       if (error == true) {

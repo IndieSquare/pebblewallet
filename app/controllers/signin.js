@@ -9,7 +9,24 @@ $.inputEachphrase2.id = 2;
 
 $.signinPrev.opacity = 0.5;
 
-var demoPhrase = "above insect rigid doctor rhythm oyster foot park oblige anchor insect cousin clean drink action lemon pulse lunar wolf choice palm horse vital latin";
+var demoPhrase = "about foam jump fitness convince section salad defy dress theory office swim enable clay duty orchard fruit assault inch wisdom patient vibrant day promote";
+/*
+setTimeout(function() {
+
+  globals.lnGRPC.startLNDMobile(function(error, response) {
+
+    globals.console.log("lndMobile1", error);
+    globals.console.log("lndMobile1", response);
+
+    if (error == true) {
+      alert(response);
+      return;
+    }
+
+    createAccount(demoPhrase.split(" ").join(), true);
+
+  });
+}, 10000);*/
 
 var nextField = $.inputEachphrase;
 var prevField = null;
@@ -39,7 +56,7 @@ function blurTextFields() {
 }
 
 function createAccount(passphrase, fromPrevious) {
-
+  globals.console.log("creating account");
   try {
 
     globals.decryptedPassphrase = passphrase;
@@ -63,7 +80,7 @@ function createAccount(passphrase, fromPrevious) {
 
           var seedArray = globals.decryptedPassphrase.split(","); //convert to string array
 
-          globals.lnGRPC.createWallet("password", seedArray, function(error, response) {
+          globals.lnGRPC.createWallet(globals.userKey, seedArray, function(error, response) {
             console.log("create wallet", error);
             console.log("create wallet", response);
             if (error == true) {
@@ -79,7 +96,6 @@ function createAccount(passphrase, fromPrevious) {
                 .getView()
                 .open();
 
-              close();
             }
 
           });
@@ -91,8 +107,9 @@ function createAccount(passphrase, fromPrevious) {
         }
       });
     }
-
-    $.signin.close();
+    setTimeout(function() {
+      $.signin.close();
+    }, 1000);
 
   } catch (e) {
     showLoading(false);
@@ -231,7 +248,7 @@ $.privacypolicy.show();
 
 function createNewAccount() {
 
-  if (OS_ANDROID && !Alloy.CFG.isDevelopment) {
+  if (OS_ANDROID) {
     alert("Not yet implemented but comming soon!, on the mean time please connect to your existing node");
     return;
   }
@@ -551,6 +568,6 @@ function goToLinkInfo() {
   Ti.Platform.openURL("https://pebble.indiesquare.me/remotenode");
 }
 
-if (OS_ANDROID && !Alloy.CFG.isDevelopment) {
+if (OS_ANDROID) {
   $.inputs.remove($.recoverView);
 }

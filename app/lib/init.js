@@ -1,6 +1,4 @@
-// Initiallize
 globals = Alloy.Globals;
-
 globals.networkType = Alloy.CFG.network
 globals.androidLaunchData = undefined;
 globals.allwaysShowGuides = false;
@@ -11,19 +9,19 @@ globals.console = {
     if (data == null) {
       data = "";
     }
-    if (Alloy.CFG.isDevelopment && logOff == false && Alloy.CFG.isDevelopment) console.log(str, data);
+    if (Alloy.CFG.isDevelopment && logOff == false) console.log(str, data);
   },
   "error": function(str, data) {
     if (data == null) {
       data = "";
     }
-    if (Alloy.CFG.isDevelopment && logOff == false && Alloy.CFG.isDevelopment) console.error(str, data);
+    if (Alloy.CFG.isDevelopment && logOff == false) console.error(str, data);
   },
   "warn": function(str, data) {
     if (data == null) {
       data = "";
     }
-    if (Alloy.CFG.isDevelopment && logOff == false && Alloy.CFG.isDevelopment) console.warn(str, data);
+    if (Alloy.CFG.isDevelopment && logOff == false) console.warn(str, data);
   }
 };
 

@@ -1,7 +1,5 @@
 function goToWithdraw() {
-  Alloy.createController("withdraw", {
-    balance: globals.util.satToBtc(globals.currentOnchainBalance)
-  }).getView().open();
+  Alloy.createController("withdraw", {}).getView().open();
 }
 
 function generateDepositAddress() {
