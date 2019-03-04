@@ -534,7 +534,7 @@ function startLoadFromCache() {
           return;
         }
 
-        globals.lnGRPC.unlockWallet("password", function(error, response) {
+        globals.lnGRPC.unlockWallet(globals.userKey, function(error, response) {
           console.log("unlock wallet err ", error);
           console.log("unlock wallet", response);
 
