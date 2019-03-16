@@ -21,3 +21,4 @@ google-services.json
 modules/
 rpcFiles/
 dist/
+passwordStatic.js

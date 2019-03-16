@@ -9,6 +9,10 @@ $.paymentAmountFiat.hintText = L('enter_payment_amount_fiat').format({
   "currency": Ti.App.Properties.getString("currency", "USD")
 });
 
+if (Alloy.Globals.isiPhoneX) {
+  $.buttonsView.top = 0;
+}
+
 var didChangeGasLimit = false;
 var win = Ti.UI.createWindow({
   "orientationModes": [Ti.UI.PORTRAIT],

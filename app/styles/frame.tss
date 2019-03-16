@@ -4,7 +4,7 @@
 "#walletName" : {
 	width: Ti.UI.SIZE,
 	left: 10,
-	top: Alloy.Globals.dappBarTop,
+	top: Alloy.Globals.infoTop,
 	color: "white",
 	font: {
 		fontFamily: "Gil sans",
@@ -12,12 +12,12 @@
 	},
 	textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT
 }
- 
+
 "#syncStatus" : {
 	height: 50,
 	width: Ti.UI.SIZE,
 	left: 10,
-	top: Alloy.Globals.dappBarTop,
+	top: Alloy.Globals.infoTop,
 	layout: 'horizontal',
 	visible: false
 }

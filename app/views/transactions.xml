@@ -1,5 +1,6 @@
 <Alloy>
 	<View class="mainView">
+		<Label id="noTransactions">L("no_transactions")</Label>
 		<TableView class="paymentList" id="paymentList">
 			<FooterView>
 
@@ -13,7 +14,7 @@
 				</View>
 			</FooterView>
 		</TableView>
-		<Label id="noTransactions">L("no_transactions")</Label>
+
 		<ActivityIndicator id="initialLoading"/>
 	</View>
 </Alloy>

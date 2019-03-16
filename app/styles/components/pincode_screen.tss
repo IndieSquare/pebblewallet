@@ -43,6 +43,13 @@
 "#m4" : {
   left: 60
 }
+"#m5" : {
+  left: 80
+}
+"#m6" : {
+  left: 100
+}
+
 ".logo" : {
   image: "/images/icon_logo.png",
   width: 70,
@@ -61,7 +68,7 @@
 "#instructionLabel" : {
   color: Alloy.Globals.mainColor,
   font: {
-    fontSize: 12
+    fontSize: 15
   },
   top: 10,
   color: Alloy.Globals.mainColor,

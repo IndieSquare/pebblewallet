@@ -10,27 +10,29 @@
             <ImageView class="comp_marks" id="m2"/>
             <ImageView class="comp_marks" id="m3"/>
             <ImageView class="comp_marks" id="m4"/>
+            <ImageView class="comp_marks" id="m5"/>
+            <ImageView class="comp_marks" id="m6"/>
           </View>
           <View class="buttons">
             <View class="buttonRow">
-              <Button class="aButton" id="n1" onClick="pressedButton"/>
-              <Button class="aButton" id="n2" onClick="pressedButton"/>
-              <Button class="aButton" id="n3" onClick="pressedButton"/>
+              <Button class="aButton" id="n1" onTouchstart="pressedButton"/>
+              <Button class="aButton" id="n2" onTouchstart="pressedButton"/>
+              <Button class="aButton" id="n3" onTouchstart="pressedButton"/>
             </View>
             <View class="buttonRow">
-              <Button class="aButton" id="n4" onClick="pressedButton"/>
-              <Button class="aButton" id="n5" onClick="pressedButton"/>
-              <Button class="aButton" id="n6" onClick="pressedButton"/>
+              <Button class="aButton" id="n4" onTouchstart="pressedButton"/>
+              <Button class="aButton" id="n5" onTouchstart="pressedButton"/>
+              <Button class="aButton" id="n6" onTouchstart="pressedButton"/>
             </View>
             <View class="buttonRow">
-              <Button class="aButton" id="n7" onClick="pressedButton"/>
-              <Button class="aButton" id="n8" onClick="pressedButton"/>
-              <Button class="aButton" id="n9" onClick="pressedButton"/>
+              <Button class="aButton" id="n7" onTouchstart="pressedButton"/>
+              <Button class="aButton" id="n8" onTouchstart="pressedButton"/>
+              <Button class="aButton" id="n9" onTouchstart="pressedButton"/>
             </View>
             <View class="buttonRow">
-              <Button class="aButton" id="c" onClick="pressedButton"/>
-              <Button class="aButton" id="n0" onClick="pressedButton"/>
-              <Button class="aButton" id="e" onClick="pressedButton"/>
+              <Button class="aButton" id="c" onTouchstart="pressedButton" visible="false"/>
+              <Button class="aButton" id="n0" onTouchstart="pressedButton"/>
+              <Button class="aButton" id="e" onTouchstart="pressedButton"/>
             </View>
           </View>
         </View>

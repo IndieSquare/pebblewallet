@@ -10,6 +10,8 @@ function clear() {
   $.m2.image = "/images/image_easyinput_none.png";
   $.m3.image = "/images/image_easyinput_none.png";
   $.m4.image = "/images/image_easyinput_none.png";
+  $.m5.image = "/images/image_easyinput_none.png";
+  $.m6.image = "/images/image_easyinput_none.png";
 
 }
 
@@ -37,7 +39,7 @@ function updateMarks() {
   if (currentPinCode.length == 0 && confirmPinCode.length == 0) {
     $.e.visible = false;
   }
-  if (currentPinCode.length < 4) {
+  if (currentPinCode.length < 6) {
     if (currentPinCode.length > 0) {
       $.m1.image = "/images/image_easyinput_on.png";
     }
@@ -49,6 +51,12 @@ function updateMarks() {
     }
     if (currentPinCode.length > 3) {
       $.m4.image = "/images/image_easyinput_on.png";
+    }
+    if (currentPinCode.length > 4) {
+      $.m5.image = "/images/image_easyinput_on.png";
+    }
+    if (currentPinCode.length > 5) {
+      $.m6.image = "/images/image_easyinput_on.png";
     }
   } else {
 
@@ -63,6 +71,12 @@ function updateMarks() {
     }
     if (confirmPinCode.length > 3) {
       $.m4.image = "/images/image_easyinput_on.png";
+    }
+    if (confirmPinCode.length > 4) {
+      $.m5.image = "/images/image_easyinput_on.png";
+    }
+    if (confirmPinCode.length > 5) {
+      $.m6.image = "/images/image_easyinput_on.png";
     }
   }
 }
@@ -92,16 +106,16 @@ function pressedButton(e) {
   clear();
   var num = e.source.id.replace("n", "");
 
-  if (currentPinCode.length < 4) {
+  if (currentPinCode.length < 6) {
 
     currentPinCode.push(num);
 
     updateMarks()
 
-    if (currentPinCode.length == 4) {
+    if (currentPinCode.length == 6) {
       if (authMode) {
         var pin = currentPinCode.join("");
-        if (Titanium.Utils.md5HexDigest(pin) == args.checkHash) {
+        if (Titanium.Utils.sha256(pin) == args.checkHash) {
           globals.console.log("correct");
           args.callback();
           close();
@@ -116,7 +130,7 @@ function pressedButton(e) {
 
         }
       } else {
-        $.instructionLabel.text = L("label_easypass_reconfirm")
+        $.instructionLabel.text = L("label_easypass_confirm")
         $.c.title = L("label_easypass_redo");
         $.c.visible = true;
         setMode = false;
@@ -128,12 +142,12 @@ function pressedButton(e) {
 
   } else {
 
-    if (confirmPinCode.length < 4) {
+    if (confirmPinCode.length < 6) {
       confirmPinCode.push(num);
 
       updateMarks();
 
-      if (confirmPinCode.length == 4) {
+      if (confirmPinCode.length == 6) {
         var pin1 = currentPinCode.join("");
         var pin2 = confirmPinCode.join("");
         if (pin1 != pin2) {
@@ -143,7 +157,7 @@ function pressedButton(e) {
           globals.console.log("doesn't match");
         } else {
           globals.console.log("matches");
-          args.callback(Titanium.Utils.md5HexDigest(pin2));
+          args.callback(Titanium.Utils.sha256(pin2));
           close();
         }
 

@@ -48,7 +48,7 @@
               </TextField>
             </View>
 
-            <View layout="horizontal" class="buttonsView">
+            <View layout="horizontal" class="buttonsView" id="buttonsView">
 
               <Button id="cancelButton" class="buttons font" onClick="cancel"/>
               <Button id="confirmButton" class="buttons font" onClick="confirm"/>

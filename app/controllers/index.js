@@ -1,10 +1,11 @@
 require("init");
-
+globals.unlocked = false;
 globals.dataDir = "";
 globals.lndMobileStarted = false;
 globals.alreadyUnlocked = false;
 globals.stopHyperloop = false; //needed as live view doesnt work when hyperloop libs are used so slows down dev
 globals.lnGRPC = require("/requires/lnrpc_controller");
+globals.lightning_manager = require("/requires/lightning_manager");
 globals.blockHeight = {
   "mainnet": 564591,
   "testnet": 1454877
@@ -38,6 +39,14 @@ if (OS_IOS) {
     }
 
   });
+}
+globals.getRecommendedChannelAmount = function() {
+  var fiatValue = globals.tiker.getFiatValue("USD");
+
+  var cryptoAmount = 10 / fiatValue;
+  var valueAmt = Math.floor(globals.util.btcToSat(cryptoAmount));
+  return valueAmt;
+
 }
 globals.getIndieSquareHub = function() {
   if (Alloy.Globals.network == "testnet") {
@@ -89,11 +98,16 @@ globals.nativeCrypto.loadItem(function(success, userKey) {
 
       globals.userKey = userKey;
 
+
       if (Ti.App.Properties.getString(globals.accountsKey, undefined) == undefined && Ti.App.Properties.getString("passphrase", undefined) == undefined) {
         //no grpc or passphrase saved
         goToSignIn();
         return;
       }
+
+      var passcodeHashEncrypted = Ti.App.Properties.getString("passcode");
+
+      globals.passCodeHash = globals.cryptoJS.AES.decrypt(passcodeHashEncrypted, globals.userKey).toString(globals.cryptoJS.enc.Utf8);
 
       startFrame();
       return;
@@ -407,4 +421,8 @@ globals.tryStopLND = function(callback) {
 
     callback();
   }
+}
+
+globals.createPassword = function(usersPassCodeHash){
+    return Titanium.Utils.sha256(usersPassCodeHash+Alloy.Globals.getFixedPassword());
 }

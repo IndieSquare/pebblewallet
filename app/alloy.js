@@ -91,11 +91,12 @@ Alloy.Globals.normalFont = 'GillSans';
 Alloy.Globals.lightFontItalic = 'GillSans-Light Italic';
 
 Alloy.Globals.dappBarTop = 0;
-
+Alloy.Globals.infoTop = 0;
 Alloy.Globals.dappBarHeight = 42;
 
 if (OS_IOS) {
   Alloy.Globals.dappBarTop = 20;
+  Alloy.Globals.infoTop = 20;
 
 }
 
@@ -103,4 +104,6 @@ if (Alloy.Globals.isiPhoneX) {
   Alloy.Globals.dappBarTop = 52;
 
   Alloy.Globals.dappBarHeight = 35;
+
+  Alloy.Globals.infoTop = 35;
 }

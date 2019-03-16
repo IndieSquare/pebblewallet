@@ -16,7 +16,8 @@ globals.fiatMode = false;
 globals.updateValuesFuncs = [];
 
 if (OS_ANDROID) {
-  $.walletName.top = Alloy.Globals.dappBarTop + 10;
+  $.walletName.top = Alloy.Globals.infoTop + 10;
+  $.syncStatus.top = Alloy.Globals.infoTop + 10;
 }
 
 function setTestnet() {
@@ -37,7 +38,7 @@ function setMainnet() {
 
 }
 
-globals.connectLNDGRPC = function(config) {
+globals.connectLNDGRPC = function (config) {
   globals.didGetTransactionsOnce = false;
   globals.hideNoTransactions();
   stopSyncUI();
@@ -77,7 +78,7 @@ globals.connectLNDGRPC = function(config) {
 
   globals.console.log("connectLNDGRPC 2")
 
-  globals.lnGRPC.connect(configRes.url, configRes.port, configRes.certificate, configRes.macaroon, function(error, response) {
+  globals.lnGRPC.connect(configRes.url, configRes.port, configRes.certificate, configRes.macaroon, function (error, response) {
     $.walletName.text = "";
     globals.nodeInfo = null;
     globals.console.log("connecting...");
@@ -94,7 +95,7 @@ globals.connectLNDGRPC = function(config) {
 
     globals.console.log("getting info");
 
-    globals.lnGRPC.getInfo("", function(error, response) {
+    globals.lnGRPC.getInfo("", function (error, response) {
       if (error == true) {
         globals.console.error("get info error", error);
         globals.console.error("get info error", response);
@@ -104,7 +105,7 @@ globals.connectLNDGRPC = function(config) {
           message: L('error_connecting'),
           buttonNames: [L("label_tryagain")]
         });
-        dialog.addEventListener("click", function(e) {
+        dialog.addEventListener("click", function (e) {
           globals.connectLNDGRPC(config);
         });
         dialog.show();
@@ -148,8 +149,10 @@ globals.connectLNDGRPC = function(config) {
 
 };
 
-globals.loadMainScreen = function(dontShowSpinner) {
-  globals.lnGRPC.getChannelBalance(function(error, response) {
+globals.loadMainScreen = function (dontShowSpinner) {
+
+  globals.menuWidget.show();
+  globals.lnGRPC.getChannelBalance(function (error, response) {
     $.statusText.text = "";
 
     if (error == true) {
@@ -165,6 +168,9 @@ globals.loadMainScreen = function(dontShowSpinner) {
 
     if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
       Ti.App.Properties.setInt("last_channel_balance", channelConfirmedBalance);
+
+      globals.lightning_manager.bootStrapChannel(); //try to open one channel to pebble hub
+
     }
     totalConfirmedBalance = channelConfirmedBalance;
 
@@ -185,8 +191,8 @@ globals.loadMainScreen = function(dontShowSpinner) {
 
 function startSubscribeInvoices() {
   globals.console.log("starting subscribe invoice");
-  setTimeout(function() {
-    globals.lnGRPC.subscribeInvoices(function(error, response) {
+  setTimeout(function () {
+    globals.lnGRPC.subscribeInvoices(function (error, response) {
 
       if (error == false) {
         console.log("invoice res", response);
@@ -216,8 +222,8 @@ function startSubscribeInvoices() {
 
 function startSubscribeTransactions() {
   globals.console.log("starting subscribe transactions");
-  setTimeout(function() {
-    globals.lnGRPC.subscribeTransactions(function(error, response) {
+  setTimeout(function () {
+    globals.lnGRPC.subscribeTransactions(function (error, response) {
 
       if (error == false) {
 
@@ -280,23 +286,23 @@ function setBalances() {
   var attrTotal = Ti.UI.createAttributedString({
     text: totalText,
     attributes: [{
-        type: Ti.UI.ATTRIBUTE_FONT,
-        value: {
-          fontSize: 60,
-          fontFamily: Alloy.Globals.lightFont,
-          fontWeight: "light",
-        },
-        range: [totalText.indexOf(channelConfirmedValueStr), (channelConfirmedValueStr).length]
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 50,
+        fontFamily: Alloy.Globals.lightFont,
+        fontWeight: "light",
       },
-      {
-        type: Ti.UI.ATTRIBUTE_FONT,
-        value: {
-          fontSize: 30,
-          fontFamily: Alloy.Globals.lightFont,
-          fontWeight: "light",
-        },
-        range: [totalText.indexOf(" " + currentCurrency), (" " + currentCurrency).length]
-      }
+      range: [totalText.indexOf(channelConfirmedValueStr), (channelConfirmedValueStr).length]
+    },
+    {
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 30,
+        fontFamily: Alloy.Globals.lightFont,
+        fontWeight: "light",
+      },
+      range: [totalText.indexOf(" " + currentCurrency), (" " + currentCurrency).length]
+    }
     ]
   });
 
@@ -305,23 +311,23 @@ function setBalances() {
   attrTotal = Ti.UI.createAttributedString({
     text: totalTextFiat,
     attributes: [{
-        type: Ti.UI.ATTRIBUTE_FONT,
-        value: {
-          fontSize: 30,
-          fontFamily: Alloy.Globals.lightFont,
-          fontWeight: "light",
-        },
-        range: [totalTextFiat.indexOf(channelConfirmedValueFiat + ""), (channelConfirmedValueFiat + "").length]
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 30,
+        fontFamily: Alloy.Globals.lightFont,
+        fontWeight: "light",
       },
-      {
-        type: Ti.UI.ATTRIBUTE_FONT,
-        value: {
-          fontSize: 30,
-          fontFamily: Alloy.Globals.lightFont,
-          fontWeight: "light",
-        },
-        range: [totalTextFiat.indexOf(" " + currencyFiat), (" " + currencyFiat).length]
-      }
+      range: [totalTextFiat.indexOf(channelConfirmedValueFiat + ""), (channelConfirmedValueFiat + "").length]
+    },
+    {
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 30,
+        fontFamily: Alloy.Globals.lightFont,
+        fontWeight: "light",
+      },
+      range: [totalTextFiat.indexOf(" " + currencyFiat), (" " + currencyFiat).length]
+    }
     ]
   });
 
@@ -337,7 +343,7 @@ globals.btclnView = $.win;
 
 globals.console.log("opened");
 
-globals.launchPayScan = function() {
+globals.launchPayScan = function () {
 
   globals.util.readQRcodeInvoice({
     "callback": globals.continuePay
@@ -345,7 +351,7 @@ globals.launchPayScan = function() {
 
 };
 
-globals.continuePay = function(req) {
+globals.continuePay = function (req) {
 
   var bitcoin = require("requires/bitcoin");
   globals.console.log(req);
@@ -381,7 +387,7 @@ globals.continuePay = function(req) {
   if (req.indexOf("LIGHTNING:") != -1) {
     req = req.replace("LIGHTNING:", '');
   }
-  var res = globals.lnGRPC.decodePayReq(req, function(error, res) {
+  var res = globals.lnGRPC.decodePayReq(req, function (error, res) {
 
     if (error == true) {
       alert(res);
@@ -449,10 +455,10 @@ globals.continuePay = function(req) {
         "message": message,
         "payReq": req,
         "needsAmount": needsAmount,
-        "cancel": function() {
+        "cancel": function () {
           lock = false;
         },
-        "confirm": function() {
+        "confirm": function () {
 
           globals.console.log("setting memo", rhash + " " + memo)
           Ti.App.Properties.setString("memo_" + rhash, memo);
@@ -471,26 +477,43 @@ globals.continuePay = function(req) {
 }
 
 $.notConnected.visible = true;
-if (globals.tikerLoaded == false) {
-
-  globals.tiker.getTiker(function(tiker) {
-
-    if (globals.stopHyperloop == false) {
-
-      startLoadFromCache()
-    }
-
-  });
+if (globals.unlocked == true) {
+  continueLoad();
 } else {
-  setTimeout(function() {
+  globals.auth.check({
+    "title": L("label_confirmsend"),
+    "callback": function (e) {
+      if (e.success) {
+        continueLoad();
 
-    if (globals.stopHyperloop == false) {
-      startLoadFromCache()
+      }
     }
-  }, 100);
+  });
+}
+function continueLoad() {
+
+
+  if (globals.tikerLoaded == false) {
+
+    globals.tiker.getTiker(function (tiker) {
+
+      if (globals.stopHyperloop == false) {
+
+        startLoadFromCache()
+      }
+
+    });
+  } else {
+    setTimeout(function () {
+
+      if (globals.stopHyperloop == false) {
+        startLoadFromCache()
+      }
+    }, 100);
+  }
 }
 
-globals.startLNDMobile = function() {
+globals.startLNDMobile = function () {
   globals.didGetTransactionsOnce = false;
   globals.console.log("starting lnd");
   globals.nodeInfo = null;
@@ -524,7 +547,7 @@ function startLoadFromCache() {
 
     if (globals.alreadyUnlocked == false) {
       globals.console.log("starting lnd mobile");
-      globals.lnGRPC.startLNDMobile(function(error, response) {
+      globals.lnGRPC.startLNDMobile(function (error, response) {
 
         console.log("lndMobile1", error);
         console.log("lndMobile1", response);
@@ -534,7 +557,7 @@ function startLoadFromCache() {
           return;
         }
 
-        globals.lnGRPC.unlockWallet(globals.userKey, function(error, response) {
+        globals.lnGRPC.unlockWallet(globals.createPassword(globals.passCodeHash), function (error, response) {
           console.log("unlock wallet err ", error);
           console.log("unlock wallet", response);
 
@@ -546,7 +569,7 @@ function startLoadFromCache() {
           globals.alreadyUnlocked = true;
 
 
-          setTimeout(function() {
+          setTimeout(function () {
             if (Ti.App.Properties.getBool("didShowGuideScreenSync", false) == false || globals.allwaysShowGuides) {
               Ti.App.Properties.setBool("didShowGuideScreenSync", true)
               Alloy.createController("/components/guide_screen", {
@@ -564,7 +587,14 @@ function startLoadFromCache() {
       });
 
     } else {
-      setTimeout(function() {
+      setTimeout(function () {
+        if (Ti.App.Properties.getBool("didShowGuideScreenSync", false) == false || globals.allwaysShowGuides) {
+          Ti.App.Properties.setBool("didShowGuideScreenSync", true)
+          Alloy.createController("/components/guide_screen", {
+            title: L("intro_sync_title"),
+            text: L("intro_sync_description")
+          }).getView().open();
+        }
         andTimeSince100 = 0;
         checkSyncStatus()
 
@@ -632,7 +662,7 @@ function setSyncingUI() {
 
 function checkSyncStatus() {
 
-  globals.lnGRPC.getInfo("", function(error, response) {
+  globals.lnGRPC.getInfo("", function (error, response) {
     globals.console.log("getInfo1", error);
     globals.console.log("getInfo1", response);
 
@@ -665,7 +695,7 @@ function checkSyncStatus() {
         $.syncText.text = L("still_synchronizing");
       }
 
-      continueSyncTimeout = setTimeout(function() {
+      continueSyncTimeout = setTimeout(function () {
         globals.console.log("continue check sync")
         checkSyncStatus()
       }, 6000);
@@ -710,7 +740,7 @@ globals.discover = $.discover;
 globals.discover.visible = false;
 
 if (OS_ANDROID) {
-  $.win.addEventListener('android:back', function() {
+  $.win.addEventListener('android:back', function () {
 
     if (globals.discover.visible) {
       globals.closeDiscover();
@@ -726,7 +756,7 @@ function showNodeInfo() {
   globals.hideShowNodeInfo(true);
 }
 
-globals.hideShowNodeInfo = function(show) {
+globals.hideShowNodeInfo = function (show) {
   if (globals.nodeInfo == undefined) {
     return;
   }

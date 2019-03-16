@@ -65,40 +65,58 @@ function createAccount(passphrase, fromPrevious) {
     if (fromPrevious == false) {
 
       Alloy.createController("introscreens", {
-          fromPrevious: fromPrevious
-        })
+        fromPrevious: fromPrevious
+      })
         .getView()
         .open();
     } else {
-      globals.nativeCrypto.createUserKey(function(success, userKey) {
+      globals.nativeCrypto.createUserKey(function (success, userKey) {
         if (success) {
           globals.userKey = userKey;
 
-          var encrypted = globals.cryptoJS.AES.encrypt(globals.decryptedPassphrase, globals.userKey).toString();
-          globals.console.log("encrypted passphrase", encrypted);
-          Ti.App.Properties.setString("passphrase", encrypted);
+          Alloy.createController("components/pincode_screen", {
+            "type": "set",
+            "callback": function (number) {
 
-          var seedArray = globals.decryptedPassphrase.split(","); //convert to string array
+              globals.passCodeHash = number;
 
-          globals.lnGRPC.createWallet(globals.userKey, seedArray, function(error, response) {
-            console.log("create wallet", error);
-            console.log("create wallet", response);
-            if (error == true) {
-              alert(response);
-              return;
-            }
+              var encryptedPasscodeHash = globals.cryptoJS.AES.encrypt(globals.passCodeHash, globals.userKey).toString();
 
-            if (globals.savePassphrase(globals.decryptedPassphrase, globals.userKey)) {
+              Ti.App.Properties.setString("passcode", encryptedPasscodeHash);
+              globals.unlocked = true;
 
-              Ti.App.Properties.setString("mode", "lndMobile");
-              globals.alreadyUnlocked = true; //because we created a new wallet so no need to unlock
-              Alloy.createController("frame")
-                .getView()
-                .open();
 
-            }
 
-          });
+
+
+              var encrypted = globals.cryptoJS.AES.encrypt(globals.decryptedPassphrase, globals.userKey).toString();
+              globals.console.log("encrypted passphrase", encrypted);
+              Ti.App.Properties.setString("passphrase", encrypted);
+
+              var seedArray = globals.decryptedPassphrase.split(","); //convert to string array
+
+              globals.lnGRPC.createWallet(globals.userKey, seedArray, function (error, response) {
+                console.log("create wallet", error);
+                console.log("create wallet", response);
+                if (error == true) {
+                  alert(response);
+                  return;
+                }
+
+                if (globals.savePassphrase(globals.decryptedPassphrase, globals.userKey)) {
+
+                  Ti.App.Properties.setString("mode", "lndMobile");
+                  globals.alreadyUnlocked = true; //because we created a new wallet so no need to unlock
+                  globals.screenView = Alloy.createController("frame").getView();
+                  globals.screenView.open();
+
+                }
+
+              });
+
+            },
+            "cancel": function () { }
+          }).getView().open();
         } else {
 
           alert("error creating user key");
@@ -107,9 +125,11 @@ function createAccount(passphrase, fromPrevious) {
         }
       });
     }
-    setTimeout(function() {
-      $.signin.close();
-    }, 1000);
+    if (OS_IOS) {
+      setTimeout(function () {
+        $.signin.close();
+      }, 1000);
+    }
 
   } catch (e) {
     showLoading(false);
@@ -163,7 +183,7 @@ function moveNext() {
             "duration": 300
           });
 
-          setTimeout(function() {
+          setTimeout(function () {
             prevField.visible = false;
           }, 300);
         }
@@ -181,7 +201,7 @@ function moveNext() {
           "duration": 300
         });
 
-        setTimeout(function() {
+        setTimeout(function () {
           isMoving = false;
           if (fieldcount != -1) {
             nextField.focus();
@@ -217,7 +237,7 @@ function movePrev() {
       "duration": 300
     });
 
-    setTimeout(function() {
+    setTimeout(function () {
       nextField.focus();
     }, 300);
 
@@ -227,7 +247,7 @@ function movePrev() {
       "duration": 305
     });
 
-    setTimeout(function() {
+    setTimeout(function () {
       prevField.visible = false;
 
       var temp = prevField;
@@ -248,18 +268,13 @@ $.privacypolicy.show();
 
 function createNewAccount() {
 
-  if (OS_ANDROID) {
-    alert("Not yet implemented but comming soon!, on the mean time please connect to your existing node");
-    return;
-  }
-
-  if (OS_IOS && didShowTestnetWarning == false) {
+  if (didShowTestnetWarning == false) {
     var dialog = globals.util.createDialog({
-      title: L("label_confirm"),
+      title: L("label_warning"),
       message: L("label_try_testnet"),
       buttonNames: [L("label_close"), L("label_ok")]
     });
-    dialog.addEventListener("click", function(e) {
+    dialog.addEventListener("click", function (e) {
       if (e.index != e.source.cancel) {
         didShowTestnetWarning = true;
         createNewAccount();
@@ -273,12 +288,12 @@ function createNewAccount() {
 
 
   showLoading(true);
-  setTimeout(function() {
+  setTimeout(function () {
     blurTextFields();
 
     globals.console.log("starting lndMobile");
 
-    globals.lnGRPC.deleteData(function(error, response) {
+    globals.lnGRPC.deleteData(function (error, response) {
 
       globals.console.log("delete data", error, response);
 
@@ -287,7 +302,7 @@ function createNewAccount() {
         return;
       }
 
-      globals.lnGRPC.startLNDMobile(function(error, response) {
+      globals.lnGRPC.startLNDMobile(function (error, response) {
 
         globals.console.log("lndMobile1", error);
         globals.console.log("lndMobile1", response);
@@ -297,7 +312,7 @@ function createNewAccount() {
           return;
         }
 
-        globals.lnGRPC.generateSeed(function(error, response) {
+        globals.lnGRPC.generateSeed(function (error, response) {
 
           if (error == true) {
             alert(response);
@@ -343,7 +358,7 @@ function hasPassphrase() {
       "duration": 300
     });
 
-    setTimeout(function() {
+    setTimeout(function () {
       isMoving = false;
       $.newwalletButton.visible = false;
       $.hasuserButton.visible = false;
@@ -405,7 +420,7 @@ function cancel() {
       "duration": 300
     });
 
-    setTimeout(function() {
+    setTimeout(function () {
       $.inputs.visible = false;
 
       $.inputEachphrase.left = 500;
@@ -430,11 +445,11 @@ function cancel() {
   }
 }
 
-$.signinNext.addEventListener("touchend", function() {
+$.signinNext.addEventListener("touchend", function () {
   moveNext();
 });
 
-$.signinPrev.addEventListener("touchend", function() {
+$.signinPrev.addEventListener("touchend", function () {
   movePrev();
 });
 
@@ -474,11 +489,11 @@ function signInFromExisting(passphrase) {
   if (false == isCreatingAccount) {
     isCreatingAccount = true;
     showLoading(true);
-    setTimeout(function() {
+    setTimeout(function () {
       blurTextFields();
       try {
 
-        globals.lnGRPC.deleteData(function(error, response) {
+        globals.lnGRPC.deleteData(function (error, response) {
 
           globals.console.log("delete data", error, response);
 
@@ -487,7 +502,7 @@ function signInFromExisting(passphrase) {
             return;
           }
 
-          globals.lnGRPC.startLNDMobile(function(error, response) {
+          globals.lnGRPC.startLNDMobile(function (error, response) {
 
             globals.console.log("lndMobile1", error);
             globals.console.log("lndMobile1", response);
@@ -516,58 +531,71 @@ function goToPrivacy() {
   Ti.Platform.openURL("https://indiesquare.me/terms");
 }
 
-$.signin.addEventListener("android:back", function() {
+$.signin.addEventListener("android:back", function () {
   return true;
 });
 
 function startLink() {
 
   globals.util.readQRcodeAccount({
-      "callback": function(e) {
-        $.loadingSpinnerConnect.show();
-        $.icons.hide()
-        globals.continueConnect(e, function(config) {
-          globals.checkConnection(config, function(success, res) {
-            if (success) {
-              globals.console.log("creating user key");
-              globals.nativeCrypto.createUserKey(function(success, userKey) {
-                if (success) {
-                  globals.userKey = userKey;
+    "callback": function (e) {
+      $.loadingSpinnerConnect.show();
+      $.icons.hide()
+      globals.continueConnect(e, function (config) {
+        globals.checkConnection(config, function (success, res) {
+          if (success) {
+            globals.console.log("creating user key");
+            globals.nativeCrypto.createUserKey(function (success, userKey) {
+              if (success) {
+                globals.userKey = userKey;
 
-                  globals.currentConfig = config;
-                  globals.screenView = Alloy.createController("frame")
-                    .getView();
-                  globals.screenView.open();
 
-                  $.signin.close();
+                Alloy.createController("components/pincode_screen", {
+                  "type": "set",
+                  "callback": function (number) {
 
-                } else {
-                  throw "error creating key"
-                }
-              });
+                    globals.passCodeHash = number;
 
-            } else {
-              $.loadingSpinnerConnect.hide();
-              $.icons.show()
-              alert("error connecting, please try again");
-            }
-          });
+                    var encryptedPasscodeHash = globals.cryptoJS.AES.encrypt(globals.passCodeHash, globals.userKey).toString();
 
-        }, function(error) {
-          $.loadingSpinnerConnect.hide();
-          $.icons.show()
-          alert(error);
+                    Ti.App.Properties.setString("passcode", encryptedPasscodeHash);
+                    globals.unlocked = true;
+
+                    globals.currentConfig = config;
+                    globals.screenView = Alloy.createController("frame")
+                      .getView();
+                    globals.screenView.open();
+
+                    $.signin.close();
+
+                  },
+                  "cancel": function () { }
+                }).getView().open();
+
+
+              } else {
+                throw "error creating key"
+              }
+            });
+
+          } else {
+            $.loadingSpinnerConnect.hide();
+            $.icons.show()
+            alert("error connecting, please try again");
+          }
         });
-      }
-    },
+
+      }, function (error) {
+        $.loadingSpinnerConnect.hide();
+        $.icons.show()
+        alert(error);
+      });
+    }
+  },
     true);
 
 }
 
 function goToLinkInfo() {
   Ti.Platform.openURL("https://pebble.indiesquare.me/remotenode");
-}
-
-if (OS_ANDROID) {
-  $.inputs.remove($.recoverView);
 }

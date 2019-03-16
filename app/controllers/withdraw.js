@@ -244,8 +244,12 @@ function continueSend(quantity, fee) {
       token: globals.LNCurrency,
       type: "success",
       callback: function() {
-        globals.getWalletBalance();
-        globals.listPayments();
+        if (globals.getWalletBalance != undefined) {
+          globals.getWalletBalance();
+        }
+        if (globals.listPayments != undefined) {
+          globals.listPayments();
+        }
         close();
       }
     }).getView();

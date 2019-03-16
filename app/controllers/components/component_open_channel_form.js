@@ -50,11 +50,7 @@ function hideKeyboard() {
 
 function setRec() {
 
-  var fiatValue = globals.tiker.getFiatValue("USD");
-
-  var cryptoAmount = 10 / fiatValue;
-  var valueAmt = Math.floor(globals.util.btcToSat(cryptoAmount));
-
+  var valueAmt = globals.globals.getRecommendedChannelAmount();
   $.amountField.value = valueAmt + "";
   updateAmount();
 }
@@ -188,13 +184,15 @@ function startOpenChannel() {
               globals.console.log("res is ", res);
 
               var fundingTxidStr = res['funding_txid_str'];
-              globals.console.log("finding tx", fundingTxidStr);
+              globals.console.log("funding tx", fundingTxidStr);
               if (fundingTxidStr != undefined) {
                 $.statusLabel.text = L("label_channel_opening")
               }
               setTimeout(function() {
                 close();
-                Alloy.Globals.getChannels();
+                if (Alloy.Globals.getChannels != undefined) {
+                  Alloy.Globals.getChannels();
+                }
               }, 2000)
 
             }

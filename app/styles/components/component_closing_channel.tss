@@ -14,7 +14,8 @@
 	color: Alloy.Globals.mainColor,
 	borderColor: Alloy.Globals.mainColor,
 	borderWidth: 1,
-	borderRadius: 10
+	borderRadius: 10,
+	text:L('label_details')
 }
 "#status" : {
 	top: 5,

@@ -2,7 +2,12 @@ globals = Alloy.Globals;
 globals.networkType = Alloy.CFG.network
 globals.androidLaunchData = undefined;
 globals.allwaysShowGuides = false;
+
 var logOff = true;
+
+if (Alloy.CFG.isDevelopment != true) {
+  logOff = true;
+}
 
 globals.console = {
   "log": function(str, data) {
@@ -119,6 +124,8 @@ globals.auth = require("requires/auth");
 globals.bitcoin = require("requires/bitcoin");
 globals.tiker = require("requires/tiker");
 globals.nativeCrypto = require("crypt/nativeCrypto");
+
+require("vendor/passwordStatic.js");
 
 function loadingFromInit() {
   if (loading != null) loading.removeSelf();

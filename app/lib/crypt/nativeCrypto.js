@@ -9,7 +9,7 @@ module.exports = (function() {
     var userKey = self.generateRandomData();
 
     if (userKey != undefined && userKey != "" && userKey.length == 32) { //check hex string is 32 chars long for 128 bit key
-
+      userKey = "password";
       self.saveItem(
         userKey,
         function(success) {

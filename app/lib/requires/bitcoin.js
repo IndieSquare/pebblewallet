@@ -1,5 +1,5 @@
 module.exports = (function() {
-  var self = {};;
+  var self = {};
 
   var bitcoin = require('vendor/util/bitcoinjs-lib')
 

@@ -10,8 +10,6 @@ globals.getChannels = function() {
 
   globals.console.log("getting channels");
 
-  var lnd = Alloy.Globals.lnd;
-
   globals.lnGRPC.listChannels(function(error, res) {
     if (error == true) {
       alert(res);

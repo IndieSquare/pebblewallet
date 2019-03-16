@@ -362,267 +362,6 @@ module.exports = (function() {
     return dialog;
   };
 
-  self.createEasyInput = function(params) {
-    var inputView = {};
-
-    inputView.view = Ti.UI.createView({
-      width: Ti.UI.FILL,
-      height: Ti.UI.FILL,
-      top: self.getDisplayHeight() - 1
-    });
-
-    var back = Ti.UI.createView({
-      backgroundColor: "#ffffff",
-      width: Ti.UI.FILL,
-      height: Ti.UI.FILL,
-      top: 0,
-      opacity: 0.95
-    });
-    inputView.view.add(back);
-
-    var comp_marks = {
-      m0: self.makeImage({
-        image: "/images/image_easyinput_none.png",
-        width: 12,
-        left: 0
-      }),
-      m1: self.makeImage({
-        image: "/images/image_easyinput_none.png",
-        width: 12,
-        left: 20
-      }),
-      m2: self.makeImage({
-        image: "/images/image_easyinput_none.png",
-        width: 12,
-        left: 40
-      }),
-      m3: self.makeImage({
-        image: "/images/image_easyinput_none.png",
-        width: 12,
-        left: 60
-      })
-    };
-
-    var numberArray = new Array();
-    var numbers = {
-      reconfirmed: false
-    };
-
-    function flush() {
-      for (var i = 0; i < 4; i++) {
-        comp_marks["m" + i].image = "/images/image_easyinput_none.png";
-        numberArray.pop();
-      }
-    }
-
-    var callback = function(sign) {
-      if (sign === L("label_close")) {
-        inputView.close();
-        if (params.cancel != null) params.cancel();
-      } else if (sign === L("label_erase")) {
-        if (numberArray.length > 0) {
-          comp_marks["m" + (numberArray.length - 1)].image = "/images/image_easyinput_none.png";
-          numberArray.pop();
-        }
-      } else if (sign === L("label_easypass_redo")) {
-        comp_whole.text.text = L("label_easypass_set");
-        numbers = {
-          reconfirmed: false
-        };
-        buttons.bc.opacity = 0.0;
-        flush();
-      } else {
-        if (numberArray.length < 4) {
-          comp_marks["m" + numberArray.length].image = "/images/image_easyinput_on.png";
-          numberArray.push(sign);
-
-          if (numberArray.length >= 4) {
-            var number = "";
-            for (var i = 0; i < 4; i++) {
-              number += numberArray[i];
-            }
-            if (params.type === "reconfirm") {
-              if (numbers.reconfirmed) {
-                if (numbers.number === number) {
-                  params.callback(Titanium.Utils.md5HexDigest(number));
-                  inputView.close();
-                } else flush();
-              } else {
-                comp_whole.text.text = L("label_easypass_reconfirm");
-                numbers.number = number;
-                numbers.reconfirmed = true;
-                buttons.bc.opacity = 1.0;
-                flush();
-              }
-            } else {
-              var enc_number = Titanium.Utils.md5HexDigest(number);
-              if (enc_number === globals.passCodeHash) {
-                params.callback(enc_number);
-                inputView.close();
-              } else {
-                comp_whole.text.text = L("label_easypass_wrongpass");
-                flush();
-              }
-            }
-          }
-        }
-      }
-    };
-
-    function createButton(sign, params, callback) {
-      if (sign === L("label_close") || sign === L("label_erase") || sign === L("label_easypass_redo")) {
-        font = 15;
-        opacity = 0.0;
-      } else {
-        font = 25;
-        opacity = 1.0;
-      }
-      var button = self.group({
-        image: self.makeImage({
-          image: "/images/image_easyinput_keypad.png",
-          width: 60,
-          opacity: opacity
-        }),
-        text: self.makeLabel({
-          text: sign,
-          color: "#e54353",
-          font: {
-            fontSize: font
-          },
-        }),
-      });
-      button.top = params.top;
-      button.left = params.left;
-
-      button.addEventListener("click", function() {
-        callback(sign);
-      });
-
-      return button;
-    }
-
-    var buttons = self.group({
-      b1: createButton("1", {
-        top: 0,
-        left: 0
-      }, callback),
-      b2: createButton("2", {
-        top: 0,
-        left: 70
-      }, callback),
-      b3: createButton("3", {
-        top: 0,
-        left: 140
-      }, callback),
-      b4: createButton("4", {
-        top: 70,
-        left: 0
-      }, callback),
-      b5: createButton("5", {
-        top: 70,
-        left: 70
-      }, callback),
-      b6: createButton("6", {
-        top: 70,
-        left: 140
-      }, callback),
-      b7: createButton("7", {
-        top: 140,
-        left: 0
-      }, callback),
-      b8: createButton("8", {
-        top: 140,
-        left: 70
-      }, callback),
-      b9: createButton("9", {
-        top: 140,
-        left: 140
-      }, callback),
-      b0: createButton("0", {
-        top: 210,
-        left: 70
-      }, callback),
-      bc: (params.type === "reconfirm") ? createButton(L("label_easypass_redo"), {
-        top: 210,
-        left: -3
-      }, callback) : createButton(L("label_close"), {
-        top: 210,
-        left: -3
-      }, callback),
-      bd: createButton(L("label_erase"), {
-        top: 210,
-        left: 140
-      }, callback)
-    });
-    if (params.type === "reconfirm") buttons.bc.opacity = 0.0;
-    buttons.top = 120;
-
-    var logos = self.group({
-      logo: self.makeImage({
-        image: "/images/icon_logo.png",
-        width: 70,
-      })
-    });
-    logos.top = 0;
-
-    var marks = self.group(comp_marks);
-    marks.top = 80;
-
-    var instruction_text = L("label_easypass");
-
-    if (params.type === "reconfirm") {
-      instruction_text = L("label_easypass_set");
-    } else if (params.type === "change") {
-      instruction_text = L("label_easypass_current");
-    }
-
-    var comp_whole = {
-      logos: logos,
-      text: self.makeLabel({
-        text: instruction_text,
-        color: "#e54353",
-        font: {
-          fontSize: 12
-        },
-        top: 95
-      }),
-      marks: marks,
-      buttons: buttons
-    };
-    var whole_view = self.group(comp_whole);
-    inputView.view.add(whole_view);
-
-    var inputWindow = null;
-    inputView.open = function() {
-      inputWindow = Ti.UI.createWindow({
-        "orientationModes": [Ti.UI.PORTRAIT],
-        "navBarHidden": true,
-        "backgroundColor": "transparent",
-        "theme": (OS_ANDROID) ? "Theme.AppCompat.Translucent.NoTitleBar" : null,
-        "windowSoftInputMode": (OS_ANDROID) ? Ti.UI.Android.SOFT_INPUT_STATE_ALWAYS_HIDDEN : null
-      });
-      inputWindow.add(inputView.view);
-      inputWindow.open();
-      inputView.view.animate({
-        top: 0,
-        duration: 500
-      });
-    };
-
-    inputView.close = function() {
-      inputView.view.animate({
-        top: self.getDisplayHeight(),
-        duration: 500
-      }, function() {
-        inputWindow.close();
-        inputWindow.remove(inputView.view);
-        inputView = null;
-      });
-    };
-
-    return inputView;
-  };
-
   self.showLoading = function(parent, params) {
     params.font = getFont(params);
     params.style = "dark";
@@ -897,43 +636,53 @@ module.exports = (function() {
 
     return view;
   };
+  self.getConfig = function() {
 
-  self.saveLNDConf = function() {
+    var configString = "[Application Options]\n\n";
+    configString += "debuglevel=info\n"
+    configString += "nolisten=1\n"
 
-    var confString = "[Application Options]\n\n";
-    confString += "debuglevel=info\n"
-    confString += "nolisten=1\n"
+    configString += "maxlogfiles=3\n"
+    configString += "maxlogfilesize=10\n"
 
-    confString += "maxlogfiles=3\n"
-    confString += "maxlogfilesize=10\n"
-    confString += "debuglevel=trace\n"
+    configString += "\n[Bitcoin]\n"
+    configString += "bitcoin.active=1\n"
+    configString += "bitcoin.testnet=1\n"
+    configString += "bitcoin.node=neutrino\n"
+    //configString += "bitcoin.node=bitcoind\n"
 
-    confString += "\n[Bitcoin]\n"
-    confString += "bitcoin.active=1\n"
-    confString += "bitcoin.testnet=1\n"
-    confString += "bitcoin.node=neutrino\n"
-
-    confString += "\n[Autopilot]\n\n"
+    configString += "\n[Autopilot]\n\n"
     if (Ti.App.Properties.getInt("autoPilot", 1) == 0) {
 
-      confString += "autopilot.active=0\n"
+      configString += "autopilot.active=0\n"
     } else {
 
-      confString += "autopilot.active=1\n"
+      configString += "autopilot.active=1\n"
     }
-    confString += "autopilot.allocation=0.6\n"
-    confString += "autopilot.maxchannels=5\n"
-    confString += "autopilot.minchansize=20000\n"
-    confString += "autopilot.maxchansize=16000000\n"
+    configString += "autopilot.allocation=0.95\n"
+    configString += "autopilot.private=1\n"
+    configString += "autopilot.minconfs=0\n"
+    configString += "autopilot.allocation=0.95\n"
+    configString += "autopilot.minchansize=20000\n"
+    configString += "autopilot.maxchansize=16000000\n"
 
+    configString += "\n[Neutrino]\n\n"
+    configString += "neutrino.connect=35.221.97.245\n"
+    configString += "neutrino.addpeer=btcd0.lightning.engineering\n"
+    configString += "neutrino.addpeer=faucet.lightning.community\n"
 
-    confString += "\n[Neutrino]\n\n"
-    confString += "neutrino.addpeer=159.203.125.125\n"
-    confString += "neutrino.addpeer=faucet.lightning.community\n"
+    return configString;
 
-    var filePath = Ti.Filesystem.applicationSupportDirectory + "lnd/lnd.conf";
-    var file = Ti.Filesystem.getFile(filePath);
-    file.write(confString);
+  }
+  self.saveLNDConf = function() {
+
+    var configString = self.getConfig();
+
+    if (OS_IOS) {
+      var filePath = Ti.Filesystem.applicationSupportDirectory + "lnd/lnd.conf";
+      var file = Ti.Filesystem.getFile(filePath);
+      file.write(configString);
+    }
 
   }
 

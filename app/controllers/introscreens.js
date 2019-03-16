@@ -74,11 +74,23 @@ function continueFromPassphrase() {
           if (success) {
             globals.userKey = userKey;
 
-            var encrypted = globals.cryptoJS.AES.encrypt(globals.decryptedPassphrase, globals.userKey).toString();
+            Alloy.createController("components/pincode_screen", {
+              "type": "set",
+              "callback": function(number) {
 
-            Ti.App.Properties.setString("passphrase", encrypted);
+                globals.passCodeHash = number;
 
-            complete();
+                var encryptedPasscodeHash = globals.cryptoJS.AES.encrypt(globals.passCodeHash, globals.userKey).toString();
+
+                Ti.App.Properties.setString("passcode", encryptedPasscodeHash);
+                globals.unlocked = true;
+                complete();
+
+              },
+              "cancel": function() {}
+            }).getView().open();
+
+
           } else {
 
             alert("error creating user key");
@@ -98,7 +110,7 @@ function complete() {
 
     var seedArray = globals.decryptedPassphrase.split(","); //convert to string array
 
-    globals.lnGRPC.createWallet(globals.userKey, seedArray, function(error, response) {
+    globals.lnGRPC.createWallet(globals.createPassword(globals.passCodeHash), seedArray, function(error, response) {
       console.log("create wallet", error);
       console.log("create wallet", response);
       if (error == true) {
@@ -110,9 +122,8 @@ function complete() {
         globals.console.log("setting lnd mobile");
         Ti.App.Properties.setString("mode", "lndMobile");
         globals.alreadyUnlocked = true; //because we created a new wallet so no need to unlock
-        Alloy.createController("frame")
-          .getView()
-          .open();
+        globals.screenView = Alloy.createController("frame").getView();
+        globals.screenView.open();
 
         close();
       }
