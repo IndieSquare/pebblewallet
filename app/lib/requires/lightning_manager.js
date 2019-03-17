@@ -35,7 +35,7 @@ module.exports = (function() {
 
               function(error, res) {
 
-                globals.console.log("res", res);
+                globals.console.log("connect peer res", res);
                 var peerAlreadyAdded = false;
 
                 if ((res + "").indexOf("already connected") != -1) {
@@ -57,13 +57,13 @@ module.exports = (function() {
                   globals.console.log("trying to open channel");
                   globals.lnGRPC.openChannel(pubKey, amount,
                     function(error, res) {
-                      globals.console.log("error", error);
+                      
                       if (error == true) {
-                        globals.console.log("is error", error);
+                        globals.console.error("open channel error", error);
 
                       } else {
 
-                        globals.console.log("res is ", res);
+                        globals.console.log("open channel res is ", res);
 
                         var fundingTxidStr = res['funding_txid_str'];
                         globals.console.log("funding tx", fundingTxidStr);
@@ -77,6 +77,7 @@ module.exports = (function() {
               });
 
           } else {
+            console.log("already has channel")
             //end as already have a channel
           }
         });

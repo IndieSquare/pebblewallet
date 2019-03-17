@@ -57,9 +57,12 @@ else{
 }
 
   function authenticate(){
+    var didShowPassCodeScreen = false;
     if(OS_ANDROID){
-      if(globals.identity.isSupported()){
+      if(globals.identity.isSupported() && globals.identity.deviceCanAuthenticate().canAuthenticate){
         Alloy.createController("components/component_touchid").getView().open();
+      }else{
+        input_password();
       }
     }
 
@@ -86,7 +89,10 @@ else{
             });
           }
           else {
-            input_password();
+            if(didShowPassCodeScreen == false){ //on android passcode shows more than once on error
+              didShowPassCodeScreen = true;
+              input_password();
+            }
           }
         }
       }

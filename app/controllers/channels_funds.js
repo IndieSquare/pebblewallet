@@ -227,3 +227,7 @@ if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
 
   }
 }
+
+function getBalance(){
+  globals.getWalletBalance();
+}

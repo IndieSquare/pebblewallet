@@ -50,7 +50,7 @@ function hideKeyboard() {
 
 function setRec() {
 
-  var valueAmt = globals.globals.getRecommendedChannelAmount();
+  var valueAmt = globals.getRecommendedChannelAmount();
   $.amountField.value = valueAmt + "";
   updateAmount();
 }

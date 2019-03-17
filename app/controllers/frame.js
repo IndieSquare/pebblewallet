@@ -194,6 +194,9 @@ function startSubscribeInvoices() {
   setTimeout(function () {
     globals.lnGRPC.subscribeInvoices(function (error, response) {
 
+
+      globals.console.log("invoice subscription res",error,response);
+
       if (error == false) {
         console.log("invoice res", response);
 
@@ -211,8 +214,11 @@ function startSubscribeInvoices() {
 
         }
       } else {
-
-        startSubscribeInvoices();
+        if(response.indexOf("io.grpc.StatusRuntimeException:") != -1){ //some bug in grpc or btcpay if this error shows need to restart subscription invoice
+           globals.console.log("restart invoice subscription");
+           startSubscribeInvoices();
+        }
+      
 
       }
 

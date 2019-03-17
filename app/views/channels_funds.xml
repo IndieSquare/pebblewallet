@@ -7,7 +7,7 @@
 
 				<Label id="statusText"></Label>
 				<View class="info" id="info">
-					<View class="infoInner">
+					<View class="infoInner" onClick="getBalance">
 						<Label class="balanceTitle" id="onchain_description">L("onchain_description")</Label>
 						<Label class="cryptoValue" id="totalBalance"></Label>
 						<Label class="fiatValue" id="totalBalanceFiat"></Label>

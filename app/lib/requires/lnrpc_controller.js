@@ -1563,8 +1563,8 @@ module.exports = (function() {
 
             if (res.error == true) {
               console.error("subscribe invoices error", res);
-
-              //	return;
+              callback(true, res.response);
+              return;
             }
 
             globals.console.log("subscribe Invoice", res.response);
