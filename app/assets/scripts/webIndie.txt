@@ -23,56 +23,13 @@ START_CALLBACK = function(response) {
 
 		if (CURRENT_CALLBACK != null) {
 
-			if (data.chain == "eth") {
-
-				if (data.type == "getAccount") {
-
-					CURRENT_CALLBACK(null, [data.data]);
-
-				} else if (data.type == "signPersonalMessage") {
-
-					CURRENT_CALLBACK(null, data.data);
-
-				} else if (data.type == "signMessage") {
-
-					CURRENT_CALLBACK(null, data.data);
-
-				} else if (data.type == "signTransaction") {
-
-					CURRENT_CALLBACK(null, data.data);
-
-				} else if (data.type == "sendTransaction") {
-
-					CURRENT_CALLBACK(null, data.data);
-
-				}
-
-			} else if (data.chain == "XCP") {
-				if (data.type == "getAccount") {
-
-					CURRENT_CALLBACK(null, data.data);
-
-				} else if (data.type == "signMessage") {
-
-					CURRENT_CALLBACK(null, data.data);
-
-				} else if (data.type == "signTransaction") {
-
-					CURRENT_CALLBACK(null, data.data);
-
-				}
-
-			} else if (data.chain == "utils") {
+			 if (data.chain == "utils") {
 
 				if (data.type == "useCamera") {
 
 					CURRENT_CALLBACK(null, data.data);
 
-				} else if (data.type == "getUserID") {
-
-					CURRENT_CALLBACK(null, data.data);
-
-				}
+				}  
 
 			} else if (data.chain == "lnbtc") {
 
@@ -85,6 +42,15 @@ START_CALLBACK = function(response) {
 					CURRENT_CALLBACK(null, data.data);
 
 				} else if (data.type == "payInvoice") {
+
+					CURRENT_CALLBACK(null, data.data);
+
+				} else if (data.type == "connectPeer") {
+
+					CURRENT_CALLBACK(null, data.data);
+
+				}
+				else if (data.type == "getPubKey") {
 
 					CURRENT_CALLBACK(null, data.data);
 
@@ -259,6 +225,48 @@ try {
 		var data = {
 			"chain": "lnbtc",
 			"type": "payInvoice",
+			"data": data
+		};
+		CURRENT_CALLBACK = cb;
+		try {
+			console.log("sending to webkit")
+
+			webkit.messageHandlers.setTask.postMessage(data)
+
+		} catch (e) {
+			//not ios, webkit not found
+			console.error(e)
+			WebViewMessageInterface.postMessage(JSON.stringify(data));
+		}
+
+	};
+
+	webLN.connectPeer = function(data, cb) {
+
+		var data = {
+			"chain": "lnbtc",
+			"type": "connectPeer",
+			"data": data
+		};
+		CURRENT_CALLBACK = cb;
+		try {
+			console.log("sending to webkit")
+
+			webkit.messageHandlers.setTask.postMessage(data)
+
+		} catch (e) {
+			//not ios, webkit not found
+			console.error(e)
+			WebViewMessageInterface.postMessage(JSON.stringify(data));
+		}
+
+	};
+
+	webLN.getPubKey = function(data, cb) {
+
+		var data = {
+			"chain": "lnbtc",
+			"type": "getPubKey",
 			"data": data
 		};
 		CURRENT_CALLBACK = cb;

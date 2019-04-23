@@ -119,9 +119,12 @@
 	width: "100%",
 	height: 0
 }
-"#notConnected" : {
+"#connecting" : {
 	visible: true,
-	width: "20%"
+	indicatorColor: "white",
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
+	style: Ti.UI.ActivityIndicatorStyle.BIG, 
 }
 "#statusText" : {
 	color: "white",

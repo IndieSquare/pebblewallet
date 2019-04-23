@@ -106,18 +106,20 @@ function setBalances() {
   walletConfirmedValue = globals.util.satToBtc(parseInt(walletConfirmedBalance), true);
 
   var totalText = walletConfirmedValue + " " + currency + " " + walletUnconfirmedValue
+  globals.console.log("total text",totalText + "sd"+globals.LNCurrency);
 
   var walletConfirmedValueFiat = globals.util.satToBtc(parseInt(walletConfirmedBalance));
 
   var currencyFiat = Ti.App.Properties.getString("currency", "USD");
-
+  globals.console.log("currencyFiat1",currencyFiat);
   var walletConfirmedValueFiat = globals.tiker.to("BTC", walletConfirmedValueFiat, currencyFiat, 2);
-
+globals.console.log("currencyFiat",currencyFiat);
   if (Alloy.Globals.network == "testnet") {
     currencyFiat = "t" + currencyFiat;
   }
+  globals.console.log("currencyFiat",currencyFiat);
   var totalTextFiat = walletConfirmedValueFiat + " " + currencyFiat;
-
+  globals.console.log("currencyFiat",totalTextFiat);
   var attrTotal = Ti.UI.createAttributedString({
     text: totalText,
     attributes: [{

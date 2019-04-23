@@ -22,3 +22,6 @@ modules/
 rpcFiles/
 dist/
 passwordStatic.js
+data/
+block_headers.bin
+neutrino.db

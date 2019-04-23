@@ -61,6 +61,7 @@ if (args.fromPrevious == true) {
 }
 
 function continueFromPassphrase() {
+  $.nextButtonPassphrase.touchEnabled = false;
   if (slider.is || args.fromPrevious == true) {
     if (args.isPassphraseOnly != null) {
       close();
@@ -110,7 +111,7 @@ function complete() {
 
     var seedArray = globals.decryptedPassphrase.split(","); //convert to string array
 
-    globals.lnGRPC.createWallet(globals.createPassword(globals.passCodeHash), seedArray, function(error, response) {
+    globals.lnGRPC.createWallet(globals.createPassword(globals.passCodeHash), seedArray, 0, function(error, response) {
       console.log("create wallet", error);
       console.log("create wallet", response);
       if (error == true) {

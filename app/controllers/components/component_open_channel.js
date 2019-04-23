@@ -110,7 +110,7 @@
              var dialog = globals.util.createDialog({
                title: L("label_closechannel_confirm_title"),
                message: L("label_closechannel_confirm_force_description"),
-               buttonNames: [L("label_cancel"), L("label_force_close")]
+               buttonNames: [L("label_force_close"),L("label_cancel")]
              });
 
              dialog.addEventListener("click", function(e) {
@@ -188,19 +188,12 @@
 
  function closeChannel() {
 
-   var buttons = [L("label_force_close"), L("label_cancel"), L("label_close")];
+   var buttons = [L("label_force_close"), L("label_cancel"), L("label_close") ];
 
-   var forceCloseIndex = 0;
-   var cancelIndex = 1;
+   var forceCloseIndex = 0; 
    var closeIndex = 2;
 
-   if (OS_IOS) {
-     buttons = [L("label_close"), L("label_force_close"), L("label_cancel")];
-     forceCloseIndex = 1;
-     cancelIndex = 2;
-     closeIndex = 0;
-   }
-
+   
    var dialog = globals.util.createDialog({
      title: L("label_closechannel_confirm_title"),
      message: L("label_closechannel_confirm_description"),
@@ -209,9 +202,11 @@
    dialog.addEventListener("click", function(e) {
      if (e.index == forceCloseIndex) {
        force = true;
+       globals.console.log("force closing");
        continueCloseChannel();
 
      } else if (e.index == closeIndex) {
+      globals.console.log("closing");
        continueCloseChannel();
      }
 

@@ -68,27 +68,30 @@ module.exports = (function() {
     return xhr;
   };
 
-  self.connectBlockchainInfo = function(callback) {
+  self.getStartUpInfo = function(callback) {
 
     var xhr = Ti.Network.createHTTPClient();
 
-    var url = "https://api.blockcypher.com/v1/btc/test3";
-
+    var url = Alloy.CFG.pebble_api;
+    globals.console.log("loading "+url)
     xhr.open("GET", url);
 
     xhr.onload = function() {
         var results = "";
-        try {
+        try { 
+          
           results = JSON.parse(this.responseText);
+ 
           callback(null, results);
+ 
         } catch (e) {
+ 
           callback(e, null);
         }
 
       },
       xhr.onerror = function(e) {
-
-        globals.console.error("GET Method: " + params.method);
+        globals.console.error("start up error",e);
         callback(e, null);
       };
     xhr.send();

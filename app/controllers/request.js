@@ -318,7 +318,7 @@ function pressedRequest() {
   });
 
 }
-var expiry = 10;
+var expiry = globals.defaultExpiry;
 $.time.text = L('expiry_time').format({
   "time": expiry
 });

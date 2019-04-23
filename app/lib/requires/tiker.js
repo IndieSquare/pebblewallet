@@ -20,7 +20,7 @@ module.exports = (function() {
 
       },
       "onError": function(error) {
-        if (callback != null) callback(tiker);
+        if (callback != null) callback();
       }
     });
   };

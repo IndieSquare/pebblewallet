@@ -56,6 +56,10 @@ function blurTextFields() {
 }
 
 function createAccount(passphrase, fromPrevious) {
+  if(globals.lnGRPC.checkCapacity() == false){
+    alert(L("not_enough_space"));
+    return;
+  }
   globals.console.log("creating account");
   try {
 
@@ -85,17 +89,14 @@ function createAccount(passphrase, fromPrevious) {
               Ti.App.Properties.setString("passcode", encryptedPasscodeHash);
               globals.unlocked = true;
 
-
-
-
-
+              var blocksToScanForAddresses = 1000; //need to calcualte this from the azeed passphrase?
               var encrypted = globals.cryptoJS.AES.encrypt(globals.decryptedPassphrase, globals.userKey).toString();
               globals.console.log("encrypted passphrase", encrypted);
               Ti.App.Properties.setString("passphrase", encrypted);
 
               var seedArray = globals.decryptedPassphrase.split(","); //convert to string array
 
-              globals.lnGRPC.createWallet(globals.userKey, seedArray, function (error, response) {
+              globals.lnGRPC.createWallet(globals.userKey, seedArray, blocksToScanForAddresses, function (error, response) {
                 console.log("create wallet", error);
                 console.log("create wallet", response);
                 if (error == true) {
@@ -260,24 +261,52 @@ function movePrev() {
 }
 
 var isCreatingAccount = false;
-
-var start = new Date().getTime();
-
-$.buttons.show();
-$.privacypolicy.show();
-
+ 
 function createNewAccount() {
 
   if (didShowTestnetWarning == false) {
     var dialog = globals.util.createDialog({
       title: L("label_warning"),
-      message: L("label_try_testnet"),
-      buttonNames: [L("label_close"), L("label_ok")]
+      message: L("label_try"),
+      buttonNames: [L("label_understand_risks"),L("label_close")],
+      cancel:1
     });
-    dialog.addEventListener("click", function (e) {
+    dialog.addEventListener("click", function (e) { 
       if (e.index != e.source.cancel) {
-        didShowTestnetWarning = true;
-        createNewAccount();
+ 
+        var dialog = globals.util.createDialog({
+          title: L("label_warning"),
+          message: L("label_which_chain"),
+          buttonNames: [L("label_testnet"),L("label_close"),L("label_mainnet")],
+          cancel:1
+        });
+        dialog.addEventListener("click", function (e) {
+          console.log(e.index+" "+e.source.cancel);
+          
+          if (e.index != e.source.cancel) {
+           
+            if(e.index == 0){
+              Alloy.Globals.lndMobileNetwork = "testnet";
+            
+            }
+            else if(e.index == 2){
+              Alloy.Globals.lndMobileNetwork = "mainnet";
+            }
+           
+            Ti.App.Properties.setString("lndMobileNetwork", Alloy.Globals.lndMobileNetwork);
+
+            didShowTestnetWarning = true;
+            globals.console.log("network",globals.lndMobileNetwork+ " "+ Alloy.Globals.lndMobileNetwork);
+            createNewAccount();
+
+          }
+
+        });
+        dialog.show();
+
+
+
+        
 
       }
 
@@ -599,3 +628,25 @@ function startLink() {
 function goToLinkInfo() {
   Ti.Platform.openURL("https://pebble.indiesquare.me/remotenode");
 }
+
+showLoading(true);
+ 
+  globals.networkAPI.getStartUpInfo(function(error, res) {
+    if (error != null) {
+      alert(L('error_api'));
+    }else{
+      globals.blockHeight.testnet = res.testnetHeight;
+      globals.blockHeight.mainnet = res.mainnetHeight;
+      globals.hubURITestnet = res.hubUriTestnet;
+      globals.hubURIMainnet = res.hubUriMainnet;
+      globals.discoverEndpoint = res.discoverUrl;
+      globals.console.log("res",res.hubUriMainnet);
+
+      if(res.maintenanceMode == true){
+        alert("maintenance");
+      }else{
+        showLoading(false);
+      }
+    }
+  });
+ 

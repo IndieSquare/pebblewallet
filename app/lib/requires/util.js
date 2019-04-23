@@ -244,7 +244,7 @@ module.exports = (function() {
           } else {
             var dialog = self.createDialog({
               message: L("label_permission_deny_camera"),
-              buttonNames: [L("label_close"), L("label_go_settings")]
+              buttonNames: [L("label_go_settings"),L("label_close")]
             });
             dialog.addEventListener("click", function(e) {
               if (e.index != e.source.cancel) {
@@ -295,12 +295,10 @@ module.exports = (function() {
 
   self.createDialog = function(params, listener) {
     if (params.title == null) params.title = "";
-    if (params.buttonNames != null && params.buttonNames.length == 2) {
-      if (OS_ANDROID) {
-        params.buttonNames.reverse();
-        if (params.cancel == null) params.cancel = 1;
-      } else if (params.cancel == null) params.cancel = 0;
-    }
+    
+     if (params.buttonNames.length > 1 && params.cancel == undefined) {
+     	params.cancel = 1;
+     }
     var dialog = Ti.UI.createAlertDialog(params);
     if (listener != null) dialog.addEventListener("click", listener);
 
@@ -328,12 +326,7 @@ module.exports = (function() {
 
       dialog.androidField = Ti.UI.createTextField(style);
       inputView.add(dialog.androidField);
-      if (params.buttonNames.length == 2) {
-        params.buttonNames.reverse();
-        if (params.cancel == null) params.cancel = 1;
-      }
-      if (params.cancel == null) params.cancel = 1;
-
+       
       origin = Ti.UI.createOptionDialog({
         title: params.title,
         message: params.message,
@@ -343,9 +336,7 @@ module.exports = (function() {
       });
       if (params.value) dialog.androidField.setValue(params.value);
     } else {
-      if (params.buttonNames.length == 2) {
-        if (params.cancel == null) params.cancel = 0;
-      }
+      
       var style = {
         title: params.title,
         message: params.message,
@@ -356,6 +347,10 @@ module.exports = (function() {
       if (params.keyboardType) style.keyboardType = params.keyboardType;
       if (params.passwordMask) style.style = Ti.UI.iOS.AlertDialogStyle.SECURE_TEXT_INPUT;
       origin = Ti.UI.createAlertDialog(style);
+      
+      if (params.buttonNames.length > 1 && params.cancel == undefined) {
+     	params.cancel = 1;
+     	}
     }
     dialog.origin = origin;
 
@@ -636,7 +631,7 @@ module.exports = (function() {
 
     return view;
   };
-  self.getConfig = function() {
+  self.getConfig = function(network) {
 
     var configString = "[Application Options]\n\n";
     configString += "debuglevel=info\n"
@@ -647,9 +642,13 @@ module.exports = (function() {
 
     configString += "\n[Bitcoin]\n"
     configString += "bitcoin.active=1\n"
-    configString += "bitcoin.testnet=1\n"
-    configString += "bitcoin.node=neutrino\n"
-    //configString += "bitcoin.node=bitcoind\n"
+    globals.console.log("config network",network);
+    if(network == "testnet"){
+      configString += "bitcoin.testnet=1\n"
+    }else{
+      configString += "bitcoin.mainnet=1\n"
+    }
+    configString += "bitcoin.node=neutrino\n" 
 
     configString += "\n[Autopilot]\n\n"
     if (Ti.App.Properties.getInt("autoPilot", 1) == 0) {
@@ -667,16 +666,38 @@ module.exports = (function() {
     configString += "autopilot.maxchansize=16000000\n"
 
     configString += "\n[Neutrino]\n\n"
-    configString += "neutrino.connect=35.221.97.245\n"
-    configString += "neutrino.addpeer=btcd0.lightning.engineering\n"
-    configString += "neutrino.addpeer=faucet.lightning.community\n"
 
+    var neutrinoPeer = "";
+    
+    if(network == "testnet"){
+      neutrinoPeer = globals.hubURITestnet.split("@")[1];
+      
+    }else{
+      neutrinoPeer = globals.hubURIMainnet.split("@")[1]; 
+    }
+
+    globals.defaultPeer = neutrinoPeer;
+
+    var customPeer = Ti.App.Properties.getString("customPeer", "");
+    if(customPeer != ""){
+      neutrinoPeer = customPeer;
+    } 
+
+    configString += neutrinoPeer = "neutrino.connect="+neutrinoPeer+"\n";
+  
+
+    //configString += "neutrino.connect=faucet.lightning.community\n";
+    //configString += "neutrino.connect=35.221.84.241\n"
+    //configString += "neutrino.addpeer=btcd0.lightning.engineering\n" 
+    //configString += "neutrino.addpeer=35.221.97.245\n"
+
+    globals.console.log("config string",configString);
     return configString;
 
   }
-  self.saveLNDConf = function() {
+  self.saveLNDConf = function(network) {
 
-    var configString = self.getConfig();
+    var configString = self.getConfig(network);
 
     if (OS_IOS) {
       var filePath = Ti.Filesystem.applicationSupportDirectory + "lnd/lnd.conf";
@@ -685,6 +706,7 @@ module.exports = (function() {
     }
 
   }
+
 
   self.saveTxid = function(txid, address) {
 
@@ -724,19 +746,9 @@ module.exports = (function() {
   }
 
   self.getCurrentNetworkBlockHeight = function(network) {
+  
+    return globals.blockHeight[network]; 
 
-    var lastHeight = globals.blockHeight[network];
-    globals.console.log("lastheight", lastHeight);
-
-    var lastTimeStamp = Ti.App.Properties.getInt("latest_time_stamp_" + network, 1548240202);
-
-    var currentTimeStamp = Math.floor(Date.now() / 1000);
-
-    var diff = currentTimeStamp - lastTimeStamp;
-
-    var numberOfNewBlocks = Math.floor(diff / 600);
-    globals.console.log("number of new blocks", numberOfNewBlocks);
-    return Math.floor((lastHeight + numberOfNewBlocks));
   }
 
   self.addPullEvent = function(view, params) {

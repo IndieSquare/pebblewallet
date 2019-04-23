@@ -50,6 +50,7 @@ for (key in currentTiker) {
     "callback": function(currency) {
       args.setLabel(currency);
       Ti.App.Properties.setString("currency", currency);
+      globals.loadMainScreen();
       close();
     }
   };

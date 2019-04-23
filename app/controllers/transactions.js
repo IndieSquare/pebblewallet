@@ -6,7 +6,15 @@ globals.showTransactionsLoader = function() {
 globals.hideNoTransactions = function() {
   $.noTransactions.hide();
 }
+
+globals.hideSyncingInfo = function() {
+  $.syncingInfo.hide();
+}
+globals.showSyncingInfo = function() {
+  $.syncingInfo.show();
+}
 $.noTransactions.hide();
+$.syncingInfo.hide();
 globals.clearTransactionsTable = function() {
   $.paymentList.data = [];
 }

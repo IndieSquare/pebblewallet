@@ -1,6 +1,7 @@
 <Alloy>
 	<View class="mainView">
 		<Label id="noTransactions">L("no_transactions")</Label>
+		<Label id="syncingInfo">L("syncing_info")</Label>
 		<TableView class="paymentList" id="paymentList">
 			<FooterView>
 

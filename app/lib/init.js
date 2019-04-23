@@ -3,7 +3,7 @@ globals.networkType = Alloy.CFG.network
 globals.androidLaunchData = undefined;
 globals.allwaysShowGuides = false;
 
-var logOff = true;
+var logOff = false;
 
 if (Alloy.CFG.isDevelopment != true) {
   logOff = true;
@@ -206,12 +206,8 @@ if (OS_IOS) {
   });
 }
 
-if (OS_ANDROID) {
-  var SharedPreferences = require("android.content.SharedPreferences");
-  var Context = require("android.content.Context");
-  var Activity = require('android.app.Activity');
-  var Intent = require('android.content.Intent');
-  var Bundle = require('android.os.Bundle');
+if (OS_ANDROID) { 
+  var Activity = require('android.app.Activity'); 
 
 
   var PreferenceManager = require('android.preference.PreferenceManager');
@@ -243,5 +239,7 @@ if (OS_ANDROID) {
     globals.console.log("launch source check", globals.androidLaunchData);
   }
 
+
+ 
 
 }

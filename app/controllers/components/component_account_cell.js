@@ -3,6 +3,10 @@ var args = arguments[0] || {};
 if (args.onlyOne == true) {
   $.removeButton.hide();
 }
+var connect = function(){
+
+}
+globals.console.log(args);
 
 if (args.isLNDMobile == true) {
 
@@ -20,7 +24,7 @@ if (args.isLNDMobile == true) {
   }
 
 
-  function connect() {
+  connect = function() {
 
 
     globals.closeAccounts();
@@ -42,7 +46,7 @@ if (args.isLNDMobile == true) {
   }
   $.alias.text = args.alias;
 
-  function connect() {
+  connect = function() {
     var config = globals.decryptConfig(args.config, globals.userKey);
     if (config != undefined) {
       globals.closeAccounts();

@@ -1,4 +1,5 @@
 require("init");
+
 globals.unlocked = false;
 globals.dataDir = "";
 globals.lndMobileStarted = false;
@@ -6,9 +7,12 @@ globals.alreadyUnlocked = false;
 globals.stopHyperloop = false; //needed as live view doesnt work when hyperloop libs are used so slows down dev
 globals.lnGRPC = require("/requires/lnrpc_controller");
 globals.lightning_manager = require("/requires/lightning_manager");
+globals.currentAlias = "";
+Alloy.Globals.lndMobileNetwork = Ti.App.Properties.getString("lndMobileNetwork", "mainnet");
+
 globals.blockHeight = {
   "mainnet": 564591,
-  "testnet": 1454877
+  "testnet": 1486786
 };
 if (Ti.App.Properties.getInt("autoPilot", 3) == 3) { //no record
   Ti.App.Properties.setInt("autoPilot", 1);
@@ -50,17 +54,16 @@ globals.getRecommendedChannelAmount = function() {
 }
 globals.getIndieSquareHub = function() {
   if (Alloy.Globals.network == "testnet") {
-    return globals.hubURITestnet
-  } else {
-    alert("mainnet hub not yet added");
-    return ""
+    return globals.hubURITestnet;
+  } else { 
+    return globals.hubURIMainnet;
   }
 }
-
+/*
 globals.lnGRPC.setUpEnv(function(error, response) {
   globals.console.log("setup env", error);
   globals.console.log("setup env", response);
-});
+});*/
 
 globals.invoiceUpdateFunctions = {};
 var denomination = Ti.App.Properties.getString("denomination", "");
@@ -394,10 +397,35 @@ if (OS_IOS) {
   });
 }
 
-globals.getBlockchainHeight = function() {
-  globals.networkAPI.connectBlockchainInfo(function(error, res) {
+globals.getStartUpInfo = function(callback) {
+  globals.networkAPI.getStartUpInfo(function(error, res) {
+     
     if (error != null) {
-      globals.blockHeight.testnet = res.height;
+       
+      var dialog = globals.util.createDialog({
+        title: L('error_api'),
+        message: L("error_api_description"),
+        buttonNames: [L("label_continue_noapi"),L("label_close")],
+        cancel:1
+      });
+      dialog.addEventListener("click", function (e) { 
+        if (e.index != e.source.cancel) {
+          callback();
+        }
+      });
+      dialog.show();
+    
+    }else{
+      globals.blockHeight.testnet = res.testnetHeight;
+      globals.blockHeight.mainnet = res.mainnetHeight;
+      globals.hubURITestnet = res.hubUriTestnet;
+      globals.hubURIMainnet = res.hubUriMainnet;
+      globals.console.log("res",res.hubUriMainnet);
+      if(res.maintenanceMode == true){
+        alert("maintenance");
+      }else{
+        callback();
+      }
     }
   });
 }
@@ -426,3 +454,4 @@ globals.tryStopLND = function(callback) {
 globals.createPassword = function(usersPassCodeHash){
     return Titanium.Utils.sha256(usersPassCodeHash+Alloy.Globals.getFixedPassword());
 }
+

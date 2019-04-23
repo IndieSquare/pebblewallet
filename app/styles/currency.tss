@@ -20,7 +20,7 @@
 	width: Ti.UI.FILL,
 	height: 50,
 	top: 0,
-	backgroundColor: "#e54353"
+	backgroundColor: Alloy.Globals.mainColor
 }
 ".closeIcon" : {
 	width: 40,

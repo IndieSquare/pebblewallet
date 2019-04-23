@@ -5,7 +5,9 @@
 }
 ".urlField" : {
 	right: 35,
-	height: 30
+	height: 30,
+	autocorrect:false,
+	autocapitalization:Titanium.UI.TEXT_AUTOCAPITALIZATION_NONE
 }
 ".urlField[platform=android]" : {
 	height: 40

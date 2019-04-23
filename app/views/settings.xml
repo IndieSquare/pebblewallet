@@ -18,6 +18,15 @@
 						<Label class="size10 gray description">L("label_settings_connect_btcpay_lnd_description")</Label>
 					</View>
 
+					<View class="box" layout="vertical">
+					<View class="mainBox" id="currencyButton" onClick="showCurrency">
+						<ImageView class="pull-left icon" image="/images/icon_settings_currency.png" />
+						<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png" />
+						<Label class="size12 settingLabel" id="currencyLabel"></Label>
+					</View>
+					<Label class="size10 gray description">L("label_settings_currency_description")</Label>
+					</View>
+
 					<View id="passphraseView" class="box" layout="vertical" onClick="showPassPhrase">
 						<View class="mainBox" id="recoveryPhraseButton">
 							<ImageView class="pull-left icon" image="/images/icon_settings_passphrase.png"/>
@@ -36,13 +45,32 @@
 					</View>
 
 					<View id="autoPilot" class="box" layout="vertical" onClick="autoPilot">
-						<View class="mainBox" id="logsButton">
+						<View class="mainBox" id="autoPilotButton">
 							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png"/>
 							<ImageView id="autoPilotImage" image="/images/checkSymbol.png"/>
 							<Label class="size12 settingLabel">L("label_settings_autopilot")</Label>
 						</View>
 						<Label class="size10 gray description">L("label_settings_autopilot_description")</Label>
 					</View>
+
+					<View id="neutrinoPeer" class="box" layout="vertical" onClick="changeNeutrinoPeer">
+						<View class="mainBox" id="neutrinoPeerButton">
+							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png"/>
+							<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png"/>
+							<Label class="size12 settingLabel">L("label_settings_neutrino_peer")</Label>
+						</View>
+						<Label class="size10 gray description">L("label_settings_neutrino_peer_description")</Label>
+					</View>
+
+					<View id="exportChannels" class="box" layout="vertical" onClick="exportChannels">
+						<View class="mainBox" id="exportChannelsButton">
+							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png"/>
+							<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png"/>
+							<Label class="size12 settingLabel">L("channels_backup_title")</Label>
+						</View>
+						<Label class="size10 gray description">L("channels_backup_description")</Label>
+					</View>
+
 					<Label id="version" class="size10 gray description"></Label>
 
 				</ScrollView>

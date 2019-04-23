@@ -1,5 +1,6 @@
 globals.LNCurrencySat = "sat";
 $.nodeInfo.top = globals.util.getDisplayHeight();
+$.nodeInfo.hide();
 $.nodeInfo.height = globals.util.getDisplayHeight();
 $.nodeInfo.width = globals.util.getDisplayWidth();
 var didGetArguments = false;
@@ -51,7 +52,7 @@ globals.connectLNDGRPC = function (config) {
   globals.showTransactionsLoader();
 
   $.statusText.text = "";
-  $.notConnected.visible = true;
+  $.connecting.visible = true;
   $.syncStatus.visible = false;
   $.totalBalanceFiat.text = "";
   $.totalBalance.text = "";
@@ -82,7 +83,7 @@ globals.connectLNDGRPC = function (config) {
     $.walletName.text = "";
     globals.nodeInfo = null;
     globals.console.log("connecting...");
-    $.notConnected.visible = false;
+    $.connecting.visible = false;
     $.statusText.text = "connecting...";
 
     if (error == true) {
@@ -482,12 +483,15 @@ globals.continuePay = function (req) {
 
 }
 
-$.notConnected.visible = true;
+$.connecting.visible = true;
+
+
+globals.getStartUpInfo(function(){
 if (globals.unlocked == true) {
   continueLoad();
 } else {
   globals.auth.check({
-    "title": L("label_confirmsend"),
+    "title": "",
     "callback": function (e) {
       if (e.success) {
         continueLoad();
@@ -496,12 +500,13 @@ if (globals.unlocked == true) {
     }
   });
 }
-function continueLoad() {
 
+});
+function continueLoad() {
 
   if (globals.tikerLoaded == false) {
 
-    globals.tiker.getTiker(function (tiker) {
+    globals.tiker.getTiker(function () {
 
       if (globals.stopHyperloop == false) {
 
@@ -545,11 +550,20 @@ function startLoadFromCache() {
 
   if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
 
-    $.notConnected.visible = false;
+    if (Alloy.Globals.network == "testnet") {
+    
+      setTestnet();
+
+    }else{
+
+      setMainnet();
+    
+    }
+
+    $.connecting.visible = false;
     $.syncStatus.visible = false;
     $.statusText.text = L("initializing_wallet");
 
-    globals.getBlockchainHeight();
 
     if (globals.alreadyUnlocked == false) {
       globals.console.log("starting lnd mobile");
@@ -628,7 +642,7 @@ function startLoadFromCache() {
       }
 
       $.statusText.text = "";
-      $.notConnected.visible = true;
+      $.connecting.visible = true;
 
     } else {
       if (globals.currentConfig != undefined) {
@@ -684,15 +698,17 @@ function checkSyncStatus() {
     }
     if (response.synced_to_chain == undefined || response.synced_to_chain == false) {
       setSyncingUI();
-
-      var percentage = Math.floor(((response.block_height / globals.util.getCurrentNetworkBlockHeight(globals.lndMobileNetwork)) * 100));
+      var currentNetworkBlockHeight = globals.util.getCurrentNetworkBlockHeight(globals.lndMobileNetwork);
+      var percentage = Math.floor(((response.block_height / currentNetworkBlockHeight) * 100));
       if (percentage > 100) {
         percentage = 100;
       }
       if (percentage == 100) {
         andTimeSince100++;
       }
-
+      if(Ti.App.Properties.getBool("didLoadFirstTime",false) == false){
+        globals.showSyncingInfo();
+      }
       if (percentage < 100 && andTimeSince100 < 20) {
         $.syncText.text = percentage + "% " + L("synchronizing") + " " + L("block_height_sync").format({
           height: response.block_height
@@ -706,13 +722,18 @@ function checkSyncStatus() {
         checkSyncStatus()
       }, 6000);
 
-      if (globals.didGetTransactionsOnce == false) { //kind of heavy so only grab once whilst syncing
-        setBalances();
-        globals.listPayments();
+      if(Ti.App.Properties.getBool("didLoadFirstTime",false) == true){
+        if (globals.didGetTransactionsOnce == false) { //kind of heavy so only grab once whilst syncing
+          setBalances();
+          globals.listPayments();
+        }
       }
+      
 
     } else {
       if (response.synced_to_chain == 1) {
+        Ti.App.Properties.setBool("didLoadFirstTime",true);
+        globals.hideSyncingInfo();
         try {
 
           Ti.App.Properties.setInt("latest_block_height_" + globals.lndMobileNetwork, response.block_height);
@@ -763,6 +784,7 @@ function showNodeInfo() {
 }
 
 globals.hideShowNodeInfo = function (show) {
+  $.nodeInfo.show();
   if (globals.nodeInfo == undefined) {
     return;
   }
@@ -792,3 +814,5 @@ if (OS_IOS) {
     ]
   });
 }
+
+globals.menuWidget.show();

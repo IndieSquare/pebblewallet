@@ -12,21 +12,14 @@
 
 Alloy.Globals = {
   currentTab: 1,
-  copyright: '© 2015-2018 IndieSquare Inc.',
-
+  copyright: '© 2015-2019 IndieSquare Inc.',
   datas: null,
-  lastUrl: null,
-  discoverEndpoint: 'https://discover.indiesquare.net',
-  hubURITestnet: '026eb42e3190b6a89f6f24824796270270e5aa6bdba11cd85bb0ec6a111c466213@35.221.97.245',
-  auth_id: 'indietest',
-  auth_pass: 'indie4936test',
-
-  sender_id: '35204291973',
+  lastUrl: null,  
   api_key: 'a6db8ab60116e98d7920e5c65545835c',
-
   SAVE_FILE_PATH: Ti.Filesystem.applicationDataDirectory + '/save_file.json',
-
-  network: 'livenet'
+  defaultExpiry :10,
+  hubURITestnet:"027874b524c4f35a97e8eb788fdbbf8e96b532f85bafb7257a4f4f6f76ac22c508@35.221.84.241",
+  hubURIMainnet:"026eb42e3190b6a89f6f24824796270270e5aa6bdba11cd85bb0ec6a111c466213@35.221.97.245"
 };
 
 Alloy.Globals.accountsKey = "AccountsV2";
@@ -45,7 +38,6 @@ function isSmallScreen() {
   return false;
 }
 
-Alloy.Globals.lndMobileNetwork = "testnet";
 Alloy.Globals.isiPhoneX = isiPhoneX();
 
 Alloy.Globals.isSmallScreen = isSmallScreen();
@@ -102,8 +94,9 @@ if (OS_IOS) {
 
 if (Alloy.Globals.isiPhoneX) {
   Alloy.Globals.dappBarTop = 52;
-
   Alloy.Globals.dappBarHeight = 35;
-
   Alloy.Globals.infoTop = 35;
 }
+
+Alloy.Globals.lndMobileNetwork = "mainnet";
+Alloy.Globals.bootstrap = true;

@@ -11,7 +11,7 @@ module.exports = (function() {
       payReq = payReq.replace("lightning:", '');
     }
 
-    var res = globals.lnGRPC.decodePayReq(payReq, function(error, res) {
+     globals.lnGRPC.decodePayReq(payReq, function(error, res) {
 
       if (error == true) {
         globals.clearTask();
@@ -111,66 +111,134 @@ module.exports = (function() {
   self.handleOpenChannelRequest = function(evalResult) {
 
     var nodeURI = evalResult.data;
-
-    var res = null;
-
+ 
     if (nodeURI.indexOf("lightning:") != -1) {
       nodeURI = nodeURI.replace("lightning:", '');
-    }
-    var fundingAmount = 100000;
+    } 
     var urlName = globals.extractHostname(globals.getCurrentUrl());
 
     if (urlName.length > 30) {
       urlName = urlName.substr(0, 30) + "...";
     }
 
-    var message = L('text_request_open_channel_web').format({
-      "url": urlName,
-      "uri": nodeURI,
-    });
-
     globals.openChannelFromDapp(nodeURI);
     return;
+ 
+  };
 
-    Alloy.createController("transaction_conf", {
-      "message": message,
-      "nodeURI": nodeURI,
-      "fundingAmt": fundingAmount,
-      "cancel": function() {
-        globals.lockBrowser(false);
-        globals.clearTask();
-      },
-      "confirm": function() {
-        console.log("pressed cloed");
-        globals.lockBrowser(false);
-        globals.clearTask();
+  self.handleConnectPeerRequest = function(evalResult) {
+    
+    var params = evalResult.data; 
+    var lightningAddress =  params.peer;
 
-      },
+  globals.console.log(lightningAddress);
 
+  var pubKey = lightningAddress.split('@')[0];
+  var host = lightningAddress.split('@')[1];
+  globals.console.log(pubKey);
+  globals.console.log(host);
+   
+  globals.lnGRPC.connectPeer(lightningAddress,
+
+    function(error, res) {
+
+      globals.console.log("res", res);
+      globals.console.log("error", error);
+      var peerAlreadyAdded = false;
+
+      if ((res + "").indexOf("already connected") != -1) {
+
+        peerAlreadyAdded = true;
+
+      }
+
+      if(error == 1){
+        error = true;
+      }
+
+      if (error == true && peerAlreadyAdded == false) {
+         
+        var returnMessage = JSON.stringify({
+          "chain": evalResult.chain,
+          "type": evalResult.type,
+          "data": res,
+          "error":res
+        });
+
+        globals.evaluateJS("START_CALLBACK('" + returnMessage + "')", function(response, error) {
+          if (error != undefined) {
+            globals.console.error(error);
+          }
+          globals.lockBrowser(false);
+        });
+ 
+
+      } else {
+
+        globals.console.log("res", res);
+
+        var returnMessage = JSON.stringify({
+          "chain": evalResult.chain,
+          "type": evalResult.type,
+          "data": "connected"
+        });
+    
+        globals.evaluateJS("START_CALLBACK('" + returnMessage + "')", function(response, error) {
+          if (error != undefined) {
+            globals.console.error(error);
+          }
+          globals.lockBrowser(false);
+        });
+
+      }
     });
 
   };
 
+  self.handleGetPubKey = function(evalResult) {
+ 
+    var returnMessage = JSON.stringify({
+      "chain": evalResult.chain,
+      "type": evalResult.type,
+      "data":  globals.nodeInfo.identity_pubkey
+    });
+
+    globals.evaluateJS("START_CALLBACK('" + returnMessage + "')", function(response, error) {
+      if (error != undefined) {
+        globals.console.error(error);
+      }
+      globals.lockBrowser(false);
+    });
+
+  };
+
+
   self.handleAddInvoice = function(evalResult) {
-
-    var params = evalResult.data;
-    globals.console.log("here", params);
+console.log("dfsdsd");
+    var params = evalResult.data; 
     var amount = parseInt(params.amount);
-    var memo = params.memo;
-    var expiry = parseInt(params.expiry);
+    var memo = null;
+    console.log("dfsdsd11111");
+    if(params.memo){
+       memo = params.memo;
+    }
+    var expiry = globals.defaultExpiry * 60;
+    if(params.expiry){
+      var expiry = parseInt(params.expiry);
+    }
+    console.log("dfsdsd222222");
 
-    globals.console.log("here1", params);
-
-    var res = globals.lndGRPC.addInvoiceAndExpiryAndMemoAndCompletion(amount, expiry, memo, function(error, res) {
+    globals.lnGRPC.addInvoice(amount, memo, expiry,  function(error, res) {
       globals.console.log("callback");
-      if (error != null) {
+      globals.console.log("callback",error);
+
+      globals.console.log("callback",res);
+      if (error == true) {
         globals.clearTask();
         alert(error);
         return;
       }
-
-      res = JSON.parse(res);
-
+ 
       var returnMessage = JSON.stringify({
         "chain": evalResult.chain,
         "type": evalResult.type,
@@ -195,7 +263,7 @@ module.exports = (function() {
 
     globals.console.log("here1", params);
 
-    var res = globals.lndGRPC.lookUpInvoiceAndCompletion(params.rhash, function(error, res) {
+    globals.lnGRPC.lookUpInvoiceAndCompletion(params.rhash, function(error, res) {
       globals.console.log("callback");
       if (error != null) {
         globals.clearTask();

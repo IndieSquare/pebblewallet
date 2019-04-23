@@ -12,7 +12,7 @@
 					<Label id="syncText">L('syncing_text')</Label>
 				</View>
 
-				<ImageView id="notConnected" image="/images/notConnected.png"/>
+				<ActivityIndicator id="connecting"/>
 				<Label id="statusText"></Label>
 				<View class="info" id="info">
 					<View class="infoInner">

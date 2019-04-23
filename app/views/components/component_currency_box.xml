@@ -1,0 +1,7 @@
+<Alloy>
+	<View class="currencyBox" id="currencyBox" onClick="setCurrency">
+		<Label class="size20 pull-left" id="name"></Label>
+		<ImageView class="checkedIcon pull-right" id="checked" image="/images/icon_checked.png" visible="false" />
+		<View class="currencyBorder"></View>
+	</View>
+</Alloy>

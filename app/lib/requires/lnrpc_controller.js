@@ -24,6 +24,23 @@ module.exports = (function() {
     }
   }
 
+  self.checkCapacity = function(){
+    var freeSpace = 0;
+    if(OS_IOS){
+     freeSpace = lndMobileObj.getFreeDiskspace()+"";
+
+   
+  }else if(OS_ANDROID){
+     freeSpace = lndMobileWrapper.checkStorage()
+  }
+  globals.console.log("freeSpace",freeSpace);
+  if(freeSpace < 2000000000){
+    return false;
+  }
+   return true;
+     
+  }
+
   function formatResponse(error, response) {
     globals.console.log("formatting response err", error)
     globals.console.log("formatting response", response)
@@ -130,11 +147,13 @@ module.exports = (function() {
 
   }
 
-  self.createWallet = function(password, seed, callback) {
+  self.createWallet = function(password, seed, scanBlocksForRecovery, callback) {
+    
     if (OS_ANDROID) {
       var seedString = seed.join(" ");
-      globals.console.log("password " + seedString + " " + password)
-      var bytes = lngrpc.makeCreateWalletRequest(seedString, password, 1000);
+      globals.console.log("password " + seedString + " " + password);
+      
+      var bytes = lngrpc.makeCreateWalletRequest(seedString, password, scanBlocksForRecovery);
 
       lndMobileWrapper.initWallet(bytes, new CallbackInterfaceLND({
         eventFired: function(event) {
@@ -148,7 +167,7 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
 
-      lndMobileObj.createWalletAndRecoveryWindowAndSeedAndCompletion(password, 1000, seed, function(error, response) {
+      lndMobileObj.createWalletAndRecoveryWindowAndSeedAndCompletion(password, scanBlocksForRecovery, seed, function(error, response) {
         globals.console.log("create wallet ", error);
         globals.console.log("create wallet", response);
 
@@ -191,12 +210,13 @@ module.exports = (function() {
     }
 
   }
-
+/*
   self.setUpEnv = function(callback) {
 
     if (OS_IOS) {
-
-      lndMobileObj.setUpEnvironment(function(error, response) {
+     
+      
+      lndMobileObj.setUpEnvironmentAndBootstrapAndCompletion(globals.lndMobileNetwork,globals.bootstrap,function(error, response) {
 
         if (error != null) {
 
@@ -205,16 +225,16 @@ module.exports = (function() {
 
         }
 
-        globals.util.saveLNDConf();
+        globals.util.saveLNDConf(globals.lndMobileNetwork);
 
       });
 
     }
 
-  }
+  }*/
 
   self.startLNDMobile = function(callback) {
-
+     
     if (globals.lndMobileStarted) {
       callback(false, "already started");
       return;
@@ -223,8 +243,8 @@ module.exports = (function() {
 
       var activity = new Activity(Ti.Android.currentActivity);
       var contextValue = activity.getApplicationContext();
-
-      lndMobileWrapper.startLnd(contextValue, globals.util.getConfig(), new CallbackInterfaceLND({
+       
+      lndMobileWrapper.startLnd(contextValue, globals.util.getConfig(globals.lndMobileNetwork), globals.bootstrap, new CallbackInterfaceLND({
         eventFired: function(event) {
           globals.console.log("callback fired", event);
           var response = JSON.parse(event);
@@ -235,7 +255,7 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
 
-      lndMobileObj.setUpEnvironment(function(error, response) {
+      lndMobileObj.setUpEnvironmentAndBootstrapAndCompletion(globals.lndMobileNetwork,globals.bootstrap,function(error, response) {
 
         if (error != null) {
 
@@ -244,7 +264,7 @@ module.exports = (function() {
 
         }
 
-        globals.util.saveLNDConf();
+        globals.util.saveLNDConf(globals.lndMobileNetwork);
 
         lndMobileObj.startLND(function(error, response) {
           globals.console.log("start lnd error", error);
@@ -471,10 +491,52 @@ module.exports = (function() {
     }
   };
 
+
+  self.exportAllChannelBackups = function(callback) {
+    var lndController = getController();
+    if (OS_ANDROID) {
+      if (lndController == lndMobileWrapper) {
+      var bytes = lngrpc.makeExportAllChannelBackupsRequest();
+      lndMobileWrapper.exportAllChannelBackups(bytes, new CallbackInterfaceLND({
+        eventFired: function(event) {
+
+          var seed = lngrpc.parseExportChannelResponse(JSON.parse(event).response);
+          var response = JSON.parse(seed);
+          callback(response.error, response.response);
+
+        }
+      }));
+    }else {
+      lndController.ExportAllChannelBackups(new CallbackInterface({
+        eventFired: function(res) {
+          globals.console.log(res);
+          res = JSON.parse(res);
+
+          if (res.error == true) {
+            globals.console.error("export channel backup error");
+          }
+
+          globals.console.log(res.response);
+
+          callback(res.error, res.response);
+
+        }
+      }));
+    }
+
+    } else if (OS_IOS) {
+      lndController.exportAllChannelBackups(function(error, response) {
+        error = formatResponse(error, response);
+        response = JSON.parse(response);
+        callback(error, response);
+
+      });
+    }
+  };
+
   self.getWalletBalance = function(callback) {
     var lndController = getController();
     if (OS_ANDROID) {
-
 
       if (lndController == lndMobileWrapper) {
         var bytes = lngrpc.makeWalletBalanceRequest();

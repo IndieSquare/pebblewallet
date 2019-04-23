@@ -1,18 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+  <string name="channels_backup_title">back up channels</string>
+  <string name="channels_backup_description">export an encrypted file that will allow you to restore funds</string>
+  <string name="channels_backup_title_email">Channel backup</string>
+  <string name="channels_backup_description_email">In the even that you have lost your device or there is a device error you can use the attached file to restore lost funds during a new installation of the pebble app</string>
+  <string name="not_enough_space">Your device does not have enough disk space to use the wallet, please free some space up and reload the app to try again</string>
+  <string name="error_api">Unable to connect to API</string>
+  <string name="error_api_description">check your internet connection and reload the app to try again, or continue with limited functionality</string>
+  <string name="label_continue_noapi">continue with no api</string>
+  <string name="label_settings_neutrino_peer">change neutrino peer</string>
+  <string name="label_settings_neutrino_peer_description">you can set the uri of a node you trust to download blocks from</string>
   <string name="unlock_fingerprint">unlock to continue</string>
   <string name="label_easypass">enter your PIN to unlock</string>
   <string name="label_easypass_set">set a SECURE PIN code</string>
   <string name="label_easypass_wrongpass">incorrect</string>
   <string name="label_easypass_confirm">please confirm</string>
+  <string name="label_reset">reset</string>
   <string name="label_easypass_redo">redo</string>
   <string name="label_warning">warning!</string>
   <string name="label_reload">reload</string>
-  <string name="label_try_testnet">Local wallet has not yet being implemented but you can try it in early beta, it's testnet so won't use real bitcoin and has known bugs we are working on fixing\n\nin the mean time you can link to your own mainnet LND or BTCPay server node instead</string>
+  <string name="label_try">the wallet function is still in the early alpha testing, it is not stable and by using it you are assuming that you WILL lose any money deposited! we recommend you instead connect to your own local node</string>
+  <string name="label_understand_risks">I WILL lose money</string>
+  <string name="label_which_chain">Which chain would you like to use?</string>
+  <string name="label_testnet">testnet</string>
+  <string name="label_mainnet">mainnet</string>
   <string name="label_logs">logs</string>
   <string name="label_share">share</string>
   <string name="got_it">got it</string>
   <string name="no_transactions">you don't have any transactions yet\n\npress the menu button bottom right to deposit some bitcoin and get started!</string>
+  <string name="syncing_info">your wallet it currently doing some necessary syncing to validate the network and ensure your privacy, this may take several minutes</string>
   <string name="block_height_sync">[block:{height}]</string>
   <string name="label_recover_wallet">recover wallet</string>
   <string name="label_host">host</string>
@@ -26,7 +42,7 @@
   <string name="closed">closed</string>
   <string name="blocks_can_claim">blocks until can claim</string>
   <string name="link_info">not sure how to link your node?\nclick here to find out how</string>
-  <string name="still_synchronizing">still syncing...</string>
+  <string name="still_synchronizing">verifying blocks...</string>
   <string name="label_settings_logs">view logs</string>
 
   <string name="label_settings_logs_description">view the internal LNDs logs for errors</string>
@@ -142,7 +158,7 @@
   <string name="label_text_sent">Transaction Sent!</string>
 
   <string name="label_please_wait">please wait...</string>
-  <string name="label_apply">Apply</string>
+  <string name="label_apply">apply</string>
   <string name="label_approx">approx</string>
   <string name="label_add">Add</string>
   <string name="label_cancel">cancel</string>
@@ -213,7 +229,7 @@
   <!-- Settings !-->
   <string name="label_confirm_showpassphrase">Show the Recovery phrase?\n\nPlease do not show it to anybody. Also, screenshots are not secure as they may be seen by other apps.\n\nPlease note on paper and keep it in a safe place.</string>
   <string name="label_settings_important">Important</string>
-  <string name="label_settings_recoveryphrase">Recovery Phrase</string>
+  <string name="label_settings_recoveryphrase">recovery Phrase</string>
   <string name="label_settings_recoveryphrase_description">Check your Recovery phrase</string>
   <string name="label_settings_currency_description">Choose your preferred currency</string>
   <string name="label_settings_touchid">Touch ID</string>
@@ -231,7 +247,7 @@
   <string name="label_word_incorrect">Word incorrect, please input again.</string>
   <string name="label_receive_copy">tap to copy</string>
   <string name="label_copied">Copied to clipboard</string>
-  <string name="label_newwallet">create a new wallet (testnet)</string>
+  <string name="label_newwallet">create a new wallet (alpha)</string>
   <string name="label_signin">Sign In</string>
 
   <string name="label_connectnode">click below to connect to your\nLND or BTCPay node</string>

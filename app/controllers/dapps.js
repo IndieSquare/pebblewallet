@@ -234,6 +234,7 @@
      };
 
    };
+   globals.loadWebViewIOS = loadWebViewIOS;
 
  }
 
@@ -303,7 +304,7 @@
    globals.console.log("start load webview");
    if (OS_IOS) {
      setTimeout(function() {
-       loadWebViewIOS();
+       globals.loadWebViewIOS();
      }, 100);
 
    } else if (OS_ANDROID) {
@@ -453,6 +454,16 @@
 
          handleWebLN.handleOpenChannelRequest(evalResult);
        }
+       else if (evalResult.type == "connectPeer") {
+        lock = true;
+
+        handleWebLN.handleConnectPeerRequest(evalResult);
+      }
+      else if (evalResult.type == "getPubKey") {
+        lock = true;
+
+        handleWebLN.handleGetPubKey(evalResult);
+      }
      } else if (evalResult.chain == "utils") {
 
        if (evalResult.type == "useCamera") {
