@@ -3,7 +3,7 @@ var args = arguments[0] || {};
 if (args.onlyOne == true) {
   $.removeButton.hide();
 }
-var connect = function(){
+var connect = function () {
 
 }
 globals.console.log(args);
@@ -24,20 +24,26 @@ if (args.isLNDMobile == true) {
   }
 
 
-  connect = function() {
+  connect = function () {
 
 
     globals.closeAccounts();
 
     globals.closeSettings();
 
-    globals.startLNDMobile();
+    Ti.App.Properties.setString("mode", "lndMobile");
+    if(globals.lndMobileStarted == true){
+      globals.stopLND(function () {});
+    }
+    alert(L("restart_app"));
 
 
   }
 
 
 } else {
+
+  
 
   $.pubKey.text = args.identity_pubkey.substring(0, 40) + "...";
 
@@ -46,7 +52,8 @@ if (args.isLNDMobile == true) {
   }
   $.alias.text = args.alias;
 
-  connect = function() {
+  connect = function () {
+   
     var config = globals.decryptConfig(args.config, globals.userKey);
     if (config != undefined) {
       globals.closeAccounts();

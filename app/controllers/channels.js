@@ -6,11 +6,11 @@ $.table.height = globals.util.getDisplayHeight() - Alloy.Globals.btclnTopBarHeig
 
 Alloy.Globals.openChannels = [];
 Alloy.Globals.pendingChannels = [];
-globals.getChannels = function() {
+globals.getChannels = function () {
 
   globals.console.log("getting channels");
 
-  globals.lnGRPC.listChannels(function(error, res) {
+  globals.lnGRPC.listChannels(function (error, res) {
     if (error == true) {
       alert(res);
       return;
@@ -32,10 +32,11 @@ globals.getChannels = function() {
 
     }
     updateChannelsList();
+    globals.tryAndBackUpChannels();
 
   });
 
-  globals.lnGRPC.pendingChannels(function(error, res) {
+  globals.lnGRPC.pendingChannels(function (error, res) {
     globals.console.log("pending channels", res);
     if (error == true) {
 
@@ -88,7 +89,7 @@ function showOpenChannel() {
 var control = Ti.UI.createRefreshControl({
   tintColor: Alloy.Globals.mainColor,
 });
-control.addEventListener('refreshstart', function(e) {
+control.addEventListener('refreshstart', function (e) {
   globals.getWalletBalance();
   globals.getChannels();
 
@@ -121,7 +122,7 @@ function updateChannelsList() {
       className: 'openChannel',
       backgroundSelectedColor: 'transparent',
       rowIndex: i,
-      height: 90
+      height: 100
     });
 
     if (OS_IOS) {
@@ -298,6 +299,6 @@ function connectToPebbleHUB() {
   openChannelsFormObject.API.setPubKey(globals.getIndieSquareHub());
 }
 
-setTimeout(function() {
+setTimeout(function () {
   globals.getChannels();
 }, 2000);

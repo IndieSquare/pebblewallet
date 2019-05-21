@@ -10,23 +10,6 @@ $.inputEachphrase2.id = 2;
 $.signinPrev.opacity = 0.5;
 
 var demoPhrase = "about foam jump fitness convince section salad defy dress theory office swim enable clay duty orchard fruit assault inch wisdom patient vibrant day promote";
-/*
-setTimeout(function() {
-
-  globals.lnGRPC.startLNDMobile(function(error, response) {
-
-    globals.console.log("lndMobile1", error);
-    globals.console.log("lndMobile1", response);
-
-    if (error == true) {
-      alert(response);
-      return;
-    }
-
-    createAccount(demoPhrase.split(" ").join(), true);
-
-  });
-}, 10000);*/
 
 var nextField = $.inputEachphrase;
 var prevField = null;
@@ -56,7 +39,7 @@ function blurTextFields() {
 }
 
 function createAccount(passphrase, fromPrevious) {
-  if(globals.lnGRPC.checkCapacity() == false){
+  if (globals.lnGRPC.checkCapacity() == false) {
     alert(L("not_enough_space"));
     return;
   }
@@ -85,35 +68,17 @@ function createAccount(passphrase, fromPrevious) {
               globals.passCodeHash = number;
 
               var encryptedPasscodeHash = globals.cryptoJS.AES.encrypt(globals.passCodeHash, globals.userKey).toString();
-
+              globals.encryptedPassphrase = encryptedPasscodeHash;
               Ti.App.Properties.setString("passcode", encryptedPasscodeHash);
               globals.unlocked = true;
 
-              var blocksToScanForAddresses = 1000; //need to calcualte this from the azeed passphrase?
               var encrypted = globals.cryptoJS.AES.encrypt(globals.decryptedPassphrase, globals.userKey).toString();
               globals.console.log("encrypted passphrase", encrypted);
               Ti.App.Properties.setString("passphrase", encrypted);
 
-              var seedArray = globals.decryptedPassphrase.split(","); //convert to string array
-
-              globals.lnGRPC.createWallet(globals.userKey, seedArray, blocksToScanForAddresses, function (error, response) {
-                console.log("create wallet", error);
-                console.log("create wallet", response);
-                if (error == true) {
-                  alert(response);
-                  return;
-                }
-
-                if (globals.savePassphrase(globals.decryptedPassphrase, globals.userKey)) {
-
-                  Ti.App.Properties.setString("mode", "lndMobile");
-                  globals.alreadyUnlocked = true; //because we created a new wallet so no need to unlock
-                  globals.screenView = Alloy.createController("frame").getView();
-                  globals.screenView.open();
-
-                }
-
-              });
+              Alloy.createController("components/google_drive_link", { fromSignIn: true })
+                .getView()
+                .open();
 
             },
             "cancel": function () { }
@@ -261,43 +226,42 @@ function movePrev() {
 }
 
 var isCreatingAccount = false;
- 
-function createNewAccount() {
 
+function showDisclaimer(callback) {
   if (didShowTestnetWarning == false) {
     var dialog = globals.util.createDialog({
       title: L("label_warning"),
       message: L("label_try"),
-      buttonNames: [L("label_understand_risks"),L("label_close")],
-      cancel:1
+      buttonNames: [L("label_understand_risks"), L("label_close")],
+      cancel: 1
     });
-    dialog.addEventListener("click", function (e) { 
+    dialog.addEventListener("click", function (e) {
       if (e.index != e.source.cancel) {
- 
+
         var dialog = globals.util.createDialog({
           title: L("label_warning"),
           message: L("label_which_chain"),
-          buttonNames: [L("label_testnet"),L("label_close"),L("label_mainnet")],
-          cancel:1
+          buttonNames: [L("label_testnet"), L("label_close"), L("label_mainnet")],
+          cancel: 1
         });
         dialog.addEventListener("click", function (e) {
-          console.log(e.index+" "+e.source.cancel);
-          
+          globals.console.log(e.index + " " + e.source.cancel);
+
           if (e.index != e.source.cancel) {
-           
-            if(e.index == 0){
-              Alloy.Globals.lndMobileNetwork = "testnet";
-            
+
+            if (e.index == 0) {
+              Alloy.Globals.network = "testnet";
+
             }
-            else if(e.index == 2){
-              Alloy.Globals.lndMobileNetwork = "mainnet";
+            else if (e.index == 2) {
+              Alloy.Globals.network = "mainnet";
             }
-           
-            Ti.App.Properties.setString("lndMobileNetwork", Alloy.Globals.lndMobileNetwork);
+
+            Ti.App.Properties.setString("lndMobileNetwork", Alloy.Globals.network);
 
             didShowTestnetWarning = true;
-            globals.console.log("network",globals.lndMobileNetwork+ " "+ Alloy.Globals.lndMobileNetwork);
-            createNewAccount();
+            globals.console.log("network", Alloy.Globals.network);
+            callback();
 
           }
 
@@ -306,7 +270,7 @@ function createNewAccount() {
 
 
 
-        
+
 
       }
 
@@ -314,54 +278,62 @@ function createNewAccount() {
     dialog.show();
     return;
   }
+}
+
+function createNewAccount() {
+
+  showDisclaimer(function () {
 
 
-  showLoading(true);
-  setTimeout(function () {
-    blurTextFields();
 
-    globals.console.log("starting lndMobile");
+    showLoading(true);
+    setTimeout(function () {
+      blurTextFields();
 
-    globals.lnGRPC.deleteData(function (error, response) {
+      globals.console.log("starting lndMobile");
 
-      globals.console.log("delete data", error, response);
+      globals.lnGRPC.deleteData(function (error, response) {
 
-      if (error == true) {
-        alert(response);
-        return;
-      }
-
-      globals.lnGRPC.startLNDMobile(function (error, response) {
-
-        globals.console.log("lndMobile1", error);
-        globals.console.log("lndMobile1", response);
+        globals.console.log("delete data", error, response);
 
         if (error == true) {
           alert(response);
           return;
         }
 
-        globals.lnGRPC.generateSeed(function (error, response) {
+        globals.lnGRPC.startLNDMobile(function (error, response) {
+
+          globals.console.log("lndMobile1", error);
+          globals.console.log("lndMobile1", response);
 
           if (error == true) {
             alert(response);
             return;
           }
 
-          if (response.cipherSeedMnemonic != undefined) {
-            var stringPhrase = response.cipherSeedMnemonic.join();
-            createAccount(stringPhrase, false);
-          } else {
-            alert("error creating passphrase");
-            return;
-          }
+          globals.lnGRPC.generateSeed(function (error, response) {
 
+            if (error == true) {
+              alert(response);
+              return;
+            }
+
+            if (response.cipherSeedMnemonic != undefined) {
+              var stringPhrase = response.cipherSeedMnemonic.join();
+              createAccount(stringPhrase, false);
+            } else {
+              alert("error creating passphrase");
+              return;
+            }
+
+          });
         });
+
       });
 
-    });
+    }, 100);
 
-  }, 100);
+  });
 
 };
 
@@ -513,46 +485,52 @@ function signInFromExisting(passphrase) {
     }
   }
 
-  passphrase = passphrase.split(",").join();
+  showDisclaimer(function () {
 
-  if (false == isCreatingAccount) {
-    isCreatingAccount = true;
-    showLoading(true);
-    setTimeout(function () {
-      blurTextFields();
-      try {
 
-        globals.lnGRPC.deleteData(function (error, response) {
 
-          globals.console.log("delete data", error, response);
+    passphrase = passphrase.split(",").join();
 
-          if (error == true) {
-            alert(response);
-            return;
-          }
+    if (false == isCreatingAccount) {
+      isCreatingAccount = true;
+      showLoading(true);
+      setTimeout(function () {
+        blurTextFields();
+        try {
 
-          globals.lnGRPC.startLNDMobile(function (error, response) {
+          globals.lnGRPC.deleteData(function (error, response) {
 
-            globals.console.log("lndMobile1", error);
-            globals.console.log("lndMobile1", response);
+            globals.console.log("delete data", error, response);
 
             if (error == true) {
               alert(response);
               return;
             }
 
-            createAccount(passphrase, true);
+            globals.lnGRPC.startLNDMobile(function (error, response) {
+
+              globals.console.log("lndMobile1", error);
+              globals.console.log("lndMobile1", response);
+
+              if (error == true) {
+                alert(response);
+                return;
+              }
+
+              createAccount(passphrase, true);
+
+            });
 
           });
 
-        });
+        } catch (e) {
+          globals.console.error(e);
+          throw e;
+        }
+      }, 100);
+    }
 
-      } catch (e) {
-        globals.console.error(e);
-        throw e;
-      }
-    }, 100);
-  }
+  });
 
 }
 
@@ -630,23 +608,46 @@ function goToLinkInfo() {
 }
 
 showLoading(true);
- 
-  globals.networkAPI.getStartUpInfo(function(error, res) {
-    if (error != null) {
-      alert(L('error_api'));
-    }else{
-      globals.blockHeight.testnet = res.testnetHeight;
-      globals.blockHeight.mainnet = res.mainnetHeight;
-      globals.hubURITestnet = res.hubUriTestnet;
-      globals.hubURIMainnet = res.hubUriMainnet;
-      globals.discoverEndpoint = res.discoverUrl;
-      globals.console.log("res",res.hubUriMainnet);
 
-      if(res.maintenanceMode == true){
-        alert("maintenance");
-      }else{
-        showLoading(false);
-      }
+globals.networkAPI.getStartUpInfo(function (error, res) {
+  if (error != null) {
+    alert(L('error_api'));
+  } else {
+    globals.blockHeight.testnet = res.testnetHeight;
+    globals.blockHeight.mainnet = res.mainnetHeight;
+    globals.hubURITestnet = res.hubUriTestnet;
+    globals.hubURIMainnet = res.hubUriMainnet;
+    globals.discoverEndpoint = res.discoverUrl;
+    globals.console.log("res", res.hubUriMainnet);
+
+    if (res.maintenanceMode == true) {
+      alert("maintenance");
+    } else {
+      showLoading(false);
+      //testLogin();
+
     }
+  }
+
+});
+
+function testLogin() {
+  showDisclaimer(function () {
+
+
+    globals.lnGRPC.startLNDMobile(function (error, response) {
+
+      globals.console.log("lndMobile1", error);
+      globals.console.log("lndMobile1", response);
+
+      if (error == true) {
+        alert(response);
+        return;
+      }
+
+      createAccount(demoPhrase.split(" ").join(), true);
+
+    });
+
   });
- 
+}

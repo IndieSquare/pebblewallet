@@ -2,12 +2,25 @@ var args = arguments[0] || {};
 var lastLength = -1;
 var logsString = "";
 var updateTimeout = null;
+var logs = "";
 
 function share() {
   var emailDialog = Ti.UI.createEmailDialog()
   emailDialog.subject = "logs";
   emailDialog.messageBody = "logs";
-  var f = Ti.Filesystem.getFile(globals.dataDir);
+  if (OS_IOS) {
+    var f = Ti.Filesystem.getFile(globals.dataDir);
+  }
+  else if (OS_ANDROID) {
+
+    var f = Ti.Filesystem.getFile(globals.dataDir);
+    if (f.exists() === false) {
+      f.createFile();
+    }
+    f.write(logs);
+
+  }
+
   emailDialog.addAttachment(f);
   emailDialog.open();
 }
@@ -29,7 +42,7 @@ function close(e) {
     "duration": 200
   });
 
-  setTimeout(function() {
+  setTimeout(function () {
     $.win.width = 0;
     $.win.close();
   }, 200);
@@ -39,7 +52,7 @@ globals.closeSettings = close;
 
 if (OS_ANDROID) {
 
-  $.win.addEventListener('android:back', function() {
+  $.win.addEventListener('android:back', function () {
     close();
     return true;
   });
@@ -60,12 +73,34 @@ $.logs_text.width = globals.util.getDisplayWidth();
 $.scrollView.width = $.logs_text.width;
 
 function loadLogs() {
-  globals.dataDir = Ti.Filesystem.applicationSupportDirectory + "lnd/logs/bitcoin/testnet/lnd.log";
+  //absorb jar catch swift bulb water host chef planet slam arrow olympic case muffin kite number curve gather pluck cherry able jar thing they
+  globals.dataDir = Ti.Filesystem.applicationSupportDirectory + "lnd/logs/bitcoin/" + globals.network + "/lnd.log";
+
+  console.log("logs", globals.dataDir);
   try {
 
-    var f = Ti.Filesystem.getFile(globals.dataDir);
+    if (OS_IOS) {
+      var f = Ti.Filesystem.getFile(globals.dataDir);
 
-    var logs = f.read().text;
+
+      globals.console.log("exists", f.exists());
+
+      var contents = f.read();
+
+      logs = contents.text;
+
+
+    } else if (OS_ANDROID) {
+
+      var Activity = require('android.app.Activity');
+      var activity = new Activity(Ti.Android.currentActivity);
+      var contextValue = activity.getApplicationContext();
+
+      var path = contextValue.getFilesDir().getAbsolutePath() + "/logs/bitcoin/" + globals.network + "/lnd.log";
+      globals.console.log("path", path);
+      logs = globals.lnGRPC.loadLogs(path);
+    }
+
     var logsArray = logs.split("\n");
     logsString = logs;
 
@@ -103,7 +138,7 @@ function loadLogs() {
 }
 
 function updateLogs() {
-  updateTimeout = setTimeout(function() {
+  updateTimeout = setTimeout(function () {
     loadLogs()
 
   }, 100);

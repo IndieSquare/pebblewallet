@@ -10,7 +10,7 @@ var menuIsOpen = false;
 
 globals.menuWidget = $.menuButton;
 
-globals.openCloseMenu = function() {
+globals.openCloseMenu = function () {
   openCloseMenu();
 };
 
@@ -61,7 +61,7 @@ function openCloseMenu() {
 
 }
 
-globals.showHideMenu = function(hide) {
+globals.showHideMenu = function (hide) {
 
   function animateView(obj, opa) {
     obj.animate({
@@ -94,7 +94,7 @@ globals.showHideMenu = function(hide) {
         $.mainView.touchEnabled = false;
       };
 
-      setTimeout(function() {
+      setTimeout(function () {
         $.mainView.bottom = 10000;
       }, 300);
 
@@ -109,7 +109,7 @@ function lnPay() {
 
 }
 
-globals.loadFavourites = function() {
+globals.loadFavourites = function () {
   var favs = JSON.parse(Ti.App.Properties.getString("favourites", "{}"));
 
   var dapps = Object.keys(favs);
@@ -145,7 +145,7 @@ globals.loadFavourites = function() {
 
 globals.loadFavourites();
 
-globals.updateMenuUI = function() {
+globals.updateMenuUI = function () {
   $.buttonImage.image = Alloy.Globals.currentMenuButton;
 };
 
@@ -156,10 +156,24 @@ function showSettings() {
 
 }
 
-function goToGameMode() {
+function scanNormal() {
 
-  Alloy.createController("/gaming_mode").getView();
+  globals.util.readQRcodeNormal({
+    "callback": function (e) {
+      try {
+        var data = JSON.parse(e);
+        if (data.game != undefined) {
+          Alloy.createController("/gaming_mode", {
+            data: e
+          }).getView().open();
+        }
+      }
+      catch (error) {
+        globals.continuePay(e);
+      }
 
+    }
+  }, true);
 }
 
 function loadDiscover() {
@@ -174,10 +188,10 @@ function loadDiscover() {
   openCloseMenu();
 }
 
-globals.loadDiscover = function() {
+globals.loadDiscover = function () {
   loadDiscover()
 }
-globals.closeDiscover = function() {
+globals.closeDiscover = function () {
   $.lappsBrowserTitle.text = L('lapp_browser_option');
   globals.discover.visible = false;
 }
@@ -197,8 +211,8 @@ function link() {
 
   function doScan() {
     globals.util.readQRcodeInvoice({
-      'callback': function(str) {
-        setTimeout(function() {
+      'callback': function (str) {
+        setTimeout(function () {
           globals._parseArguments(str, {
             qrcode: true,
             completemessage: true

@@ -10,28 +10,28 @@ $.pubKey.text = aChannel.channel.remote_node_pub;
 
 $.detailsButton.text = " " + $.detailsButton.text + " ";
 
-var local_balance_str = aChannel.channel.local_balance + "";
+var localBalanceStr = aChannel.channel.local_balance + "";
 var localBalanceText = aChannel.channel.local_balance + " SAT";
 var attr = Titanium.UI.createAttributedString({
   text: localBalanceText,
   attributes: [{
-      type: Ti.UI.ATTRIBUTE_FONT,
-      value: {
-        fontSize: 13,
-        fontFamily: 'GillSans-Light',
-        fontWeight: 'light'
-      },
-      range: [localBalanceText.indexOf(local_balance_str), local_balance_str.length]
+    type: Ti.UI.ATTRIBUTE_FONT,
+    value: {
+      fontSize: 13,
+      fontFamily: 'GillSans-Light',
+      fontWeight: 'light'
     },
-    {
-      type: Ti.UI.ATTRIBUTE_FONT,
-      value: {
-        fontSize: 8,
-        fontFamily: 'GillSans-Light',
-        fontWeight: 'light'
-      },
-      range: [localBalanceText.indexOf(" SAT"), (" SAT").length]
-    }
+    range: [localBalanceText.indexOf(localBalanceStr), localBalanceStr.length]
+  },
+  {
+    type: Ti.UI.ATTRIBUTE_FONT,
+    value: {
+      fontSize: 8,
+      fontFamily: 'GillSans-Light',
+      fontWeight: 'light'
+    },
+    range: [localBalanceText.indexOf(" SAT"), (" SAT").length]
+  }
   ]
 });
 

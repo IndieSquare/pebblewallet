@@ -1,239 +1,312 @@
- var aChannel = arguments[0] || {};
+var aChannel = arguments[0] || {};
 
- var channelPoint = aChannel.channel_point;
+var channelPoint = aChannel.channel_point;
 
- var activeText = L("offline");
- var force = false;
- if (aChannel["active"] == "1") {
-   activeText = L("online");
- }
- $.active.text = activeText;
+var activeText = L("offline");
+var force = false;
+if (aChannel["active"] == "1") {
+  activeText = L("online");
+}
 
- $.pubKey.text = aChannel.remote_pubkey.substr(0, 60) + "...";
+$.status.text = activeText;
 
- if (aChannel.local_balance == undefined) {
-   aChannel.local_balance = 0;
- }
+var pubkeyShort = aChannel.remote_pubkey.substr(0, 30) + "...";
+$.details.text = pubkeyShort;
 
- if (aChannel.remote_balance == undefined) {
-   aChannel.remote_balance = 0;
- }
+if (aChannel.local_balance == undefined) {
+  aChannel.local_balance = 0;
+}
 
- $.closeChannelButton.text = " " + $.closeChannelButton.text + " ";
+if (aChannel.remote_balance == undefined) {
+  aChannel.remote_balance = 0;
+}
 
- if (OS_IOS) {
+$.closeChannelButton.text = " " + $.closeChannelButton.text + " ";
 
-   $.closeChannelButton.text = $.closeChannelButton.text + "  ";
+if (OS_IOS) {
 
- }
+  $.closeChannelButton.text = $.closeChannelButton.text + "  ";
 
- var local_balance_str = aChannel.local_balance + "";
- var localBalanceText = local_balance_str + " SAT";
+}
 
- if (aChannel.local_balance != undefined) {
-   var attr = Titanium.UI.createAttributedString({
-     text: localBalanceText,
-     attributes: [
+var totalBalance = parseInt(aChannel.local_balance) + parseInt(aChannel.remote_balance);
+var localPercentage = ((parseInt(aChannel.local_balance) / totalBalance) * 100);
+var remotePercentage = ((parseInt(aChannel.remote_balance) / totalBalance) * 100);
 
-       {
-         type: Ti.UI.ATTRIBUTE_FONT,
-         value: {
-           fontSize: 13,
-           fontFamily: 'GillSans-Light',
-           fontWeight: 'light'
-         },
-         range: [localBalanceText.indexOf(local_balance_str + ""), (local_balance_str + "").length]
-       },
-       {
-         type: Ti.UI.ATTRIBUTE_FONT,
-         value: {
-           fontSize: 8,
-           fontFamily: 'GillSans-Light',
-           fontWeight: 'light'
-         },
-         range: [localBalanceText.indexOf(" SAT"), (" SAT").length]
-       }
-     ]
-   });
- }
+if (localPercentage < 1) {
+  localPercentage = 1;
+  remotePercentage = 99;
+}
 
- $.localAmount.attributedString = attr;
+if (remotePercentage < 1) {
+  remotePercentage = 1;
+  localPercentage = 99
+}
 
- var remoteBalanceText = aChannel.remote_balance + " SAT";
+$.amountsBarLocal.width = localPercentage + "%"
+$.amountsBarRemote.width = remotePercentage + "%"
 
- var attr2 = Titanium.UI.createAttributedString({
-   text: remoteBalanceText,
-   attributes: [
+var localBalanceStr = aChannel.local_balance + "";
+var localBalanceText = localBalanceStr + " SAT";
 
-     {
-       type: Ti.UI.ATTRIBUTE_FONT,
-       value: {
-         fontSize: 13,
-         fontFamily: 'GillSans-Light',
-         fontWeight: 'light'
-       },
-       range: [remoteBalanceText.indexOf(aChannel.remote_balance + ""), (aChannel.remote_balance + "").length]
-     },
-     {
-       type: Ti.UI.ATTRIBUTE_FONT,
-       value: {
-         fontSize: 8,
-         fontFamily: 'GillSans-Light',
-         fontWeight: 'light'
-       },
-       range: [remoteBalanceText.indexOf(" SAT"), (" SAT").length]
-     }
-   ]
- });
+if (aChannel.local_balance != undefined) {
+  var attr = Titanium.UI.createAttributedString({
+    text: localBalanceText,
+    attributes: [
 
- $.remoteAmount.attributedString = attr2;
+      {
+        type: Ti.UI.ATTRIBUTE_FONT,
+        value: {
+          fontSize: 13,
+          fontFamily: 'GillSans-Light',
+          fontWeight: 'light'
+        },
+        range: [localBalanceText.indexOf(localBalanceStr + ""), (localBalanceStr + "").length]
+      },
+      {
+        type: Ti.UI.ATTRIBUTE_FONT,
+        value: {
+          fontSize: 8,
+          fontFamily: 'GillSans-Light',
+          fontWeight: 'light'
+        },
+        range: [localBalanceText.indexOf(" SAT"), (" SAT").length]
+      }
+    ]
+  });
+}
 
- function continueCloseChannel() {
+$.localAmount.attributedString = attr;
 
-   $.closeChannelButton.hide();
-   $.loadingSpinner.show();
+var remoteBalanceStr = aChannel.remote_balance;
+var remoteBalanceText = remoteBalanceStr + " SAT";
 
-   try {
+var attr2 = Titanium.UI.createAttributedString({
+  text: remoteBalanceText,
+  attributes: [
 
-     var channelPointObject = channelPoint.split(":");
-     var txid = channelPointObject[0];
+    {
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 13,
+        fontFamily: 'GillSans-Light',
+        fontWeight: 'light'
+      },
+      range: [remoteBalanceText.indexOf(remoteBalanceStr + ""), (remoteBalanceStr + "").length]
+    },
+    {
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 8,
+        fontFamily: 'GillSans-Light',
+        fontWeight: 'light'
+      },
+      range: [remoteBalanceText.indexOf(" SAT"), (" SAT").length]
+    }
+  ]
+});
 
-     var output = channelPointObject[1];
-     output = parseInt(output);
+$.remoteAmount.attributedString = attr2;
 
-     globals.lnGRPC.closeChannel(txid, output, force, function(error, res) {
+function continueCloseChannel() {
 
-       if (error == true) {
-         try {
-           if (res.indexOf("force closing") != -1) {
+  $.closeChannelButton.hide();
+  $.loadingSpinner.show();
 
-             var dialog = globals.util.createDialog({
-               title: L("label_closechannel_confirm_title"),
-               message: L("label_closechannel_confirm_force_description"),
-               buttonNames: [L("label_force_close"),L("label_cancel")]
-             });
+  try {
 
-             dialog.addEventListener("click", function(e) {
+    var channelPointObject = channelPoint.split(":");
+    var txid = channelPointObject[0];
 
-               if (e.index != e.source.cancel) {
-                 force = true;
-                 continueCloseChannel();
-               } else {
-                 $.closeChannelButton.show();
-                 $.loadingSpinner.hide();
-               }
-             });
-             dialog.show();
+    var output = channelPointObject[1];
+    output = parseInt(output);
 
-             return;
-           }
+    globals.lnGRPC.closeChannel(txid, output, force, function (error, res) {
 
-           globals.console.log(error);
-           alert(res);
+      if (error == true) {
+        try {
+          if (res.indexOf("force closing") != -1) {
 
-           $.closeChannelButton.show();
-           $.loadingSpinner.hide();
+            var dialog = globals.util.createDialog({
+              title: L("label_closechannel_confirm_title"),
+              message: L("label_closechannel_confirm_force_description"),
+              buttonNames: [L("label_force_close"), L("label_cancel")]
+            });
 
-           return;
-         } catch (e) {
-           globals.console.error(e);
-         }
-       }
-       globals.console.log("close channel", res);
-       try {
-         console.log(res)
-         try {
-           console.log(res.close_pending)
-         } catch (e) {
+            dialog.addEventListener("click", function (e) {
 
-         }
+              if (e.index != e.source.cancel) {
+                force = true;
+                continueCloseChannel();
+              } else {
+                $.closeChannelButton.show();
+                $.loadingSpinner.hide();
+              }
+            });
+            dialog.show();
 
-         if (res.channel_close_update != undefined) {
-           if (res.channel_close_update.txid != undefined) {
+            return;
+          }
 
-             Alloy.Globals.getChannels();
-             return
-           }
-         }
-         if (res.pending_update != undefined) {
-           if (res.pending_update.txid != undefined) {
-             alert("channel closing");
-             Alloy.Globals.getChannels();
-             return
-           }
-         }
+          globals.console.log(error);
+          alert(res);
 
-         //for ios grpc
-         if (res.close_pending != undefined) {
+          $.closeChannelButton.show();
+          $.loadingSpinner.hide();
 
-           if (res.close_pending.txid != undefined) {
-             Alloy.Globals.getChannels();
-             return
-           }
+          return;
+        } catch (e) {
+          globals.console.error(e);
+        }
+      }
+      globals.console.log("close channel", res);
+      try {
+        console.log(res)
+        try {
+          console.log(res.close_pending)
+        } catch (e) {
 
-         }
+        }
 
-       } catch (e) {
-         globals.console.error(e);
-       }
+        if (res.channel_close_update != undefined) {
+          if (res.channel_close_update.txid != undefined) {
 
-     });
-   } catch (e) {
-     $.closeChannelButton.show();
-     $.loadingSpinner.hide();
-     console.error(e);
-   }
+            Alloy.Globals.getChannels();
+            return
+          }
+        }
+        if (res.pending_update != undefined) {
+          if (res.pending_update.txid != undefined) {
+            alert("channel closing");
+            Alloy.Globals.getChannels();
+            return
+          }
+        }
 
- }
+        //for ios grpc
+        if (res.close_pending != undefined) {
 
- function closeChannel() {
+          if (res.close_pending.txid != undefined) {
+            Alloy.Globals.getChannels();
+            return
+          }
 
-   var buttons = [L("label_force_close"), L("label_cancel"), L("label_close") ];
+        }
 
-   var forceCloseIndex = 0; 
-   var closeIndex = 2;
+      } catch (e) {
+        globals.console.error(e);
+      }
 
-   
-   var dialog = globals.util.createDialog({
-     title: L("label_closechannel_confirm_title"),
-     message: L("label_closechannel_confirm_description"),
-     buttonNames: buttons
-   });
-   dialog.addEventListener("click", function(e) {
-     if (e.index == forceCloseIndex) {
-       force = true;
-       globals.console.log("force closing");
-       continueCloseChannel();
+    });
+  } catch (e) {
+    $.closeChannelButton.show();
+    $.loadingSpinner.hide();
+    console.error(e);
+  }
 
-     } else if (e.index == closeIndex) {
+}
+
+function closeChannel() {
+
+  var buttons = [L("label_force_close"), L("label_cancel"), L("label_close")];
+
+  var forceCloseIndex = 0;
+  var closeIndex = 2;
+
+
+  var dialog = globals.util.createDialog({
+    title: L("label_closechannel_confirm_title"),
+    message: L("label_closechannel_confirm_description"),
+    buttonNames: buttons
+  });
+  dialog.addEventListener("click", function (e) {
+    if (e.index == forceCloseIndex) {
+      force = true;
+      globals.console.log("force closing");
+      continueCloseChannel();
+
+    } else if (e.index == closeIndex) {
       globals.console.log("closing");
-       continueCloseChannel();
-     }
+      continueCloseChannel();
+    }
 
-   });
-   dialog.show();
+  });
+  dialog.show();
 
- }
- var cachedAlias = Ti.App.Properties.getString(aChannel.remote_pubkey + "_alias", "");
- if (cachedAlias != "") {
-   $.alias.text = cachedAlias
- } else {
+}
+var cachedAlias = Ti.App.Properties.getString(aChannel.remote_pubkey + "_alias", "");
 
-   globals.lnGRPC.getNodeInfo(aChannel.remote_pubkey, function(error, res) {
-     $.alias.text = L('label_loading');
+if (pubkeyShort.indexOf(cachedAlias) != -1 || cachedAlias == undefined) {
+  cachedAlias = "";
+}
 
-     if (error == false) {
-       try {
 
-         $.alias.text = res.node.alias;
-         Ti.App.Properties.setString(aChannel.remote_pubkey + "_alias", res.node.alias)
-         return;
-       } catch (e) {
+if (cachedAlias != "") {
 
-       }
-       $.alias.text = "";
 
-     }
 
-   });
- }
+  setAlias(cachedAlias);
+
+} else {
+  $.details.text = L('label_loading');
+  globals.lnGRPC.getNodeInfo(aChannel.remote_pubkey, function (error, res) {
+    setAlias(cachedAlias);
+
+    if (error == false) {
+      try {
+
+        setAlias(res.node.alias);
+
+        Ti.App.Properties.setString(aChannel.remote_pubkey + "_alias", res.node.alias)
+        return;
+      } catch (e) {
+
+      }
+
+    }
+
+  });
+}
+
+function setAlias(alias) {
+
+  if (pubkeyShort.indexOf(alias) != -1 || alias == undefined) {
+    alias = "";
+  }
+
+  if (alias != "") {
+    alias += " ";
+  }
+
+  var text = alias + pubkeyShort;
+
+  var attr = Titanium.UI.createAttributedString({
+    text: text,
+    attributes: [
+
+      {
+        type: Ti.UI.ATTRIBUTE_FONT,
+        value: {
+          fontSize: 15,
+          fontFamily: 'GillSans-Light',
+          fontWeight: 'light'
+        },
+        range: [text.indexOf(alias + ""), (alias + "").length]
+      },
+      {
+        type: Ti.UI.ATTRIBUTE_FONT,
+        value: {
+          fontSize: 12,
+          fontFamily: 'GillSans-Light',
+          fontWeight: 'light'
+        },
+        range: [text.indexOf(pubkeyShort), pubkeyShort.length]
+      }
+    ]
+  });
+
+  $.details.attributedString = attr;
+
+
+
+}

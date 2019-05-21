@@ -5,15 +5,15 @@ if (args.type == "success") {
 } else {
 	$.colorView.backgroundColor = "#c35959";
 
-try{
-	if(	args.errorMessage.indexOf("=") != -1){
-			args.errorMessage = 	args.errorMessage.split("=");
-			args.errorMessage = args.errorMessage[args.errorMessage.length-1];
+	try {
+		if (args.errorMessage.indexOf("=") != -1) {
+			args.errorMessage = args.errorMessage.split("=");
+			args.errorMessage = args.errorMessage[args.errorMessage.length - 1];
+		}
 	}
-}
-catch(e){
-	//try to format error message remove rpc pretext
-}
+	catch (e) {
+		//try to format error message remove rpc pretext
+	}
 }
 
 args.parent.add($.mainView);
@@ -31,7 +31,7 @@ $.colorView.animate({
 	duration: 500
 });
 
-setTimeout(function() {
+setTimeout(function () {
 	$.infoView.animate({
 		opacity: 1,
 		duration: 500
@@ -42,7 +42,7 @@ setTimeout(function() {
 		duration: 800
 	});
 
-	setTimeout(function() {
+	setTimeout(function () {
 		$.okLabel.animate({
 			opacity: 1,
 			duration: 800
@@ -68,12 +68,12 @@ var a = Ti.UI.createAnimation({
 
 
 if (args.type == "success") {
-$.colorView.animate(a); // set the animation in motion
+	$.colorView.animate(a); // set the animation in motion
 }
-else{
+else {
 	$.colorView.transform = matrix2d;
 	$.checkIcon.image = "/images/failedSymbolWhite.png";
-		$.statusLabel.text = args.errorMessage;
+	$.statusLabel.text = args.errorMessage;
 }
 
 function close() {
@@ -82,7 +82,7 @@ function close() {
 		duration: 200
 	});
 
-	setTimeout(function() {
+	setTimeout(function () {
 
 		args.parent.remove($.mainView);
 		args.callback();

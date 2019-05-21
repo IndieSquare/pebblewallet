@@ -16,14 +16,14 @@ function close(e) {
     "duration": 200
   });
 
-  setTimeout(function() {
+  setTimeout(function () {
     $.win.width = 0;
     $.win.close();
   }, 200);
 }
 
 if (OS_ANDROID) {
-  $.win.addEventListener("android:back", function() {
+  $.win.addEventListener("android:back", function () {
     close();
     return true;
   });
@@ -47,7 +47,7 @@ for (key in currentTiker) {
     "name": key,
     "symbol": tiker.symbol,
     "currentCurrency": Ti.App.Properties.getString("currency", "USD"),
-    "callback": function(currency) {
+    "callback": function (currency) {
       args.setLabel(currency);
       Ti.App.Properties.setString("currency", currency);
       globals.loadMainScreen();

@@ -16,11 +16,11 @@ function androidChangeValueFiat() {
 
 function setUp() {
 
-  $.amountField.addEventListener("change", function(e) {
+  $.amountField.addEventListener("change", function (e) {
 
   });
 
-  $.amountFieldFiat.addEventListener("change", function(e) {
+  $.amountFieldFiat.addEventListener("change", function (e) {
     updateAmountFiat()
 
   });
@@ -55,16 +55,16 @@ function setRec() {
   updateAmount();
 }
 exports.API = {
-  setUp: function() {
+  setUp: function () {
     setUp()
   },
-  setPubKey: function(pubkey) {
+  setPubKey: function (pubkey) {
     $.peerField.value = pubkey;
   }
 };
 
 function updateAmountFiat() {
-  setTimeout(function() {
+  setTimeout(function () {
     if ($.amountFieldFiat.value.length == 0) {
       $.amountField.value = "0";
       return;
@@ -93,7 +93,7 @@ function updateAmountFiat() {
 }
 
 function updateAmount() {
-  setTimeout(function() {
+  setTimeout(function () {
     if ($.amountField.value.length == 0) {
       $.amountFieldFiat.value = "0";
       return;
@@ -128,7 +128,7 @@ function startOpenChannel() {
   $.peerField.blur();
   globals.lnGRPC.connectPeer(lightningAddress,
 
-    function(error, res) {
+    function (error, res) {
 
       globals.console.log("res", res);
       var peerAlreadyAdded = false;
@@ -145,7 +145,7 @@ function startOpenChannel() {
           parent: $.getView(),
           errorMessage: res,
           type: "fail",
-          callback: function() {
+          callback: function () {
             globals.getWalletBalance();
             globals.listPayments();
             close();
@@ -163,7 +163,7 @@ function startOpenChannel() {
         var amount = $.amountField.value;
         globals.console.log("trying to open channel");
         globals.lnGRPC.openChannel(pubKey, amount,
-          function(error, res) {
+          function (error, res) {
             globals.console.log("error", error);
             if (error == true) {
               globals.console.log("is error", error);
@@ -171,7 +171,7 @@ function startOpenChannel() {
                 parent: $.getView(),
                 errorMessage: res,
                 type: "fail",
-                callback: function() {
+                callback: function () {
                   globals.getWalletBalance();
                   globals.listPayments();
                   close();
@@ -188,10 +188,11 @@ function startOpenChannel() {
               if (fundingTxidStr != undefined) {
                 $.statusLabel.text = L("label_channel_opening")
               }
-              setTimeout(function() {
+              setTimeout(function () {
                 close();
                 if (Alloy.Globals.getChannels != undefined) {
                   Alloy.Globals.getChannels();
+
                 }
               }, 2000)
 
@@ -205,10 +206,10 @@ function startOpenChannel() {
 
 }
 
-var startScan = function() {
+var startScan = function () {
 
   Alloy.Globals.util.readQRcodeNormal({
-    callback: function(e) {
+    callback: function (e) {
       globals.console.log(e);
       globals.console.log("callback ", e);
 
@@ -217,7 +218,7 @@ var startScan = function() {
       $.peerField.value = qrcodeData;
 
     },
-    textCallback: function(e) {
+    textCallback: function (e) {
 
       globals.console.log(e);
 
@@ -234,11 +235,11 @@ function close() {
   $.amountFieldFiat.blur();
 
   $.boxView.animate({
-      "curve": Ti.UI.ANIMATION_CURVE_EASE_IN_OUT,
-      "opacity": 0.0,
-      "duration": 200
-    },
-    function() {
+    "curve": Ti.UI.ANIMATION_CURVE_EASE_IN_OUT,
+    "opacity": 0.0,
+    "duration": 200
+  },
+    function () {
       $.args.parent.remove($.getView());
       $.boxView.opacity = 1;
 

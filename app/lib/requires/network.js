@@ -1,4 +1,4 @@
-module.exports = (function() {
+module.exports = (function () {
   var self = {};
 
   function onerror(params, e, error) {
@@ -11,14 +11,14 @@ module.exports = (function() {
       try {
         globals.console.error(error);
         message = JSON.parse(error);
-      } catch (e) {}
+      } catch (e) { }
     }
     globals.console.error("Error: " + e.error + ":" + e.code + ": " + JSON.stringify(message));
 
     if (params.onError) params.onError(message);
   };
 
-  self.connectPOST = function(params) {
+  self.connectPOST = function (params) {
 
     var xhr = Ti.Network.createHTTPClient({
       "validatesSecureCertificate": !Alloy.CFG.isLocal
@@ -45,17 +45,17 @@ module.exports = (function() {
     xhr.setRequestHeader("charset", "utf-8");
     xhr.setRequestHeader("X-Api-Key", Alloy.Globals.api_key);
 
-    xhr.onload = function() {
+    xhr.onload = function () {
 
-        var results = "";
-        try {
-          results = JSON.parse(this.responseText);
-        } catch (e) {}
-        params.callback(results);
-        if (params.always != null) params.always();
+      var results = "";
+      try {
+        results = JSON.parse(this.responseText);
+      } catch (e) { }
+      params.callback(results);
+      if (params.always != null) params.always();
 
-      },
-      xhr.onerror = function(e) {
+    },
+      xhr.onerror = function (e) {
 
         globals.console.error("POST Method: " + params.method);
         params.type = "POST";
@@ -68,30 +68,30 @@ module.exports = (function() {
     return xhr;
   };
 
-  self.getStartUpInfo = function(callback) {
+  self.getStartUpInfo = function (callback) {
 
     var xhr = Ti.Network.createHTTPClient();
 
     var url = Alloy.CFG.pebble_api;
-    globals.console.log("loading "+url)
+    globals.console.log("loading " + url)
     xhr.open("GET", url);
 
-    xhr.onload = function() {
-        var results = "";
-        try { 
-          
-          results = JSON.parse(this.responseText);
- 
-          callback(null, results);
- 
-        } catch (e) {
- 
-          callback(e, null);
-        }
+    xhr.onload = function () {
+      var results = "";
+      try {
 
-      },
-      xhr.onerror = function(e) {
-        globals.console.error("start up error",e);
+        results = JSON.parse(this.responseText);
+
+        callback(null, results);
+
+      } catch (e) {
+
+        callback(e, null);
+      }
+
+    },
+      xhr.onerror = function (e) {
+        globals.console.error("start up error", e);
         callback(e, null);
       };
     xhr.send();
@@ -99,7 +99,7 @@ module.exports = (function() {
     return xhr;
   };
 
-  self.connectGET = function(params) {
+  self.connectGET = function (params) {
 
     var xhr = Ti.Network.createHTTPClient({
       "validatesSecureCertificate": !Alloy.CFG.isLocal
@@ -119,16 +119,16 @@ module.exports = (function() {
 
     xhr.setRequestHeader("X-Api-Key", Alloy.Globals.api_key);
 
-    xhr.onload = function() {
+    xhr.onload = function () {
 
-        var results = "";
-        try {
-          results = JSON.parse(this.responseText);
-        } catch (e) {}
-        params.callback(results);
-        if (params.always != null) params.always();
-      },
-      xhr.onerror = function(e) {
+      var results = "";
+      try {
+        results = JSON.parse(this.responseText);
+      } catch (e) { }
+      params.callback(results);
+      if (params.always != null) params.always();
+    },
+      xhr.onerror = function (e) {
 
         globals.console.error("GET Method: " + params.method);
         params.type = "GET";

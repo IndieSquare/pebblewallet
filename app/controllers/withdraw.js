@@ -1,13 +1,20 @@
 var args = arguments[0] || {};
 var currencyFiat = Ti.App.Properties.getString("currency", "USD");
 $.blockingView.hide();
-var isFiatMode = false;
-var FiatSymbol = globals.tiker.getFiatSymbol(currencyFiat);
 var timer = null;
-var fiat_conf = "";
-var fiatValue = globals.tiker.getFiatValue(currencyFiat);
 
 $.sendLabel.title = $.sendLabel.title.toUpperCase();
+
+
+var isFiatMode = false;
+var FiatSymbol = globals.tiker.getFiatSymbol(currencyFiat);
+globals.console.log("fiat symbol", FiatSymbol);
+var timer = null;
+var fiat_conf = "";
+var fiatValue = globals.tiker.getFiatValue(currencyFiat, "BTC");
+
+globals.console.log("fiat value", fiatValue);
+
 
 function showHideLoading(hide) {
   if (hide) {
@@ -37,6 +44,7 @@ function close(e) {
 
   if (OS_ANDROID) {
     $.win.close();
+    return;
   }
   $.background.animate({
     "opacity": 0,
@@ -48,14 +56,14 @@ function close(e) {
     "duration": 200
   });
 
-  setTimeout(function() {
+  setTimeout(function () {
     $.win.width = 0;
     $.win.close();
   }, 200);
 }
 
 if (OS_ANDROID) {
-  $.win.addEventListener('android:back', function() {
+  $.win.addEventListener('android:back', function () {
     close();
     return true;
   });
@@ -76,15 +84,68 @@ if (OS_IOS) {
 }
 
 $.amount.text = "0";
-$.amountToken.text = globals.LNCurrency;
+$.amountBTC.text = globals.LNCurrency;
 
 $.keypad.height = globals.display.height - 225;
 
 
+function switchAmount(e) {
+
+  if (!isFiatMode) {
+    $.numberPadDot.show();
+    isFiatMode = true;
+    inputValue = $.fiat.text.replace(FiatSymbol, "").replace(/[^\d.-]/g, "");
+
+    $.fiat.top = 0;
+    $.fiat.applyProperties($.createStyle({
+      classes: "size40 white",
+      apiName: "Label"
+    }));
+
+    $.amountView.top = 45;
+    $.amountBTC.bottom = 0;
+    $.amount.applyProperties($.createStyle({
+      classes: "size20 white bold",
+      apiName: "Label"
+    }));
+    $.amountBTC.applyProperties($.createStyle({
+      classes: "size12 white",
+      apiName: "Label"
+    }));
+  } else {
+    $.numberPadDot.hide();
+    isFiatMode = false;
+    inputValue = $.amount.text;
+
+    $.fiat.top = 45;
+    $.fiat.applyProperties($.createStyle({
+      classes: "size20 white fiat",
+      apiName: "Label"
+    }));
+
+    $.amountView.top = 0;
+    $.amountBTC.bottom = 5;
+    $.amount.applyProperties($.createStyle({
+      classes: "size40 white bold",
+      apiName: "Label"
+    }));
+    $.amountBTC.applyProperties($.createStyle({
+      classes: "size20 white amountBTC",
+      apiName: "Label"
+    }));
+  }
+
+}
+
 function setFeeLabel(fee) {
+  globals.console.log("setting fee label", fee)
   currentFee = fee;
-  if (isFinite(currentFee)) $.priorityLabel.text = currentFee + " " + globals.LNCurrencySat + " ▼";
-  else $.priorityLabel.text = globals.feeTexts[currentFee] + "▼";
+  if (isFinite(currentFee)) {
+    $.priorityLabel.text = currentFee + " " + globals.LNCurrencySat + " ▼";
+  }
+  else {
+    $.priorityLabel.text = globals.feeTexts[currentFee] + "▼";
+  }
 
 }
 
@@ -136,14 +197,26 @@ function updateFields(button, abstAmount) {
     return inputValue;
   }
 
+
   if (button != null) {
     updateTheField(button, abstAmount);
   } else {
     inputValue = abstAmount;
   }
-  console.log(fiatValue);
 
-  $.amount.text = addCommas(inputValue);
+  globals.console.log(fiatValue);
+
+  if (!isFiatMode) {
+    $.amount.text = inputValue;
+
+    var val = (inputValue * fiatValue).toFixed2(4);
+    if (fiatValue == 0) val = 0;
+    $.fiat.text = FiatSymbol + addCommas(val);
+
+  } else {
+    $.fiat.text = FiatSymbol + addCommas(inputValue);
+    $.amount.text = (inputValue / fiatValue).toFixed2(4) + "";
+  }
 
 }
 
@@ -164,8 +237,8 @@ function setValues(vals) {
 
 function prioritySet() {
   Alloy.createController("priority", {
-      "setFeeLabel": setFeeLabel,
-    })
+    "setFeeLabel": setFeeLabel,
+  })
     .getView().open();
 }
 
@@ -202,7 +275,7 @@ function pressedSend() {
       "chain": "btc",
       "version": "v1",
       "method": "transactions/estimatefee",
-      "callback": function(result) {
+      "callback": function (result) {
         globals.console.log("fees res", result);
 
         fee = parseInt((result[currentFee] / 1000) + "");
@@ -211,7 +284,7 @@ function pressedSend() {
         continueSend(quantity, fee);
 
       },
-      "onError": function(error) {
+      "onError": function (error) {
         globals.console.error(error);
         showHideLoading(true);
         var dialog = globals.util.createDialog({
@@ -226,10 +299,32 @@ function pressedSend() {
 
 };
 
+function sendAll() {
+
+  if ($.inputDestination.value.length == 0) {
+    alert(L("label_enter_destination"));
+    return;
+  }
+  var dialog = globals.util.createDialog({
+    title: L("label_confirm"),
+    message: L("label_send_all_check").format({ "address": $.inputDestination.value }),
+    buttonNames: [L("label_send"), L("label_close")]
+  });
+  dialog.addEventListener("click", function (e) {
+    if (e.index != e.source.cancel) {
+      showHideLoading(false);
+      continueSend(-1, -1);
+    }
+  });
+  dialog.show();
+
+
+}
+
 function continueSend(quantity, fee) {
   globals.console.log("current fee", fee);
 
-  globals.lnGRPC.sendCoins(quantity, $.inputDestination.value, parseInt(fee), function(error, response) {
+  globals.lnGRPC.sendCoins(quantity, $.inputDestination.value, parseInt(fee), function (error, response) {
     showHideLoading(true);
     if (error == true) {
 
@@ -243,7 +338,7 @@ function continueSend(quantity, fee) {
       isInvoice: false,
       token: globals.LNCurrency,
       type: "success",
-      callback: function() {
+      callback: function () {
         if (globals.getWalletBalance != undefined) {
           globals.getWalletBalance();
         }
@@ -271,8 +366,8 @@ if (args.amount != undefined) {
 
 $.balance.text = L("loading");
 
-setTimeout(function() {
-  globals.lnGRPC.getWalletBalance(function(error, response) {
+setTimeout(function () {
+  globals.lnGRPC.getWalletBalance(function (error, response) {
 
     if (response.confirmed_balance != undefined) {
       globals.console.log("blance ", response.confirmed_balance)

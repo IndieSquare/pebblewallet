@@ -1,17 +1,17 @@
 /**
  * Titanium does not implement Uint8Array. Implementing here...
  */
-var UintArray = function(arg1) {
-	var subarray = function(start, end) {
+var UintArray = function (arg1) {
+	var subarray = function (start, end) {
 		return this.slice(start, end);
 	};
-	var set_ = function(array, offset) {
-		if(arguments.length < 2) offset = 0;
+	var set_ = function (array, offset) {
+		if (arguments.length < 2) offset = 0;
 		for (var i = 0, n = array.length; i < n; ++i, ++offset)
 			this[offset] = array[i] & 0xFF;
 	};
 	var result;
-	if(typeof arg1 === "number") {
+	if (typeof arg1 === "number") {
 		result = new Array(arg1);
 		for (var i = 0; i < arg1; ++i) result[i] = 0;
 	} else {
@@ -21,7 +21,7 @@ var UintArray = function(arg1) {
 	result.buffer = result;
 	result.byteLength = result.length;
 	result.set = set_;
-	if(typeof arg1 === "object" && arg1.buffer) {
+	if (typeof arg1 === "object" && arg1.buffer) {
 		result.buffer = arg1.buffer;
 	}
 	return result;

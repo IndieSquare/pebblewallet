@@ -27,6 +27,7 @@ function setTestnet() {
   globals.LNCurrency = "tBTC";
   globals.LNCurrencySat = "tSat";
   globals.dappStoreUrl = globals.discoverEndpoint + "?lndbtcMode=true&testnet=true";
+  globals.console.log("dappStoreUrl",globals.dappStoreUrl);
 
 }
 
@@ -36,17 +37,20 @@ function setMainnet() {
   globals.LNCurrency = "BTC";
   globals.LNCurrencySat = "sat";
   globals.dappStoreUrl = globals.discoverEndpoint + "?lndbtcMode=true&testnet=false";
+  globals.console.log("dappStoreUrl",globals.dappStoreUrl);
+
 
 }
 
 globals.connectLNDGRPC = function (config) {
+  globals.synced = true;
   globals.didGetTransactionsOnce = false;
   globals.hideNoTransactions();
   stopSyncUI();
   clearTimeout(continueSyncTimeout);
-  if (OS_IOS) {
+  /*if (OS_IOS) {
     Ti.App.iOS.cancelLocalNotification("check");
-  }
+  }*/
   globals.console.log("connectLNDGRPC")
   globals.clearTransactionsTable();
   globals.showTransactionsLoader();
@@ -113,6 +117,7 @@ globals.connectLNDGRPC = function (config) {
         return;
 
       }
+      globals.synced = true;
       globals.nodeInfo = response;
       globals.setNodeInfo(globals.nodeInfo);
 
@@ -179,6 +184,8 @@ globals.loadMainScreen = function (dontShowSpinner) {
 
     globals.listPayments(dontShowSpinner);
     startSubscribeInvoices();
+
+    globals.tryAndBackUpChannels();
 
     if (didGetArguments == false) {
       didGetArguments = true;
@@ -361,7 +368,7 @@ globals.launchPayScan = function () {
 globals.continuePay = function (req) {
 
   var bitcoin = require("requires/bitcoin");
-  globals.console.log(req);
+  globals.console.log("req",req);
 
   if (req.indexOf("bitcoin:") != -1) {
     var decodedURI = bitcoin.decodeBip21(req);
@@ -373,7 +380,7 @@ globals.continuePay = function (req) {
           amount: decodedURI.amount
         }).getView().open();
       } catch (e) {
-        console.log(e);
+        globals.console.log(e);
       }
     }
     return;
@@ -394,7 +401,7 @@ globals.continuePay = function (req) {
   if (req.indexOf("LIGHTNING:") != -1) {
     req = req.replace("LIGHTNING:", '');
   }
-  var res = globals.lnGRPC.decodePayReq(req, function (error, res) {
+   globals.lnGRPC.decodePayReq(req, function (error, res) {
 
     if (error == true) {
       alert(res);
@@ -473,7 +480,7 @@ globals.continuePay = function (req) {
           globals.loadMainScreen();
 
           lock = false;
-
+ 
         },
 
       });
@@ -577,7 +584,7 @@ function startLoadFromCache() {
           return;
         }
 
-        globals.lnGRPC.unlockWallet(globals.createPassword(globals.passCodeHash), function (error, response) {
+        globals.lnGRPC.unlockWallet(globals.createPassword(globals.passCodeHash),-1,"", function (error, response) {
           console.log("unlock wallet err ", error);
           console.log("unlock wallet", response);
 
@@ -656,7 +663,7 @@ function startLoadFromCache() {
 }
 
 function stopSyncUI() {
-  $.syncStatus.visible = false;
+  //$.syncStatus.visible = false;
 }
 
 function setSyncingUI() {
@@ -668,7 +675,7 @@ function setSyncingUI() {
   channelConfirmedBalance = Ti.App.Properties.getInt("last_channel_balance", 0);
   setBalances(true);
 
-  var matrix2d = Ti.UI.create2DMatrix();
+   var matrix2d = Ti.UI.create2DMatrix();
   matrix2d = matrix2d.rotate(180); // in degrees
   var a = Ti.UI.createAnimation({
     transform: matrix2d,
@@ -677,11 +684,42 @@ function setSyncingUI() {
     curve: Titanium.UI.ANIMATION_CURVE_LINEAR
   });
   $.syncIcon.animate(a);
-
+  globals.console.log("starting animation"); 
+   
 }
+if(OS_IOS){
+ var syncIcon = null;
+globals.reAddSyncIcon = function(){
+ if($.syncStatus.visible == false){
+   return;
+ }
 
+  $.syncStatus.remove($.syncIcon);
+
+  if(syncIcon != null){
+  $.syncStatus.remove(syncIcon);
+  }
+  syncIcon = Ti.UI.createImageView({
+    image:"/images/syncIcon.png",
+    left:5,
+    top:0,
+    height:25,
+  });
+  $.syncStatus.add(syncIcon);
+
+  var matrix2d = Ti.UI.create2DMatrix();
+  matrix2d = matrix2d.rotate(180); // in degrees
+  var a = Ti.UI.createAnimation({
+    transform: matrix2d,
+    duration: 600,
+    repeat: 1000000, //not sure how to set to unlimited
+    curve: Titanium.UI.ANIMATION_CURVE_LINEAR
+  });
+  syncIcon.animate(a);
+}
+}
 function checkSyncStatus() {
-
+  
   globals.lnGRPC.getInfo("", function (error, response) {
     globals.console.log("getInfo1", error);
     globals.console.log("getInfo1", response);
@@ -690,6 +728,9 @@ function checkSyncStatus() {
       alert(response);
       return;
     }
+
+    globals.currentPubkey = response.identity_pubkey;
+
     if (response.testnet == true) {
       setTestnet();
     }
@@ -697,8 +738,9 @@ function checkSyncStatus() {
       response.block_height = 0;
     }
     if (response.synced_to_chain == undefined || response.synced_to_chain == false) {
+      globals.synced = false;
       setSyncingUI();
-      var currentNetworkBlockHeight = globals.util.getCurrentNetworkBlockHeight(globals.lndMobileNetwork);
+      var currentNetworkBlockHeight = globals.util.getCurrentNetworkBlockHeight(Alloy.Globals.network);
       var percentage = Math.floor(((response.block_height / currentNetworkBlockHeight) * 100));
       if (percentage > 100) {
         percentage = 100;
@@ -732,13 +774,14 @@ function checkSyncStatus() {
 
     } else {
       if (response.synced_to_chain == 1) {
+        globals.synced = true;
         Ti.App.Properties.setBool("didLoadFirstTime",true);
         globals.hideSyncingInfo();
         try {
 
-          Ti.App.Properties.setInt("latest_block_height_" + globals.lndMobileNetwork, response.block_height);
+          Ti.App.Properties.setInt("latest_block_height_" + Alloy.Globals.network , response.block_height);
           var currentTimeStamp = Math.floor(Date.now() / 1000);
-          Ti.App.Properties.setInt("latest_time_stamp_" + globals.lndMobileNetwork, currentTimeStamp);
+          Ti.App.Properties.setInt("latest_time_stamp_" + Alloy.Globals.network , currentTimeStamp);
 
           $.syncStatus.visible = false;
           globals.nodeInfo = response;
@@ -746,14 +789,17 @@ function checkSyncStatus() {
           $.walletName.text = L('wallet_info')
           globals.lndMobileStarted = true;
 
-          if (OS_IOS) {
+          /*if (OS_IOS) {
             Ti.App.iOS.cancelLocalNotification("check");
             if (Ti.App.Properties.getBool("didRequest")) {
               globals.util.scheduleReminderNotif();
             }
-          }
+          }*/
 
           globals.loadMainScreen();
+          
+          globals.tryAndBackUpChannels();
+
         } catch (e) {
           console.error(e);
         }
@@ -776,6 +822,19 @@ if (OS_ANDROID) {
     }
 
   });
+}
+
+globals.tryAndBackUpChannels = function(){
+  
+  if(Ti.App.Properties.getString("google_drive_linked",undefined) != undefined){
+    if(globals.synced == true){
+    globals.console.log("attempting to back up channels");
+    globals.util.backUpChannels(function(error,response){
+    
+    });
+
+  }
+  }
 }
 
 function showNodeInfo() {
@@ -805,6 +864,7 @@ globals.hideShowNodeInfo = function (show) {
   }
 }
 
+/*
 if (OS_IOS) {
   Ti.App.iOS.registerUserNotificationSettings({
     types: [
@@ -813,6 +873,6 @@ if (OS_IOS) {
       Ti.App.iOS.USER_NOTIFICATION_TYPE_BADGE
     ]
   });
-}
+}*/
 
 globals.menuWidget.show();

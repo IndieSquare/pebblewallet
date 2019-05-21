@@ -17,7 +17,7 @@ function close(e) {
     "duration": 200
   });
 
-  setTimeout(function() {
+  setTimeout(function () {
     $.win.width = 0;
     $.win.close();
   }, 200);
@@ -27,7 +27,7 @@ globals.closeSettings = close;
 
 if (OS_ANDROID) {
 
-  $.win.addEventListener('android:back', function() {
+  $.win.addEventListener('android:back', function () {
     close();
     return true;
   });
@@ -59,36 +59,36 @@ if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
   $.scrollView.remove($.autoPilot);
   $.scrollView.remove($.passphraseView);
   $.scrollView.remove($.logsView);
-  $.scrollView.remove($.neutrinoPeer); 
+  $.scrollView.remove($.neutrinoPeer);
 }
 
-function changeNeutrinoPeer(){
+function changeNeutrinoPeer() {
 
-  
+
   var dialog = globals.util.createInputDialog({
     "title": L("label_settings_neutrino_peer"),
     "message": L("label_settings_neutrino_peer_description"),
     "value": Ti.App.Properties.getString("customPeer", globals.defaultPeer),
     "keyboardType": Ti.UI.KEYBOARD_TYPE_DECIMAL_PAD,
-    "cancel":1,
-    "buttonNames": [L("label_apply"), L("label_cancel"),L("label_reset")]
+    "cancel": 1,
+    "buttonNames": [L("label_apply"), L("label_cancel"), L("label_reset")]
   });
-  dialog.origin.addEventListener("click", function(e) {
+  dialog.origin.addEventListener("click", function (e) {
     var inputText = (OS_ANDROID) ? dialog.androidField.getValue() : e.text;
     globals.console.log(e.index);
-   
+
     if (e.index != e.source.cancel) {
-      
-      if(e.index == 2){
-      	globals.console.log("resetting");
+
+      if (e.index == 2) {
+        globals.console.log("resetting");
         Ti.App.Properties.setString("customPeer", globals.defaultPeer);
       }
-      else{
-      	globals.console.log("setting");
+      else {
+        globals.console.log("setting");
         Ti.App.Properties.setString("customPeer", inputText);
       }
 
-      globals.util.saveLNDConf(globals.lndMobileNetwork);
+      globals.util.saveLNDConf(Alloy.Globals.network);
 
       var loading = globals.util.showLoading($.settingsView, {
         "width": Ti.UI.FILL,
@@ -97,14 +97,12 @@ function changeNeutrinoPeer(){
         "message": L("label_loading")
       });
 
-      globals.lnGRPC.stopLND(function(error, response) {
+      globals.lnGRPC.stopLND(function (error, response) {
+        loading.removeSelf();
+        alert(L("restart_app"))
 
-        setTimeout(function() {
-          globals.startLNDMobile();
-          loading.removeSelf();
-        }, 5000);
       });
-        
+
     }
   });
   dialog.origin.show();
@@ -113,6 +111,11 @@ function changeNeutrinoPeer(){
 
 function autoPilot() {
 
+  if (globals.synced == false) {
+    alert(L("wait_for_sync"));
+    return;
+  }
+
   if (Ti.App.Properties.getInt("autoPilot", 1) == 0) {
     Ti.App.Properties.setInt("autoPilot", 1)
     $.autoPilotImage.image = "/images/icon_checked.png";
@@ -120,7 +123,7 @@ function autoPilot() {
     Ti.App.Properties.setInt("autoPilot", 0)
     $.autoPilotImage.image = "/images/icon_unchecked.png";
   }
-  globals.util.saveLNDConf(globals.lndMobileNetwork);
+  globals.util.saveLNDConf(Alloy.Globals.network);
 
   var loading = globals.util.showLoading($.settingsView, {
     "width": Ti.UI.FILL,
@@ -129,12 +132,9 @@ function autoPilot() {
     "message": L("label_loading")
   });
 
-  globals.lnGRPC.stopLND(function(error, response) {
-
-    setTimeout(function() {
-      globals.startLNDMobile();
-      loading.removeSelf();
-    }, 5000);
+  globals.lnGRPC.stopLND(function (error, response) {
+    loading.removeSelf();
+    alert(L("restart_app"));
   });
 
 }
@@ -145,14 +145,14 @@ function showPassPhrase() {
   var dialog = globals.util.createDialog({
     title: L("label_confirm"),
     message: L("label_confirm_showpassphrase"),
-    buttonNames: [L("label_show"),L("label_close")]
+    buttonNames: [L("label_show"), L("label_close")]
   });
-  dialog.addEventListener("click", function(e) {
+  dialog.addEventListener("click", function (e) {
     if (e.index != e.source.cancel) {
 
       Alloy.createController("introscreens", {
-          "isPassphraseOnly": true
-        })
+        "isPassphraseOnly": true
+      })
         .getView()
         .open();
 
@@ -174,48 +174,28 @@ function goToLogs() {
   Alloy.createController("/components/logs_view").getView().open();
 }
 
-function showCurrency(){
-	var args = {
-		"setLabel": function(currency) {
-			$.currencyLabel.text = currency;
-		}
-	};
-	Alloy.createController("currency", args)
-		.getView().open();
+function showCurrency() {
+  var args = {
+    "setLabel": function (currency) {
+      $.currencyLabel.text = currency;
+    }
+  };
+  Alloy.createController("currency", args)
+    .getView().open();
 }
 
 
 $.currencyLabel.text = Ti.App.Properties.getString("currency", "USD");
 
 
-function exportChannels(){
+function exportChannels() {
+  if (globals.synced == false) {
+    alert(L("wait_for_sync"));
+    return;
+  }
+  Alloy.createController("components/google_drive_link")
+    .getView()
+    .open();
 
-  globals.lnGRPC.exportAllChannelBackups(function (error, response) {
-
-    if (error == true) {
-      alert(response);
-      return;
-    }
-
-    console.log("re",response);
-    var emailDialog = Ti.UI.createEmailDialog()
-    emailDialog.subject = L("channels_backup_title_email");
-    emailDialog.messageBody = L("channels_backup_description_email");
-
-    var f = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'channels_backup_'+globals.currentAlias+'.txt');
-    if (f.exists() === false) {
-      f.createFile();
-    }   
-    if(OS_IOS){
-      var multi_chan_backup = response.multi_chan_backup.multi_chan_backup;
-    }else if(OS_ANDROID){
-      var multi_chan_backup = response.multi_chan_backup;
-    }
-    f.write(multi_chan_backup);
-
-    emailDialog.addAttachment(f);
-    emailDialog.open();
-    
-  });
 
 }

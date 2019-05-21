@@ -16,17 +16,17 @@ function openDapp() {
 		return;
 	}
 
-	if(globals.loadedWebView == false){
+	if (globals.loadedWebView == false) {
 
 
-			globals.loadWebView();
-			setTimeout(function(){
+		globals.loadWebView();
+		setTimeout(function () {
 			openDapp();
-			},2000)
-			return;
+		}, 2000)
+		return;
 
 	}
-		globals.loadDiscover();
+	globals.loadDiscover();
 	globals.loadInDapp(args.url);
 
 	globals.openCloseMenu();

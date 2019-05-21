@@ -1,4 +1,9 @@
-$.channelsFunds.height = Ti.Platform.displayCaps.platformHeight - Alloy.Globals.btclnTopBarHeight;
+
+var sHeight = Ti.Platform.displayCaps.platformHeight;
+if (Ti.Platform.displayCaps.platformHeight < Ti.Platform.displayCaps.platformwidth) {
+  sHeight = Ti.Platform.displayCaps.platformwidth;
+}
+$.channelsFunds.height = sHeight - Alloy.Globals.btclnTopBarHeight;
 $.channelsFunds.top = Alloy.Globals.btclnTopBarHeight;
 $.channels.top = $.switchTab.height;
 $.funds.top = $.switchTab.height;
@@ -31,7 +36,7 @@ function close(e) {
     "duration": 200
   });
 
-  setTimeout(function() {
+  setTimeout(function () {
     $.win.width = 0;
     $.win.close();
   }, 200);
@@ -52,13 +57,13 @@ if (OS_IOS) {
 $.statusText.text = L('loading_balance');
 $.totalBalanceFiat.hide();
 $.totalBalance.hide();
-globals.getWalletBalance = function() {
+globals.getWalletBalance = function () {
   $.statusText.text = L('loading_balance');
   $.totalBalanceFiat.hide();
   $.totalBalance.hide();
   globals.console.log("getting wallet balance");
 
-  globals.lnGRPC.getWalletBalance(function(error, response) {
+  globals.lnGRPC.getWalletBalance(function (error, response) {
     $.statusText.text = "";
     $.onchain_description.show();
     if (error == true) {
@@ -89,7 +94,7 @@ globals.getWalletBalance = function() {
 
 }
 
-setTimeout(function() {
+setTimeout(function () {
   globals.getWalletBalance();
 }, 300);
 
@@ -106,49 +111,49 @@ function setBalances() {
   walletConfirmedValue = globals.util.satToBtc(parseInt(walletConfirmedBalance), true);
 
   var totalText = walletConfirmedValue + " " + currency + " " + walletUnconfirmedValue
-  globals.console.log("total text",totalText + "sd"+globals.LNCurrency);
+  globals.console.log("total text", totalText + "sd" + globals.LNCurrency);
 
   var walletConfirmedValueFiat = globals.util.satToBtc(parseInt(walletConfirmedBalance));
 
   var currencyFiat = Ti.App.Properties.getString("currency", "USD");
-  globals.console.log("currencyFiat1",currencyFiat);
+  globals.console.log("currencyFiat1", currencyFiat);
   var walletConfirmedValueFiat = globals.tiker.to("BTC", walletConfirmedValueFiat, currencyFiat, 2);
-globals.console.log("currencyFiat",currencyFiat);
+  globals.console.log("currencyFiat", currencyFiat);
   if (Alloy.Globals.network == "testnet") {
     currencyFiat = "t" + currencyFiat;
   }
-  globals.console.log("currencyFiat",currencyFiat);
+  globals.console.log("currencyFiat", currencyFiat);
   var totalTextFiat = walletConfirmedValueFiat + " " + currencyFiat;
-  globals.console.log("currencyFiat",totalTextFiat);
+  globals.console.log("currencyFiat", totalTextFiat);
   var attrTotal = Ti.UI.createAttributedString({
     text: totalText,
     attributes: [{
-        type: Ti.UI.ATTRIBUTE_FONT,
-        value: {
-          fontSize: 60,
-          fontFamily: Alloy.Globals.lightFont,
-          fontWeight: "light",
-        },
-        range: [totalText.indexOf(walletConfirmedValue + ""), (walletConfirmedValue + "").length]
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 60,
+        fontFamily: Alloy.Globals.lightFont,
+        fontWeight: "light",
       },
-      {
-        type: Ti.UI.ATTRIBUTE_FONT,
-        value: {
-          fontSize: 30,
-          fontFamily: Alloy.Globals.lightFont,
-          fontWeight: "light",
-        },
-        range: [totalText.indexOf(" " + currency), (" " + currency).length]
+      range: [totalText.indexOf(walletConfirmedValue + ""), (walletConfirmedValue + "").length]
+    },
+    {
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 30,
+        fontFamily: Alloy.Globals.lightFont,
+        fontWeight: "light",
       },
-      {
-        type: Ti.UI.ATTRIBUTE_FONT,
-        value: {
-          fontSize: 15,
-          fontFamily: Alloy.Globals.lightFont,
-          fontWeight: "light",
-        },
-        range: [totalText.indexOf(" " + walletUnconfirmedValue), (" " + walletUnconfirmedValue).length]
-      }
+      range: [totalText.indexOf(" " + currency), (" " + currency).length]
+    },
+    {
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 15,
+        fontFamily: Alloy.Globals.lightFont,
+        fontWeight: "light",
+      },
+      range: [totalText.indexOf(" " + walletUnconfirmedValue), (" " + walletUnconfirmedValue).length]
+    }
     ]
   });
 
@@ -157,23 +162,23 @@ globals.console.log("currencyFiat",currencyFiat);
   attrTotal = Ti.UI.createAttributedString({
     text: totalTextFiat,
     attributes: [{
-        type: Ti.UI.ATTRIBUTE_FONT,
-        value: {
-          fontSize: 30,
-          fontFamily: Alloy.Globals.lightFont,
-          fontWeight: "light",
-        },
-        range: [totalTextFiat.indexOf(walletConfirmedValueFiat + ""), (walletConfirmedValueFiat + "").length]
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 30,
+        fontFamily: Alloy.Globals.lightFont,
+        fontWeight: "light",
       },
-      {
-        type: Ti.UI.ATTRIBUTE_FONT,
-        value: {
-          fontSize: 30,
-          fontFamily: Alloy.Globals.lightFont,
-          fontWeight: "light",
-        },
-        range: [totalTextFiat.indexOf(" " + currencyFiat), (" " + currencyFiat).length]
-      }
+      range: [totalTextFiat.indexOf(walletConfirmedValueFiat + ""), (walletConfirmedValueFiat + "").length]
+    },
+    {
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 30,
+        fontFamily: Alloy.Globals.lightFont,
+        fontWeight: "light",
+      },
+      range: [totalTextFiat.indexOf(" " + currencyFiat), (" " + currencyFiat).length]
+    }
     ]
   });
 
@@ -193,7 +198,7 @@ function selectChannels() {
   if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
     if (Ti.App.Properties.getBool("didShowGuideScreenChannels", false) == false || globals.allwaysShowGuides) {
       Ti.App.Properties.setBool("didShowGuideScreenChannels", true)
-      setTimeout(function() {
+      setTimeout(function () {
         Alloy.createController("/components/guide_screen", {
           title: L("channels"),
           text: L("channels_help")
@@ -219,7 +224,7 @@ selectFunds();
 if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
 
   if (Ti.App.Properties.getBool("didShowGuideScreenDeposit", false) == false || globals.allwaysShowGuides) {
-    setTimeout(function() {
+    setTimeout(function () {
       Ti.App.Properties.setBool("didShowGuideScreenDeposit", true)
       Alloy.createController("/components/guide_screen", {
         title: L("deposit"),
@@ -230,6 +235,6 @@ if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
   }
 }
 
-function getBalance(){
+function getBalance() {
   globals.getWalletBalance();
 }

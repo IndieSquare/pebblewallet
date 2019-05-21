@@ -1,5 +1,5 @@
 require("init");
-
+globals.synced = false;
 globals.unlocked = false;
 globals.dataDir = "";
 globals.lndMobileStarted = false;
@@ -7,17 +7,21 @@ globals.alreadyUnlocked = false;
 globals.stopHyperloop = false; //needed as live view doesnt work when hyperloop libs are used so slows down dev
 globals.lnGRPC = require("/requires/lnrpc_controller");
 globals.lightning_manager = require("/requires/lightning_manager");
-globals.currentAlias = "";
-Alloy.Globals.lndMobileNetwork = Ti.App.Properties.getString("lndMobileNetwork", "mainnet");
+globals.currentPubkey = "";
+if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
+  Alloy.Globals.network = Ti.App.Properties.getString("lndMobileNetwork", "mainnet");
+}
 
 globals.blockHeight = {
   "mainnet": 564591,
   "testnet": 1486786
 };
+
 if (Ti.App.Properties.getInt("autoPilot", 3) == 3) { //no record
   Ti.App.Properties.setInt("autoPilot", 1);
 }
 
+/*
 if (OS_IOS) {
   Ti.Network.addEventListener('change', function(e) {
 
@@ -43,8 +47,9 @@ if (OS_IOS) {
     }
 
   });
-}
-globals.getRecommendedChannelAmount = function() {
+}*/
+
+globals.getRecommendedChannelAmount = function () {
   var fiatValue = globals.tiker.getFiatValue("USD");
 
   var cryptoAmount = 10 / fiatValue;
@@ -52,10 +57,10 @@ globals.getRecommendedChannelAmount = function() {
   return valueAmt;
 
 }
-globals.getIndieSquareHub = function() {
+globals.getIndieSquareHub = function () {
   if (Alloy.Globals.network == "testnet") {
     return globals.hubURITestnet;
-  } else { 
+  } else {
     return globals.hubURIMainnet;
   }
 }
@@ -71,11 +76,11 @@ if (denomination == "") {
   Ti.App.Properties.setString("denomination", "SAT");
 }
 
-globals.removeEverything = function(callback) {
+globals.removeEverything = function (callback) {
 
   Ti.App.Properties.removeAllProperties()
   globals.console.log("removing user data");
-  globals.nativeCrypto.resetItem(function(success) {
+  globals.nativeCrypto.resetItem(function (success) {
     if (success) {
       globals.console.log("loading!");
 
@@ -91,7 +96,7 @@ globals.removeEverything = function(callback) {
 };
 
 globals.console.log("loading keychain");
-globals.nativeCrypto.loadItem(function(success, userKey) {
+globals.nativeCrypto.loadItem(function (success, userKey) {
   globals.console.log("loading keychain res");
   if (success) {
 
@@ -111,6 +116,13 @@ globals.nativeCrypto.loadItem(function(success, userKey) {
       var passcodeHashEncrypted = Ti.App.Properties.getString("passcode");
 
       globals.passCodeHash = globals.cryptoJS.AES.decrypt(passcodeHashEncrypted, globals.userKey).toString(globals.cryptoJS.enc.Utf8);
+
+      if (Ti.App.Properties.getString("mode", "") == "lndMobile" && Ti.App.Properties.getString("passphrase", undefined) != undefined) {
+        globals.decryptedPassphrase = globals.decryptPassphrase(Ti.App.Properties.getString("passphrase", undefined), globals.userKey);
+      } else {
+        globals.decryptedPassphrase = " ";
+      }
+
 
       startFrame();
       return;
@@ -142,7 +154,7 @@ function startFrame() {
 
 }
 
-globals.savePassphrase = function(passphrase, key) {
+globals.savePassphrase = function (passphrase, key) {
 
   if (key == undefined || key == "") {
     alert("user key should not be null");
@@ -159,7 +171,7 @@ globals.savePassphrase = function(passphrase, key) {
   return true;
 }
 
-globals.encryptConfig = function(config, key) {
+globals.encryptConfig = function (config, key) {
   config = JSON.stringify(config);
   if (key == undefined || key == "") {
     throw "user key should not be null";
@@ -168,7 +180,7 @@ globals.encryptConfig = function(config, key) {
   return encrypted;
 }
 
-globals.decryptConfig = function(encryptedConfig, key) {
+globals.decryptConfig = function (encryptedConfig, key) {
   if (key == undefined || key == "") {
     throw "user key should not be null";
   }
@@ -187,7 +199,7 @@ globals.decryptConfig = function(encryptedConfig, key) {
 
 }
 
-globals.decryptPassphrase = function(encryptedPassphrase, key) {
+globals.decryptPassphrase = function (encryptedPassphrase, key) {
   if (key == undefined || key == "") {
     throw "user key should not be null";
   }
@@ -223,7 +235,7 @@ function decodeBase64Url(input) {
 
   return input;
 }
-globals.parseConfig = function(config) {
+globals.parseConfig = function (config) {
 
   var certificate = "";
 
@@ -294,7 +306,7 @@ globals.parseConfig = function(config) {
 
 }
 
-globals.continueConnect = function(e, callback, error) {
+globals.continueConnect = function (e, callback, error) {
 
   if (e.indexOf("lndconnect:") != -1) {
 
@@ -306,14 +318,14 @@ globals.continueConnect = function(e, callback, error) {
     var url = e.replace("config=", "");
 
     xhr.open("GET", url);
-    xhr.onload = function() {
+    xhr.onload = function () {
 
-        var config = JSON.parse(this.responseText);
+      var config = JSON.parse(this.responseText);
 
-        callback(config);
+      callback(config);
 
-      },
-      xhr.onerror = function(e) {
+    },
+      xhr.onerror = function (e) {
         globals.console.error(e);
         error(e);
 
@@ -333,17 +345,20 @@ globals.continueConnect = function(e, callback, error) {
 }
 
 if (OS_IOS) {
-  Ti.App.addEventListener('close', function() {
-    globals.lnGRPC.stopLND(function(error, response) {
-      console.log("stopLND1", error);
-      console.log("stopLND1", response);
 
+  if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
+    Ti.App.addEventListener('close', function () {
+      globals.lnGRPC.stopLND(function (error, response) {
+        globals.console.log("stopLND1", error);
+        globals.console.log("stopLND1", response);
+
+      });
     });
-  });
+  }
 
 }
 
-globals.addAccounts = function(pubkey, details) {
+globals.addAccounts = function (pubkey, details) {
   globals.console.log(pubkey, details);
   var accounts = Ti.App.Properties.getString(globals.accountsKey, "{}");
   accounts = JSON.parse(accounts);
@@ -355,7 +370,16 @@ globals.addAccounts = function(pubkey, details) {
 
 }
 
-globals.checkConnection = function(configRaw, callback) {
+//fix for ios animation stopping on resuming from background
+if (OS_IOS) {
+  Ti.App.addEventListener("resumed", function () {
+    if (globals.reAddSyncIcon != undefined) {
+      globals.reAddSyncIcon();
+    }
+  });
+}
+
+globals.checkConnection = function (configRaw, callback) {
 
   config = globals.parseConfig(configRaw);
   if (config == "error") {
@@ -363,7 +387,7 @@ globals.checkConnection = function(configRaw, callback) {
     return;
   }
   globals.console.log("connecting via grpc");
-  globals.lnGRPC.connect(config.url, config.port, config.certificate, config.macaroon, function(error, response) {
+  globals.lnGRPC.connect(config.url, config.port, config.certificate, config.macaroon, function (error, response) {
     globals.console.log("connected grpc", response);
     globals.console.log("connected grpc error", error);
     if (error == true) {
@@ -376,7 +400,7 @@ globals.checkConnection = function(configRaw, callback) {
 
     globals.console.log("checking getinfo");
     globals.stopPing();
-    globals.lnGRPC.getInfo("grpc", function(error, response) {
+    globals.lnGRPC.getInfo("grpc", function (error, response) {
       if (error == true) {
         callback(false, response);
         return;
@@ -390,40 +414,41 @@ globals.checkConnection = function(configRaw, callback) {
   });
 }
 if (OS_IOS) {
-  Ti.Gesture.addEventListener('shake', function(e) {
+  Ti.Gesture.addEventListener('shake', function (e) {
     if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
       Alloy.createController("/components/logs_view").getView().open();
     }
   });
 }
 
-globals.getStartUpInfo = function(callback) {
-  globals.networkAPI.getStartUpInfo(function(error, res) {
-     
+globals.getStartUpInfo = function (callback) {
+  globals.networkAPI.getStartUpInfo(function (error, res) {
+
     if (error != null) {
-       
+
       var dialog = globals.util.createDialog({
         title: L('error_api'),
         message: L("error_api_description"),
-        buttonNames: [L("label_continue_noapi"),L("label_close")],
-        cancel:1
+        buttonNames: [L("label_continue_noapi"), L("label_close")],
+        cancel: 1
       });
-      dialog.addEventListener("click", function (e) { 
+      dialog.addEventListener("click", function (e) {
         if (e.index != e.source.cancel) {
           callback();
         }
       });
       dialog.show();
-    
-    }else{
+
+    } else {
       globals.blockHeight.testnet = res.testnetHeight;
       globals.blockHeight.mainnet = res.mainnetHeight;
       globals.hubURITestnet = res.hubUriTestnet;
       globals.hubURIMainnet = res.hubUriMainnet;
-      globals.console.log("res",res.hubUriMainnet);
-      if(res.maintenanceMode == true){
+      globals.discoverEndpoint = res.discoverUrl;
+      globals.console.log("res", res.hubUriMainnet);
+      if (res.maintenanceMode == true) {
         alert("maintenance");
-      }else{
+      } else {
         callback();
       }
     }
@@ -431,11 +456,11 @@ globals.getStartUpInfo = function(callback) {
 }
 
 
-globals.tryStopLND = function(callback) {
+globals.stopLND = function (callback) {
 
   if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
     globals.console.log("stopping LND");
-    globals.lnGRPC.stopLND(function(error, response) {
+    globals.lnGRPC.stopLND(function (error, response) {
       if (error == true) {
         globals.console.error(response);
 
@@ -451,7 +476,13 @@ globals.tryStopLND = function(callback) {
   }
 }
 
-globals.createPassword = function(usersPassCodeHash){
-    return Titanium.Utils.sha256(usersPassCodeHash+Alloy.Globals.getFixedPassword());
+globals.createPassword = function (usersPassCodeHash) {
+  return Titanium.Utils.sha256(usersPassCodeHash + Alloy.Globals.getFixedPassword());
 }
+
+
+
+
+
+
 

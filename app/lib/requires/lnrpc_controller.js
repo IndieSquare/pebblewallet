@@ -1,4 +1,4 @@
-module.exports = (function() {
+module.exports = (function () {
   var self = {};
   var lngrpc = null;
   var lndMobileObj = null;
@@ -24,21 +24,22 @@ module.exports = (function() {
     }
   }
 
-  self.checkCapacity = function(){
+  self.checkCapacity = function () {
     var freeSpace = 0;
-    if(OS_IOS){
-     freeSpace = lndMobileObj.getFreeDiskspace()+"";
+    if (OS_IOS) {
+      freeSpace = lndMobileObj.getFreeDiskspace() + "";
 
-   
-  }else if(OS_ANDROID){
-     freeSpace = lndMobileWrapper.checkStorage()
-  }
-  globals.console.log("freeSpace",freeSpace);
-  if(freeSpace < 2000000000){
-    return false;
-  }
-   return true;
-     
+
+    } else if (OS_ANDROID) {
+      freeSpace = lndMobileWrapper.checkStorage()
+    }
+    globals.console.log("freeSpace", freeSpace);
+
+    if (freeSpace < 500000000) {
+      return false;
+    }
+    return true;
+
   }
 
   function formatResponse(error, response) {
@@ -90,7 +91,15 @@ module.exports = (function() {
     var Activity = require('android.app.Activity');
     var lndMobileWrapper = require("com.indiesquare.lndmobilewrapper.LndMobileWrapper")
     var CallbackInterfaceLND = require("com.indiesquare.lndmobilewrapper.CallbackInterface");
+    var CallbackInterfaceGoogleDrive = require("com.indiesquare.googledrive.CallbackInterface");
+    var CallbackInterfaceWebSocket = require("com.indiesquare.websocket.CallbackInterface");
+    var websocket = require("com.indiesquare.websocket.websocket");
+    var googleDrive = require("com.indiesquare.googledrive.GoogleDrive")
 
+    var activity = new Activity(Ti.Android.currentActivity);
+    googleDrive = new googleDrive(activity);
+
+    websocket = new websocket(activity);
 
 
   } else if (OS_IOS) {
@@ -98,24 +107,238 @@ module.exports = (function() {
     var lndGRPC = require("ISWLNGRPC/connection");
 
     lngrpc = new lndGRPC();
-
     var lndMobile = require("ISWLNGRPC/lndMobileInterface");
-
     lndMobileObj = new lndMobile();
+ 
 
-    lndMobileObj.initLNDAPI(function(log) {
+    lndMobileObj.initUtils(function (log) {
       log = log + "";
-      globals.console.log("log", log);
+      globals.console.log("utils log", log);
+
+
+    });
+
+
+    lndMobileObj.initLNDAPI(function (log) {
+      log = log + "";
+      globals.console.log("lndmobile log", log);
 
     });
 
   }
 
-  self.deleteData = function(callback) {
+  self.signOutGoogleDrive = function () {
+    if (OS_IOS) {
+
+      try {
+        lndMobileObj.signOutGoogle();
+      }
+      catch (e) {
+        console.error(e);
+      }
+    }
+    else if (OS_ANDROID) {
+      googleDrive.signOut();
+    }
+
+  }
+
+  self.loadLogs = function (directory) {
+
+    if (OS_ANDROID) {
+
+      return lndMobileWrapper.readLogs(directory);
+
+    }
+
+  }
+
+  self.linkGoogleDrive = function (callback) {
+    if (OS_IOS) {
+
+      try {
+
+        lndMobileObj.linkGoogleDriveAndClientIDAndCompletion(Ti.getController(), Alloy.Globals.googleClientID, function (error, response) {
+
+          globals.console.log("google drive link callback", response);
+          globals.console.log("google drive link callback", error);
+
+          if (error != null) {
+            response = error;
+            error = true;
+          }
+
+          if (response == "linked") {
+            Ti.App.Properties.setString("google_drive_linked", "linked");
+          }
+          callback(error, response);
+
+        });
+      }
+      catch (e) {
+        console.error(e);
+      }
+    }
+    else if (OS_ANDROID) {
+      try {
+
+        googleDrive.linkGoogleDrive(new CallbackInterfaceGoogleDrive({
+          eventFired: function (error, response) {
+
+            if (error != null) {
+              response = error;
+              error = true;
+            }
+            if (response == "linked") {
+              Ti.App.Properties.setString("google_drive_linked", "linked");
+            }
+            globals.console.log("google drive link callback", response);
+
+            callback(error, response);
+
+          }
+        }));
+
+
+      }
+      catch (e) {
+        console.error(e);
+      }
+
+    }
+
+  }
+
+  var isUploading = false;
+  self.uploadGoogleDrive = function (data, callback) {
+
+    if (isUploading == true) {
+      callback(true, L("already_uploading"));
+      return;
+    }
+    if (OS_IOS) {
+
+      try {
+
+        var folderName = globals.util.getSCBFolderName();
+
+        var fileName = globals.util.getSCBFileName();
+        isUploading = true;
+        lndMobileObj.uploadFileAndClientIDAndFolderNameAndFileNameAndPassphraseHashAndCompletion(Ti.getController(), Alloy.Globals.googleClientID, folderName, fileName, " ", function (error, response) {
+          isUploading = false;
+          globals.console.log("google drive callback", response, error);
+
+          if (error != null) {
+            response = error;
+            error = true;
+          }
+
+          if (response == "file uploaded") {
+            Ti.App.Properties.setString("google_drive_linked", "linked");
+
+            Ti.App.Properties.setString("last_back_up_" + globals.currentPubkey, Date.now() + "");
+          }
+          callback(error, response);
+
+        });
+      }
+      catch (e) {
+        console.error(e);
+      }
+    }
+    else if (OS_ANDROID) {
+      try {
+        isUploading = true;
+        googleDrive.uploadFile(globals.util.getSCBFolderName(), globals.util.getSCBFileName(), data, new CallbackInterfaceGoogleDrive({
+          eventFired: function (error, response) {
+            isUploading = false;
+            if (error != null) {
+              response = error;
+              error = true;
+            }
+
+            if (response == "file uploaded") {
+              Ti.App.Properties.setString("google_drive_linked", "linked");
+
+              Ti.App.Properties.setString("last_back_up_" + globals.currentPubkey, Date.now() + "");
+            }
+            globals.console.log("google drive callback", response);
+
+            callback(error, response);
+
+          }
+        }));
+
+
+      }
+      catch (e) {
+        console.error(e);
+      }
+
+    }
+
+  }
+
+  self.downloadGoogleDrive = function (folderName, shortFileName, callback) {
+
+    if (OS_IOS) {
+
+      try {
+
+        lndMobileObj.downloadFileAndClientIDAndFolderNameAndFileNameAndPassphraseHashAndCompletion(Ti.getController(), Alloy.Globals.googleClientID, folderName, " ", shortFileName, function (error, response) {
+
+          globals.console.log("google drive callback err", error);
+          globals.console.log("google drive callback res", response);
+
+          if (error != null) {
+            response = error;
+            error = true;
+          }
+
+          callback(error, response);
+
+        });
+      }
+      catch (e) {
+        console.error(e);
+      }
+    }
+    else if (OS_ANDROID) {
+      try {
+
+        googleDrive.downloadFile(folderName, shortFileName, new CallbackInterfaceGoogleDrive({
+          eventFired: function (error, response) {
+            globals.console.log("google drive callback", error);
+
+            globals.console.log("google drive callback", response);
+
+
+            if (error != null) {
+              response = error;
+              error = true;
+            }
+
+
+            callback(error, response);
+
+          }
+        }));
+
+
+      }
+      catch (e) {
+        console.error(e);
+      }
+
+    }
+
+  }
+
+  self.deleteData = function (callback) {
     if (OS_ANDROID) {
       callback(false, null);
     } else if (OS_IOS) {
-      lndMobileObj.deleteData(function(error, response) {
+      lndMobileObj.deleteData(function (error, response) {
         globals.console.log("deleteData ", error);
         globals.console.log("deleteData", response);
 
@@ -128,35 +351,48 @@ module.exports = (function() {
 
   }
 
-  self.stopLND = function(callback) {
+  self.stopLND = function (callback) {
     if (OS_IOS) {
-      lndMobileObj.stopLND(function(error, response) {
+      lndMobileObj.stopLND(function (error, response) {
         globals.console.log("stopLND err ", error);
         globals.console.log("stopLND", response);
 
         var _res = formatResponse(error, response)
         error = _res[0];
         response = _res[1];
-        setTimeout(function() { //not perfect but give it time to shut down
+        globals.console.log(error + " " + response);
+        setTimeout(function () { //not perfect but give it time to shut down
           callback(error, response);
-        }, 1000);
+        }, 20000);
       });
     } else {
-      callback(null, null);
+
+      var bytes = lngrpc.makeStopDaemonRequest();
+
+      lndMobileWrapper.stopLND(bytes, new CallbackInterfaceLND({
+        eventFired: function (event) {
+          globals.console.log("callback stop lnd", event);
+
+          var response = JSON.parse(event);
+          setTimeout(function () { //not perfect but give it time to shut down
+            callback(response.error, response.response);
+          }, 2000);
+
+        }
+      }));
     }
 
   }
 
-  self.createWallet = function(password, seed, scanBlocksForRecovery, callback) {
-    
+  self.createWallet = function (password, seed, scanBlocksForRecovery, channelBackup, callback) {
+
     if (OS_ANDROID) {
       var seedString = seed.join(" ");
-      globals.console.log("password " + seedString + " " + password);
-      
-      var bytes = lngrpc.makeCreateWalletRequest(seedString, password, scanBlocksForRecovery);
+
+      var bytes = lngrpc.makeCreateWalletRequest(seedString, password, scanBlocksForRecovery, channelBackup);
 
       lndMobileWrapper.initWallet(bytes, new CallbackInterfaceLND({
-        eventFired: function(event) {
+        eventFired: function (event) {
           globals.console.log("callback createdWallet", event);
 
           var response = JSON.parse(event);
@@ -167,7 +403,7 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
 
-      lndMobileObj.createWalletAndRecoveryWindowAndSeedAndCompletion(password, scanBlocksForRecovery, seed, function(error, response) {
+      lndMobileObj.createWalletAndRecoveryWindowAndSeedAndChannelBackupAndCompletion(password, scanBlocksForRecovery, seed, channelBackup, function (error, response) {
         globals.console.log("create wallet ", error);
         globals.console.log("create wallet", response);
 
@@ -180,7 +416,10 @@ module.exports = (function() {
 
   }
 
-  self.unlockWallet = function(password, callback) {
+  self.unlockWallet = function (password, recoveryWindow, channelBackUp, callback) {
+
+    globals.console.log("unlocking wallet");
+
     if (globals.lndMobileStarted) {
       callback(false, "already started");
       return;
@@ -190,7 +429,7 @@ module.exports = (function() {
       var bytes = lngrpc.makeUnlockWalletRequest(password);
 
       lndMobileWrapper.unlockWallet(bytes, new CallbackInterfaceLND({
-        eventFired: function(event) {
+        eventFired: function (event) {
           globals.console.log("callback unlockWallet", event);
 
           var response = JSON.parse(event);
@@ -199,7 +438,10 @@ module.exports = (function() {
         }
       }));
     } else if (OS_IOS) {
-      lndMobileObj.unlockWalletAndCompletion(password, function(error, response) {
+
+      globals.console.log("unlocking wallet ios", channelBackUp);
+
+      lndMobileObj.unlockWalletAndRecoveryWindowAndChannelBackupAndCompletion(password, recoveryWindow, channelBackUp, function (error, response) {
         globals.console.log("unlock wallet ", error);
         globals.console.log("unlock walle", response);
         var _res = formatResponse(error, response)
@@ -210,31 +452,10 @@ module.exports = (function() {
     }
 
   }
-/*
-  self.setUpEnv = function(callback) {
 
-    if (OS_IOS) {
-     
-      
-      lndMobileObj.setUpEnvironmentAndBootstrapAndCompletion(globals.lndMobileNetwork,globals.bootstrap,function(error, response) {
 
-        if (error != null) {
+  self.startLNDMobile = function (callback) {
 
-          callback(true, error);
-          return;
-
-        }
-
-        globals.util.saveLNDConf(globals.lndMobileNetwork);
-
-      });
-
-    }
-
-  }*/
-
-  self.startLNDMobile = function(callback) {
-     
     if (globals.lndMobileStarted) {
       callback(false, "already started");
       return;
@@ -243,11 +464,11 @@ module.exports = (function() {
 
       var activity = new Activity(Ti.Android.currentActivity);
       var contextValue = activity.getApplicationContext();
-       
-      lndMobileWrapper.startLnd(contextValue, globals.util.getConfig(globals.lndMobileNetwork), globals.bootstrap, new CallbackInterfaceLND({
-        eventFired: function(event) {
+
+      lndMobileWrapper.startLnd(contextValue, globals.util.getConfig(Alloy.Globals.network), globals.bootstrap, new CallbackInterfaceLND({
+        eventFired: function (event) {
           globals.console.log("callback fired", event);
-          var response = JSON.parse(event);
+          var response = JSON.parse(event); 
           callback(response.error, response.response);
 
         }
@@ -255,7 +476,7 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
 
-      lndMobileObj.setUpEnvironmentAndBootstrapAndCompletion(globals.lndMobileNetwork,globals.bootstrap,function(error, response) {
+      lndMobileObj.setUpEnvironmentAndBootstrapAndCompletion(Alloy.Globals.network, globals.bootstrap, function (error, response) {
 
         if (error != null) {
 
@@ -264,9 +485,9 @@ module.exports = (function() {
 
         }
 
-        globals.util.saveLNDConf(globals.lndMobileNetwork);
+        globals.util.saveLNDConf(Alloy.Globals.network);
 
-        lndMobileObj.startLND(function(error, response) {
+        lndMobileObj.startLND(function (error, response) {
           globals.console.log("start lnd error", error);
           globals.console.log("start lnd", response);
           var _res = formatResponse(error, response)
@@ -280,12 +501,14 @@ module.exports = (function() {
     }
   }
 
-  self.generateSeed = function(callback) {
+
+
+  self.generateSeed = function (callback) {
     if (OS_ANDROID) {
 
       var bytes = lngrpc.makeGenerateSeedRequest();
       lndMobileWrapper.generateSeed(bytes, new CallbackInterfaceLND({
-        eventFired: function(event) {
+        eventFired: function (event) {
 
           var seed = lngrpc.parseGenerateSeedResponse(JSON.parse(event).response);
 
@@ -299,7 +522,7 @@ module.exports = (function() {
     } else if (OS_IOS) {
 
       globals.console.log("generating seed");
-      lndMobileObj.generateSeed(function(error, response) {
+      lndMobileObj.generateSeed(function (error, response) {
         globals.console.log("seed error ", error);
         globals.console.log("seed ", response);
         var _res = formatResponse(error, response)
@@ -312,7 +535,7 @@ module.exports = (function() {
 
     }
   }
-  globals.stopPing = function() {
+  globals.stopPing = function () {
     clearTimeout(currentPing);
   }
 
@@ -330,9 +553,9 @@ module.exports = (function() {
 
       lngrpc.GetInfo(
         new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
             globals.console.log("ping");
-            currentPing = setTimeout(function() {
+            currentPing = setTimeout(function () {
               keepConnectionAliveViaPing();
             }, 40000);
 
@@ -340,9 +563,9 @@ module.exports = (function() {
         }));
 
     } else if (OS_IOS) {
-      lndController.getInfo(function(error, response) {
+      lndController.getInfo(function (error, response) {
         globals.console.log("ping");
-        currentPing = setTimeout(function() {
+        currentPing = setTimeout(function () {
           keepConnectionAliveViaPing();
         }, 40000);
       });
@@ -362,7 +585,7 @@ module.exports = (function() {
     }
     return false;
   }
-  self.connect = function(host, port, cert, macaroon, callback) {
+  self.connect = function (host, port, cert, macaroon, callback) {
 
     if (OS_ANDROID) {
       if (cert == "") {
@@ -382,7 +605,7 @@ module.exports = (function() {
       globals.console.log(typeof cert);
       globals.console.log(typeof macaroon);
       lngrpc.Connect(host, port, cert, macaroon, new CallbackInterface({
-        eventFired: function(res) {
+        eventFired: function (res) {
 
           globals.console.log(res);
           res = JSON.parse(res);
@@ -400,7 +623,7 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
 
-      lngrpc.initWithUrlAndCertificateAndMacaroonAndCompletion(host + ":" + port, cert, macaroon, function(error, response) {
+      lngrpc.initWithUrlAndCertificateAndMacaroonAndCompletion(host + ":" + port, cert, macaroon, function (error, response) {
         globals.console.log("res", response);
         globals.console.log("error", error);
 
@@ -414,7 +637,7 @@ module.exports = (function() {
     }
   };
 
-  self.getInfo = function(forceMode, callback) {
+  self.getInfo = function (forceMode, callback) {
     var lndController = getController();
     if (forceMode == "grpc") {
       globals.console.log("forcing grpc mode");
@@ -428,7 +651,7 @@ module.exports = (function() {
 
         globals.console.log("start getinfo");
         lndController.getInfo(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback getinfo", res);
 
@@ -454,7 +677,7 @@ module.exports = (function() {
       } else {
 
         lndController.GetInfo(new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log(res);
             res = JSON.parse(res);
@@ -475,7 +698,7 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
       globals.console.log("getting info");
-      lndController.getInfo(function(error, response) {
+      lndController.getInfo(function (error, response) {
         globals.console.log("res", response);
         globals.console.log("error", error);
 
@@ -492,40 +715,40 @@ module.exports = (function() {
   };
 
 
-  self.exportAllChannelBackups = function(callback) {
+  self.exportAllChannelBackups = function (callback) {
     var lndController = getController();
     if (OS_ANDROID) {
       if (lndController == lndMobileWrapper) {
-      var bytes = lngrpc.makeExportAllChannelBackupsRequest();
-      lndMobileWrapper.exportAllChannelBackups(bytes, new CallbackInterfaceLND({
-        eventFired: function(event) {
+        var bytes = lngrpc.makeExportAllChannelBackupsRequest();
+        lndMobileWrapper.exportAllChannelBackups(bytes, new CallbackInterfaceLND({
+          eventFired: function (event) {
 
-          var seed = lngrpc.parseExportChannelResponse(JSON.parse(event).response);
-          var response = JSON.parse(seed);
-          callback(response.error, response.response);
+            var seed = lngrpc.parseExportChannelResponse(JSON.parse(event).response);
+            var response = JSON.parse(seed);
+            callback(response.error, response.response);
 
-        }
-      }));
-    }else {
-      lndController.ExportAllChannelBackups(new CallbackInterface({
-        eventFired: function(res) {
-          globals.console.log(res);
-          res = JSON.parse(res);
-
-          if (res.error == true) {
-            globals.console.error("export channel backup error");
           }
+        }));
+      } else {
+        lndController.ExportAllChannelBackups(new CallbackInterface({
+          eventFired: function (res) {
+            globals.console.log(res);
+            res = JSON.parse(res);
 
-          globals.console.log(res.response);
+            if (res.error == true) {
+              globals.console.error("export channel backup error");
+            }
 
-          callback(res.error, res.response);
+            globals.console.log(res.response);
 
-        }
-      }));
-    }
+            callback(res.error, res.response);
+
+          }
+        }));
+      }
 
     } else if (OS_IOS) {
-      lndController.exportAllChannelBackups(function(error, response) {
+      lndController.exportAllChannelBackups(function (error, response) {
         error = formatResponse(error, response);
         response = JSON.parse(response);
         callback(error, response);
@@ -534,7 +757,7 @@ module.exports = (function() {
     }
   };
 
-  self.getWalletBalance = function(callback) {
+  self.getWalletBalance = function (callback) {
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -543,7 +766,7 @@ module.exports = (function() {
 
         globals.console.log("start wb");
         lndController.walletBalance(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback wb", res);
             res = JSON.parse(res);
@@ -568,7 +791,7 @@ module.exports = (function() {
         }));
       } else {
         lndController.GetWalletBalance(new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
             globals.console.log(res);
             res = JSON.parse(res);
 
@@ -586,7 +809,7 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
 
-      lndController.getWalletBalance(function(error, response) {
+      lndController.getWalletBalance(function (error, response) {
         error = formatResponse(error, response);
         response = JSON.parse(response);
         callback(error, response);
@@ -596,7 +819,7 @@ module.exports = (function() {
     }
   };
 
-  self.getChannelBalance = function(callback) {
+  self.getChannelBalance = function (callback) {
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -607,7 +830,7 @@ module.exports = (function() {
 
         globals.console.log("start gcb");
         lndController.getChannelBalance(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback gcb", res);
 
@@ -637,7 +860,7 @@ module.exports = (function() {
 
 
         lndController.GetChannelBalance(new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log(res);
             res = JSON.parse(res);
@@ -657,7 +880,7 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
       globals.console.log("getting channel balance")
-      lndController.getChannelBalance(function(error, response) {
+      lndController.getChannelBalance(function (error, response) {
         globals.console.log("getting channel balance res", error, response)
         var _res = formatResponse(error, response)
         error = _res[0];
@@ -669,7 +892,7 @@ module.exports = (function() {
     }
   };
 
-  self.listPayments = function(callback) {
+  self.listPayments = function (callback) {
     var lndController = getController();
     if (OS_ANDROID) {
       if (lndController == lndMobileWrapper) {
@@ -677,7 +900,7 @@ module.exports = (function() {
 
         globals.console.log("start listpayments");
         lndController.listPayments(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback lp", res);
 
@@ -704,7 +927,7 @@ module.exports = (function() {
       } else {
 
         lndController.ListPayments(new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
             globals.console.log(res);
             res = JSON.parse(res);
 
@@ -722,7 +945,7 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
 
-      lndController.listPayments(function(error, response) {
+      lndController.listPayments(function (error, response) {
         globals.console.log("list payments res", response);
         var _res = formatResponse(error, response)
         error = _res[0];
@@ -734,7 +957,7 @@ module.exports = (function() {
     }
   }
 
-  self.getTransactions = function(callback) {
+  self.getTransactions = function (callback) {
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -744,7 +967,7 @@ module.exports = (function() {
 
         globals.console.log("start gt");
         lndController.getTransactions(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback gt", res);
             res = JSON.parse(res);
@@ -769,7 +992,7 @@ module.exports = (function() {
       } else {
 
         lndController.GetTransactions(new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
             globals.console.log(res);
             res = JSON.parse(res);
 
@@ -787,7 +1010,7 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
 
-      lndController.getTransactions(function(error, response) {
+      lndController.getTransactions(function (error, response) {
         globals.console.log("getTransactions res", response);
         var _res = formatResponse(error, response)
         error = _res[0];
@@ -799,7 +1022,7 @@ module.exports = (function() {
     }
   }
 
-  self.listInvoices = function(callback) {
+  self.listInvoices = function (callback) {
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -808,7 +1031,7 @@ module.exports = (function() {
 
         globals.console.log("start listpinvoice");
         lndController.listInvoices(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback li", res);
 
@@ -837,7 +1060,7 @@ module.exports = (function() {
       } else {
 
         lndController.ListInvoices(new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log(res);
             res = JSON.parse(res);
@@ -856,7 +1079,7 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
 
-      lndController.listInvoices(function(error, response) {
+      lndController.listInvoices(function (error, response) {
         globals.console.log("list invoices err", error)
         globals.console.log("list invoices res", response)
         var _res = formatResponse(error, response)
@@ -868,7 +1091,7 @@ module.exports = (function() {
 
     }
   }
-  self.newAddress = function(type, callback) {
+  self.newAddress = function (type, callback) {
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -879,7 +1102,7 @@ module.exports = (function() {
 
         globals.console.log("start na");
         lndController.newAddress(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback na", res);
 
@@ -908,7 +1131,7 @@ module.exports = (function() {
         }));
       } else {
         lndController.NewAddress(type, new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log(res);
             res = JSON.parse(res);
@@ -925,7 +1148,7 @@ module.exports = (function() {
         }));
       }
     } else if (OS_IOS) {
-      lndController.newAddressAndCompletion(type, function(error, response) {
+      lndController.newAddressAndCompletion(type, function (error, response) {
         globals.console.log("get address", error, response, type);
         var _res = formatResponse(error, response)
         error = _res[0];
@@ -936,7 +1159,7 @@ module.exports = (function() {
     }
   }
 
-  self.listChannels = function(callback) {
+  self.listChannels = function (callback) {
     var lndController = getController();
     if (OS_ANDROID) {
       if (lndController == lndMobileWrapper) {
@@ -944,7 +1167,7 @@ module.exports = (function() {
 
         globals.console.log("start ls");
         lndController.listChannels(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback ls", res);
 
@@ -972,7 +1195,7 @@ module.exports = (function() {
       } else {
 
         lndController.ListChannels(new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log(res);
             res = JSON.parse(res);
@@ -991,7 +1214,7 @@ module.exports = (function() {
       }
 
     } else if (OS_IOS) {
-      lndController.listChannels(function(error, response) {
+      lndController.listChannels(function (error, response) {
         var _res = formatResponse(error, response)
         error = _res[0];
         response = _res[1];
@@ -1000,7 +1223,7 @@ module.exports = (function() {
     }
   }
 
-  self.pendingChannels = function(callback) {
+  self.pendingChannels = function (callback) {
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -1009,7 +1232,7 @@ module.exports = (function() {
 
         globals.console.log("start pc");
         lndController.pendingChannels(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback pc", res);
 
@@ -1041,7 +1264,7 @@ module.exports = (function() {
 
 
         lndController.PendingChannels(new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
             globals.console.log(res);
             res = JSON.parse(res);
 
@@ -1059,7 +1282,7 @@ module.exports = (function() {
       }
 
     } else if (OS_IOS) {
-      lndController.pendingChannels(function(error, response) {
+      lndController.pendingChannels(function (error, response) {
         var _res = formatResponse(error, response)
         error = _res[0];
         response = _res[1];
@@ -1069,7 +1292,7 @@ module.exports = (function() {
 
   }
 
-  self.decodePayReq = function(payReq, callback) {
+  self.decodePayReq = function (payReq, callback) {
     var lndController = getController();
     if (OS_ANDROID) {
       if (lndController == lndMobileWrapper) {
@@ -1077,7 +1300,7 @@ module.exports = (function() {
 
         globals.console.log("start pr");
         lndController.decodePayReq(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback pr", res);
 
@@ -1105,7 +1328,7 @@ module.exports = (function() {
         }));
       } else {
         lndController.DecodePayReq(payReq, new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
             globals.console.log(res);
             res = JSON.parse(res);
 
@@ -1122,7 +1345,7 @@ module.exports = (function() {
       }
 
     } else if (OS_IOS) {
-      lndController.decodePayReqAndCompletion(payReq, function(error, response) {
+      lndController.decodePayReqAndCompletion(payReq, function (error, response) {
         var _res = formatResponse(error, response)
         error = _res[0];
         response = _res[1];
@@ -1132,7 +1355,7 @@ module.exports = (function() {
 
   }
 
-  self.sendPayment = function(payReq, amount, callback) {
+  self.sendPayment = function (payReq, amount, callback) {
     globals.console.log("amount ", amount);
     var lndController = getController();
     if (OS_ANDROID) {
@@ -1142,7 +1365,7 @@ module.exports = (function() {
 
         globals.console.log("start sp");
         lndController.sendPayment(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback sp", res);
             res = JSON.parse(res);
@@ -1170,7 +1393,7 @@ module.exports = (function() {
         }));
       } else {
         lndController.SendPayment(payReq, amount, new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
             globals.console.log(res);
             res = JSON.parse(res);
 
@@ -1187,7 +1410,7 @@ module.exports = (function() {
       }
 
     } else if (OS_IOS) {
-      lndController.sendPaymentAndAmountAndCompletion(payReq, amount, function(error, response) {
+      lndController.sendPaymentAndAmountAndCompletion(payReq, amount, function (error, response) {
 
         var _res = formatResponse(error, response)
         error = _res[0];
@@ -1198,7 +1421,7 @@ module.exports = (function() {
 
   }
 
-  self.connectPeer = function(nodeURI, callback) {
+  self.connectPeer = function (nodeURI, callback) {
     var lndController = getController();
     if (OS_ANDROID) {
       var components = nodeURI.split("@");
@@ -1208,7 +1431,7 @@ module.exports = (function() {
 
         globals.console.log("start cp");
         lndController.connectPeer(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback cp", res);
             res = JSON.parse(res);
@@ -1234,7 +1457,7 @@ module.exports = (function() {
         }));
       } else {
         lndController.ConnectPeer(components[0], components[1], new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log(res);
             res = JSON.parse(res);
@@ -1254,7 +1477,7 @@ module.exports = (function() {
 
       var components = nodeURI.split("@");
       globals.console.log(components[0] + " " + components[1]);
-      lndController.connectPeerAndPubkeyAndCompletion(components[1], components[0], function(error, response) {
+      lndController.connectPeerAndPubkeyAndCompletion(components[1], components[0], function (error, response) {
 
         globals.console.log("connect peer res", response);
         globals.console.error("connect peer error", error);
@@ -1268,7 +1491,7 @@ module.exports = (function() {
 
   }
 
-  self.sendCoins = function(amount, destination, fee, callback) {
+  self.sendCoins = function (amount, destination, fee, callback) {
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -1277,7 +1500,7 @@ module.exports = (function() {
 
         globals.console.log("start sc");
         lndController.sendCoins(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback sc", res);
             res = JSON.parse(res);
@@ -1308,7 +1531,7 @@ module.exports = (function() {
       } else {
 
         lndController.SendCoins(amount, destination, fee, new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log(res);
             res = JSON.parse(res);
@@ -1329,7 +1552,7 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
 
-      lndController.sendCoinsAndAddressAndFeeAndCompletion(amount, destination, fee, function(error, response) {
+      lndController.sendCoinsAndAddressAndFeeAndCompletion(amount, destination, fee, function (error, response) {
 
         globals.console.log("send coins res", response);
         globals.console.error("send coins error", error);
@@ -1357,14 +1580,14 @@ module.exports = (function() {
 
   }
 
-  self.clearChannelChecker = function() {
+  self.clearChannelChecker = function () {
     try {
       clearTimeout(currentPendingOpenChannelChecker);
     } catch (e) {
 
     }
   }
-  self.openChannel = function(pub_key, amount, callback) {
+  self.openChannel = function (pub_key, amount, callback) {
     var lndController = getController();
     if (OS_ANDROID) {
       amount = parseInt(amount + "");
@@ -1372,7 +1595,7 @@ module.exports = (function() {
       if (lndController == lndMobileWrapper) {
         //lndmobile doesnt return response for some reason so check manually
         clearTimeout(currentPendingOpenChannelChecker);
-        checkIfChannelIsOpening(pub_key, function(opened) {
+        checkIfChannelIsOpening(pub_key, function (opened) {
           callback(false, {
             funding_txid_str: "na"
           })
@@ -1381,7 +1604,7 @@ module.exports = (function() {
 
         globals.console.log("start oc");
         lndController.openChannel(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback oc", res);
             res = JSON.parse(res);
@@ -1404,7 +1627,7 @@ module.exports = (function() {
         }));
       } else {
         lndController.OpenChannel(pub_key, amount, new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log(res);
             res = JSON.parse(res);
@@ -1425,12 +1648,12 @@ module.exports = (function() {
     } else if (OS_IOS) {
       //lndmobile doesnt return response for some reason so check manually
       clearTimeout(currentPendingOpenChannelChecker);
-      checkIfChannelIsOpening(pub_key, function(opened) {
+      checkIfChannelIsOpening(pub_key, function (opened) {
         callback(false, {
           funding_txid_str: "na"
         })
       })
-      lndController.openChannelAndPubkeyAndCompletion(amount, pub_key, function(error, response) {
+      lndController.openChannelAndPubkeyAndCompletion(amount, pub_key, function (error, response) {
         globals.console.log("open channel", response);
         globals.console.error("open channel", error);
         var _res = formatResponse(error, response)
@@ -1449,7 +1672,7 @@ module.exports = (function() {
 
   function checkIfChannelIsOpening(pub_key, callback) {
     globals.console.log("checking pending channels");
-    self.pendingChannels(function(error, res) {
+    self.pendingChannels(function (error, res) {
       globals.console.log("checking pending channels", res);
       if (error == false || error == 0) {
 
@@ -1468,14 +1691,14 @@ module.exports = (function() {
         }
 
       }
-      currentPendingOpenChannelChecker = setTimeout(function() {
+      currentPendingOpenChannelChecker = setTimeout(function () {
         checkIfChannelIsOpening(pub_key, callback);
       }, 3000);
     });
 
   }
 
-  self.closeChannel = function(txid, output, force, callback) {
+  self.closeChannel = function (txid, output, force, callback) {
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -1484,7 +1707,7 @@ module.exports = (function() {
 
         globals.console.log("start cc");
         lndController.closeChannel(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback cc", res);
             res = JSON.parse(res);
@@ -1510,7 +1733,7 @@ module.exports = (function() {
 
 
         lndController.CloseChannel(txid, output, force, new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("close channel res", res);
             res = JSON.parse(res);
@@ -1532,7 +1755,7 @@ module.exports = (function() {
       globals.console.log("output is", output)
       output = parseInt(output);
       globals.console.log("output is", output)
-      lndController.closeChannelAndOutputAndForceAndCompletion(txid, output, force, function(error, response) {
+      lndController.closeChannelAndOutputAndForceAndCompletion(txid, output, force, function (error, response) {
 
         globals.console.log("close channel", "error:" + error + " res:" + response);
 
@@ -1544,12 +1767,12 @@ module.exports = (function() {
 
   }
 
-  self.subscribeTransactions = function(callback) {
+  self.subscribeTransactions = function (callback) {
     var lndController = getController();
     if (OS_ANDROID) {
 
       lndController.subscribeTransactions(new CallbackInterface({
-        eventFired: function(res) {
+        eventFired: function (res) {
           globals.console.log(res);
           res = JSON.parse(res);
 
@@ -1570,7 +1793,7 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
       globals.console.log("subscribe transactions");
-      lndController.subscribeTransactions(function(error, response) {
+      lndController.subscribeTransactions(function (error, response) {
 
         globals.console.log("subscribe transaction res", "error:" + error + " res:" + response);
         var _res = formatResponse(error, response)
@@ -1581,7 +1804,7 @@ module.exports = (function() {
     }
   }
 
-  self.subscribeInvoices = function(callback) {
+  self.subscribeInvoices = function (callback) {
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -1591,7 +1814,7 @@ module.exports = (function() {
 
         globals.console.log("start si");
         lndController.subscribeInvoices(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback si", res);
 
@@ -1619,7 +1842,7 @@ module.exports = (function() {
       } else {
 
         lndController.SubscribeInvoices(new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
             globals.console.log(res);
             res = JSON.parse(res);
 
@@ -1643,7 +1866,7 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
       globals.console.log("subcsribe invoice");
-      lndController.subscribeInvoices(function(error, response) {
+      lndController.subscribeInvoices(function (error, response) {
 
         globals.console.log("subscribe invoices res", "error:" + error + " res:" + response);
         var _res = formatResponse(error, response)
@@ -1654,7 +1877,7 @@ module.exports = (function() {
     }
   }
 
-  self.addInvoice = function(amount, memo, expiry, callback) {
+  self.addInvoice = function (amount, memo, expiry, callback) {
     globals.console.log("expiry is ", expiry);
     var lndController = getController();
     if (OS_ANDROID) {
@@ -1665,7 +1888,7 @@ module.exports = (function() {
 
         globals.console.log("start ai");
         lndController.addInvoice(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback ai", res);
 
@@ -1690,7 +1913,7 @@ module.exports = (function() {
         }));
       } else {
         lndController.AddInvoice(amount, expiry, memo, new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
             globals.console.log(res);
             res = JSON.parse(res);
 
@@ -1711,7 +1934,7 @@ module.exports = (function() {
 
     } else if (OS_IOS) {
 
-      lndController.addInvoiceAndExpiryAndMemoAndCompletion(amount, expiry, memo, function(error, response) {
+      lndController.addInvoiceAndExpiryAndMemoAndCompletion(amount, expiry, memo, function (error, response) {
 
         globals.console.log("add invoice", "error:" + error, " res:" + response);
         var _res = formatResponse(error, response)
@@ -1722,7 +1945,7 @@ module.exports = (function() {
     }
   }
 
-  self.getNodeInfo = function(pubkey, callback) {
+  self.getNodeInfo = function (pubkey, callback) {
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -1731,7 +1954,7 @@ module.exports = (function() {
 
         globals.console.log("start ni");
         lndController.getNodeInfo(bytes, new CallbackInterfaceLND({
-          eventFired: function(res) {
+          eventFired: function (res) {
 
             globals.console.log("callback ni", res);
 
@@ -1757,7 +1980,7 @@ module.exports = (function() {
         }));
       } else {
         lndController.GetNodeInfo(pubkey, new CallbackInterface({
-          eventFired: function(res) {
+          eventFired: function (res) {
             globals.console.log(res);
             res = JSON.parse(res);
 
@@ -1776,7 +1999,7 @@ module.exports = (function() {
       }
     } else if (OS_IOS) {
 
-      lndController.getNodeInfoAndCompletion(pubkey, function(error, response) {
+      lndController.getNodeInfoAndCompletion(pubkey, function (error, response) {
 
         globals.console.log("get node info error", error);
         globals.console.log("get node info res", response);
@@ -1786,6 +2009,62 @@ module.exports = (function() {
         callback(error, response);
       });
     }
+  }
+
+
+  self.startWebSocket = function (uri, callback) {
+
+    globals.console.log("starting web", uri);
+
+    if (OS_ANDROID) {
+      websocket.connect(uri, new CallbackInterfaceWebSocket({
+        eventFired: function (error, res) {
+          globals.console.log("websocket error", error);
+          globals.console.log("websocket res", res);
+          callback(false, res);
+
+        }
+      }));
+    }
+    else if (OS_IOS) {
+      lngrpc.startWebSocketAndCompletion(uri, function (error, response) {
+
+        globals.console.log("websocket res", error + " " + response);
+        if (error != null) {
+          response = error;
+          error = true;
+        }
+
+        callback(error, response);
+
+      });
+    }
+
+  }
+
+  self.closeWebSocket = function () {
+
+    if (OS_ANDROID) {
+      websocket.closeWebSocket();
+    }
+    else if (OS_IOS) {
+
+      lngrpc.closeWebSocket();
+    }
+
+  }
+
+  self.sendWebSocketMessage = function (message) {
+
+    if (OS_ANDROID) {
+      globals.console.log("sending msg", message);
+      websocket.sendMessage(message);
+    } else if (OS_IOS) {
+
+      lngrpc.sendWebSocketMessage(message);
+    }
+
+
   }
 
   return self;

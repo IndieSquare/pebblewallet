@@ -1,0 +1,151 @@
+"#win" : {
+	"orientationModes": [Ti.UI.PORTRAIT],
+	"navBarHidden": true,
+	"backgroundColor": "transparent"
+}
+"#win[platform=android]" : {
+	"windowSoftInputMode": Ti.UI.Android.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+}
+"#gobackButton":{
+    top: 0,
+	height: Alloy.Globals.topBarHeight,
+	left: 10
+}
+
+"#gobackButton[if=Alloy.Globals.isiPhoneX]" : {
+top: 30,
+}
+
+".mainView":{
+    backgroundColor:Alloy.Globals.mainColor
+}
+".icon" : {
+	width: 70
+}
+".icon[if=Alloy.Globals.isSmallScreen]" : {
+	width: 70
+}
+".icon[platform=android]" : {
+	width: 70
+}
+".groupings" : {
+	top: 30,
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	layout: 'vertical'
+}
+ 
+".icon[if=Alloy.Globals.isiPhoneX]" : {
+	top: 90
+}
+ 
+".aButton" : {
+	width: "90%",
+	height: 50, 
+	color: "#ffffff",
+	font: {
+		fontFamily: "Helvetica Neue",
+		fontSize: 20,
+		fontWeight: "normal"
+	}
+}
+".buttonStyle" : {
+	width: "90%",
+	height: 50,
+	backgroundColor: Alloy.Globals.mainColorLighter,
+	borderColor: 'white',
+	borderWidth: 1,
+	borderRadius: 25
+}
+
+"#backUpButtons":{
+    bottom:40,
+	visible:false,
+}
+
+"#backUpButtons[if=Alloy.Globals.isiPhoneX]":{
+    bottom:60,
+}
+
+
+"#restoreButtons":{
+    bottom:40,
+	visible:false,
+}
+
+
+
+"#restoreButtons[if=Alloy.Globals.isiPhoneX]":{
+    bottom:60,
+}
+
+"#linkButtons":{
+    bottom:40,
+	visible:false,
+}
+
+
+"#linkButtons[if=Alloy.Globals.isiPhoneX]":{
+    bottom:60,
+}
+
+
+"#backUpGoogleDrive":{
+    title:L("link_google")
+}
+
+"#linkGoogleButton":{
+    title:L("link_google")
+}
+
+"#backUpEmail":{
+    top:15,
+   title:L("back_up_email")
+}
+
+"#restoreButton":{
+    title:L("restore_channel_funds")
+}
+"#skipButton":{
+    top:15,
+   title:L("skip")
+}
+
+"#laterButton":{
+    top:15,
+   title:L("later_button")
+}
+
+
+
+"#backUpGoogleDriveSpinner":{
+    height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+    indicatorColor:"white"
+}
+
+"#backUpGoogleDriveOuter":{
+    layout:"vertical",
+      height: Ti.UI.SIZE,
+	width: Ti.UI.FILL,
+}
+"#backUpGoogleDriveInner":{ 
+      height: Ti.UI.SIZE,
+	width: Ti.UI.FILL,
+}
+
+"#lastBackUp":{ 
+    top:5,
+     color:"white",
+    font: {
+      fontSize: 14
+    }
+}
+"#descriptionLabel":{
+    width:"90%",
+    color:"white",
+    font: {
+      fontSize: 16
+    }, 
+    textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER
+}

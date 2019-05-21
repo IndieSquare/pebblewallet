@@ -1,5 +1,6 @@
-".background": {
-	backgroundColor: "#000000",
+ 
+"#background": { 
+  backgroundColor: "#000000", 
 	opacity: 0
 }
 
@@ -12,7 +13,9 @@
 "#balanceText":{
   color:"white",
   font:{
-    fontSize: 18
+    fontSize: 18,
+     fontFamily: 'GillSans',
+    fontWeight: 'light'
   }
 }
 
@@ -21,7 +24,9 @@
   color:"white",
   bottom:10,
   font:{
-    fontSize: 10
+    fontSize: 15,
+     fontFamily: 'GillSans',
+    fontWeight: 'light'
   }
 }
 
@@ -29,7 +34,77 @@
   opacity: 0,
   color:"#e94f5f",
   font:{
-    fontSize: 50
+    fontSize: 50,
+     fontFamily: 'GillSans',
+    fontWeight: 'light'
   },
 top:200,
 }
+
+
+
+"#confView":{
+  width:"100%",
+  height:"100%",
+  backgroundColor:"#181819",
+  
+}
+
+"#gameInfoView":{
+height:Ti.UI.SIZE,
+width:Ti.UI.SIZE,
+top:100
+}
+
+
+"#gameButtonsView":{
+  bottom:20,
+height:Ti.UI.SIZE,
+width:Ti.UI.SIZE
+}
+
+"#gameTitle":{
+  textAlign:"center",
+  font:{
+    fontSize: 20,
+     fontFamily: 'GillSans',
+    fontWeight: 'light'
+  },
+  width:"90%",
+  top:10,
+  color:"white"
+}
+
+"#gameImage":{
+ width:200,
+ height:200,
+ borderRadius : 100
+}
+
+
+"#gameAcceptButton":{
+ color:"white",
+ width:300,
+ height:50,
+ backgroundColor:"#353537",
+ font:{
+    fontSize: 20,
+     fontFamily: 'GillSans',
+    fontWeight: 'light'
+  }, 
+ title:L("game_start_button")
+}
+
+"#cancelButton":{
+ color:"white", 
+ font:{
+    fontSize: 15,
+     fontFamily: 'GillSans',
+    fontWeight: 'light'
+  },
+ top:20,
+ title:L("label_cancel")
+}
+
+		 
+ 

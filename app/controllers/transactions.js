@@ -1,21 +1,21 @@
 globals.transactions = [];
 globals.didGetTransactionsOnce = false;
-globals.showTransactionsLoader = function() {
+globals.showTransactionsLoader = function () {
   $.initialLoading.show();
 }
-globals.hideNoTransactions = function() {
+globals.hideNoTransactions = function () {
   $.noTransactions.hide();
 }
 
-globals.hideSyncingInfo = function() {
+globals.hideSyncingInfo = function () {
   $.syncingInfo.hide();
 }
-globals.showSyncingInfo = function() {
+globals.showSyncingInfo = function () {
   $.syncingInfo.show();
 }
 $.noTransactions.hide();
 $.syncingInfo.hide();
-globals.clearTransactionsTable = function() {
+globals.clearTransactionsTable = function () {
   $.paymentList.data = [];
 }
 
@@ -24,7 +24,7 @@ function listPayments(dontShowSpinner) {
   if (dontShowSpinner == undefined || dontShowSpinner == false) {
     globals.showTransactionsLoader();
   }
-  globals.lnGRPC.listInvoices(function(error, invoicesResponse) {
+  globals.lnGRPC.listInvoices(function (error, invoicesResponse) {
     globals.console.log("invoices", invoicesResponse);
 
     if (error == true) {
@@ -47,7 +47,7 @@ function listPayments(dontShowSpinner) {
       anInvoice.isInvoice = true;
     }
 
-    globals.lnGRPC.listPayments(function(error, paymentsResponse) {
+    globals.lnGRPC.listPayments(function (error, paymentsResponse) {
 
       if (error == true) {
         globals.console.error("list payments error", error);
@@ -65,11 +65,11 @@ function listPayments(dontShowSpinner) {
         delete paymentsResponse.payments;
       }
 
-      var paymentsAndInvoices = invoicesResponse.concat(paymentsResponse).sort(function(x, y) {
+      var paymentsAndInvoices = invoicesResponse.concat(paymentsResponse).sort(function (x, y) {
         return y.creation_date - x.creation_date;
       });
       globals.console.log("get transactions");
-      globals.lnGRPC.getTransactions(function(error, transactionsResponse) {
+      globals.lnGRPC.getTransactions(function (error, transactionsResponse) {
 
         if (error == true) {
           globals.console.error("get transactions error", error);
@@ -101,40 +101,10 @@ function listPayments(dontShowSpinner) {
           var aTransaction = transactionsResponse[i];
           aTransaction.creation_date = aTransaction.time_stamp;
           aTransaction.isTransaction = true;
-
-          if (aTransaction.tx_hash != undefined) {
-            var txIndex = txidKeys.indexOf(aTransaction.tx_hash);
-            if (txIndex != -1) {
-              aTransaction.destinationAddress = txids[aTransaction.tx_hash];
-              fitleredTransactions.push(aTransaction);
-            } else {
-              var dest_addresses = aTransaction.dest_addresses;
-
-              if (dest_addresses != undefined) {
-                var receiveAddress = dest_addresses[0];
-                var generatedAddresses = JSON.parse(Ti.App.Properties.getString("addresses", "[]"));
-
-                if (generatedAddresses.indexOf(receiveAddress) != -1) {
-                  fitleredTransactions.push(aTransaction);
-                } else if (dest_addresses.length > 1) {
-
-                  var receiveAddress = dest_addresses[1];
-
-                  if (generatedAddresses.indexOf(receiveAddress) != -1) {
-                    fitleredTransactions.push(aTransaction);
-                  }
-
-                }
-
-              }
-
-            }
-
-          }
+          fitleredTransactions.push(aTransaction);
 
         }
-
-        var transactions = paymentsAndInvoices.concat(fitleredTransactions).sort(function(x, y) {
+        var transactions = paymentsAndInvoices.concat(fitleredTransactions).sort(function (x, y) {
           return y.creation_date - x.creation_date;
         });
 
@@ -162,7 +132,7 @@ var control = Ti.UI.createRefreshControl({
 });
 control.id = "refreshControl";
 
-control.addEventListener('refreshstart', function(e) {
+control.addEventListener('refreshstart', function (e) {
 
   globals.loadMainScreen(true);
 

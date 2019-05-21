@@ -20,7 +20,7 @@ function close(e) {
     "duration": 200
   });
 
-  setTimeout(function() {
+  setTimeout(function () {
     $.win.close();
   }, 200);
 }

@@ -89,7 +89,7 @@ function cancelPayment() {
 }
 
 if (OS_ANDROID) {
-  win.addEventListener('android:back', function(e) {
+  win.addEventListener('android:back', function (e) {
     cancel();
   });
 }
@@ -109,7 +109,7 @@ function close() {
     "opacity": 0.0,
     "duration": 200
   });
-  setTimeout(function() {
+  setTimeout(function () {
     win.close();
 
   }, 600);
@@ -157,7 +157,7 @@ function confirm() {
         payReq = payReq.replace("lightning:", '');
       }
 
-      var res = globals.lnGRPC.decodePayReq(payReq, function(error, res) {
+      var res = globals.lnGRPC.decodePayReq(payReq, function (error, res) {
 
         if (error == true) {
 
@@ -241,15 +241,15 @@ function confirm() {
     $.loading.visible = true;
     $.mainInfo.visible = false;
 
-    globals.lnGRPC.connectPeer(args.nodeURI, function(error, res) {
+    globals.lnGRPC.connectPeer(args.nodeURI, function (error, res) {
 
       if (error == true) {
         if (res.indexOf("already connected to peer") == -1) {
           $.loading.visible = false;
           $.cancelButtonSmall.visible = false;
           $.notpaid.visible = true;
-          setTimeout(function() {
-            setTimeout(function() {
+          setTimeout(function () {
+            setTimeout(function () {
               alert(res);
             }, 1000);
             close();
@@ -272,7 +272,7 @@ function confirm() {
 
         return;
       }
-      globals.lnGRPC.openChannel(pub_key, fundingAmt, function(error, res) {
+      globals.lnGRPC.openChannel(pub_key, fundingAmt, function (error, res) {
         globals.console.log(res);
         $.cancelButtonSmall.visible = false;
         $.loading.visible = false;
@@ -301,9 +301,10 @@ function confirm() {
 
             $.paid.visible = true;
 
-            setTimeout(function() {
+            setTimeout(function () {
               args.confirm();
               close();
+              globals.tryAndBackUpChannels();
             }, 1000);
             return;
           }
@@ -334,7 +335,7 @@ function confirm() {
       args.num_satoshis = -1;
     }
     var amt = args.num_satoshis;
-    globals.lnGRPC.sendPayment(args.payReq, args.num_satoshis, function(error, response) {
+    globals.lnGRPC.sendPayment(args.payReq, args.num_satoshis, function (error, response) {
       $.loading.visible = false;
       $.cancelButtonSmall.visible = false;
       globals.console.log(error);
@@ -349,7 +350,7 @@ function confirm() {
       if (response.payment_error != undefined && response.payment_error != "") {
         alert(response.payment_error);
         $.notpaid.visible = true;
-        setTimeout(function() {
+        setTimeout(function () {
 
           close();
         }, 1000);
@@ -361,7 +362,7 @@ function confirm() {
       if (currentRHASH != null && currentMemo != null) {
         Ti.App.Properties.setString("memo_" + currentRHASH, currentMemo);
       }
-      setTimeout(function() {
+      setTimeout(function () {
         args.confirm();
         close();
       }, 1000);
@@ -371,7 +372,7 @@ function confirm() {
 
     globals.auth.check({
       title: L("text_confirmsend"),
-      callback: function(e) {
+      callback: function (e) {
         if (e.success) {
 
           args.confirm();
@@ -448,7 +449,7 @@ function androidChangeValueFiat() {
 
 
 function updateAmountFiat() {
-  setTimeout(function() {
+  setTimeout(function () {
     if ($.paymentAmountFiat.value.length == 0) {
       $.paymentAmount.value = "0";
       return;
@@ -479,7 +480,7 @@ function updateAmountFiat() {
 
 function updateAmount() {
 
-  setTimeout(function() {
+  setTimeout(function () {
     if ($.paymentAmount.value.length == 0) {
       $.paymentAmountFiat.value = "0";
       return;

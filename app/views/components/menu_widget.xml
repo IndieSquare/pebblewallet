@@ -65,6 +65,12 @@
 				<ImageView class="modeImage" image="/images/settingsIcon.png"/>
 			</View>
 
+			<View  id="scanNormalButton" onClick="scanNormal">
+				<View class="aModeIconShadowView"></View>
+				<ImageView class="modeImage" image="/images/qrScanLink.png"/>
+
+			</View>
+
 		</View>
 
 	</View>
@@ -77,10 +83,6 @@
 
 	</View>
 
-	<View class="lnGameButton" id="lnGameButton" onClick="goToGameMode">
-
-		<ImageView class="buttonImage" image="/images/gameButtonLN.png"/>
-
-	</View>
+	
 
 </Alloy>

@@ -1,6 +1,6 @@
 var qrcode = require("requires/qrcode");
 
-globals.lnGRPC.newAddress("np2wkh", function(error, response) {
+globals.lnGRPC.newAddress("np2wkh", function (error, response) {
 
   if (error == true) {
     globals.console.error("new add error", response);
@@ -24,9 +24,9 @@ function setAddress(address) {
   $.address.text = address;
 
   var newQrcodeView = qrcode.QRCode({
-      "text": address,
-      "errorCorrectLevel": "H"
-    })
+    "text": address,
+    "errorCorrectLevel": "H"
+  })
     .createQRCodeView({
       "width": 250,
       "height": 250,

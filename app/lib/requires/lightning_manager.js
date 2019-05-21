@@ -1,7 +1,7 @@
-module.exports = (function() {
+module.exports = (function () {
   var self = {};
 
-  self.bootStrapChannel = function() {
+  self.bootStrapChannel = function () {
 
     if (Ti.App.Properties.getInt("didBootstrap", 0) == 1) {
       return;
@@ -15,12 +15,12 @@ module.exports = (function() {
     globals.console.log("starting bootstrap channel with pebble hub");
 
 
-    checkIfHasWalletBalance(function(hasBalance) {
+    checkIfHasWalletBalance(function (hasBalance) {
       if (hasBalance == true) {
 
         globals.console.log("has balance, checking if has channel");
 
-        checkIfHasChannel(function(hasChannel) {
+        checkIfHasChannel(function (hasChannel) {
           if (hasChannel == false) {
             //dont have a channel so open with pebble hub
             globals.console.log("try and open channel with hub")
@@ -33,7 +33,7 @@ module.exports = (function() {
 
             globals.lnGRPC.connectPeer(lightningAddress,
 
-              function(error, res) {
+              function (error, res) {
 
                 globals.console.log("connect peer res", res);
                 var peerAlreadyAdded = false;
@@ -56,8 +56,8 @@ module.exports = (function() {
                   var amount = globals.getRecommendedChannelAmount();
                   globals.console.log("trying to open channel");
                   globals.lnGRPC.openChannel(pubKey, amount,
-                    function(error, res) {
-                      
+                    function (error, res) {
+
                       if (error == true) {
                         globals.console.error("open channel error", error);
 
@@ -84,7 +84,7 @@ module.exports = (function() {
 
       } else {
         //try again in a bit
-        setTimeout(function() {
+        setTimeout(function () {
           self.bootStrapChannel();
         }, 10000)
       }
@@ -96,7 +96,7 @@ module.exports = (function() {
   function checkIfHasWalletBalance(callback) {
 
 
-    globals.lnGRPC.getWalletBalance(function(error, response) {
+    globals.lnGRPC.getWalletBalance(function (error, response) {
 
       if (error == false) {
         globals.console.log("has balance", response)
@@ -121,7 +121,7 @@ module.exports = (function() {
 
   function checkIfHasChannel(callback) {
 
-    globals.lnGRPC.listChannels(function(error, res) {
+    globals.lnGRPC.listChannels(function (error, res) {
       if (error == false) {
 
 
@@ -133,11 +133,12 @@ module.exports = (function() {
         }
 
         if (openChannels.length > 0) {
+          globals.console.log("has channels");
           callback(true)
           return;
         }
 
-        globals.lnGRPC.pendingChannels(function(error, res) {
+        globals.lnGRPC.pendingChannels(function (error, res) {
 
           if (error == false) {
             var pendingChannels = res;
@@ -146,6 +147,7 @@ module.exports = (function() {
 
               if (pendingChannels.pending_open_channels != undefined) {
                 if (pendingChannels.pending_open_channels.length > 0) {
+                  globals.console.log("has pending channels");
                   callback(true);
 
                   return;
@@ -154,7 +156,7 @@ module.exports = (function() {
 
 
             }
-
+            globals.console.log("has no channels");
             callback(false);
 
             return;

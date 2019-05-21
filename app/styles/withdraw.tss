@@ -46,14 +46,19 @@
 	textAlign: "left",
 	backgroundColor: "#ffffff"
 }
-".tokenAmountView" : {
+".amountView" : {
 	top: 0
 }
-".amountToken" : {
+".amountBTC" : {
 	bottom: 5
 }
 ".fiat" : {
 	top: 45
+}
+".switchIcon" : {
+	height: 30,
+	top: 100,
+	right: 10
 }
 ".balance" : {
 	top: 10
@@ -113,4 +118,11 @@
 	top: 0,
 	height: Alloy.Globals.topBarHeight,
 	left: 10
+}
+
+"#sendAllButton" : {
+	top: 0,
+	height: Alloy.Globals.topBarHeight,
+	right: 10,
+	textAlign:"right"
 }

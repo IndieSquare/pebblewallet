@@ -53,12 +53,10 @@
 	right: 75,
 	visible: false
 }
-".lnGameButton" : {
+"#scanNormalButton" : {
+	left: 10,
 	height: Ti.UI.SIZE,
-	width: Ti.UI.SIZE,
-	bottom: 15,
-	right: 138,
-	visible: false
+	width: Ti.UI.SIZE
 }
 ".buttonImage" : {
 	width: 50,

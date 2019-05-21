@@ -15,24 +15,25 @@
 
 "#syncStatus" : {
 	height: 50,
-	width: Ti.UI.SIZE,
+	width: 400,
 	left: 10,
-	top: Alloy.Globals.infoTop,
-	layout: 'horizontal',
-	visible: false
+	top: Alloy.Globals.infoTop, 
+	visible: false, 
 }
 "#syncIcon" : {
 	height: 25,
-	left: 5
+	left: 5,
+	top:0,
 }
 "#syncText" : {
-	left: 5,
+	left: 40,
 	color: "white",
 	font: {
 		fontFamily: "Gil sans",
 		fontSize: 13
 	},
-	textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT
+	textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT,
+	top:0
 }
 "#scroller" : {}
 ".topBarTop" : {
@@ -131,7 +132,8 @@
 	font: {
 		fontFamily: "Gil sans",
 		fontSize: 16
-	}
+	},
+	touchEnabled:false
 }
 ".fiatValue" : {
 	color: "white"

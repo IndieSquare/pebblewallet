@@ -50,13 +50,13 @@ function loadAccounts() {
   $.accountsList.data = tableData;
 }
 
-globals.loadAccountsList = function() {
+globals.loadAccountsList = function () {
   loadAccounts();
 }
 
 if (OS_ANDROID) {
 
-  $.win.addEventListener('android:back', function() {
+  $.win.addEventListener('android:back', function () {
     close();
     return true;
   });
@@ -91,7 +91,7 @@ function close(e) {
     "duration": 200
   });
 
-  setTimeout(function() {
+  setTimeout(function () {
     $.win.width = 0;
     $.win.close();
   }, 200);
@@ -102,38 +102,38 @@ globals.closeAccounts = close;
 function addNewAccount() {
 
   globals.util.readQRcodeAccount({
-      "callback": function(e) {
-        $.connectSpinner.show();
-        $.addAccount.hide();
-        globals.continueConnect(e, function(config) {
-          globals.checkConnection(config, function(success, res) {
+    "callback": function (e) {
+      $.connectSpinner.show();
+      $.addAccount.hide();
+      globals.continueConnect(e, function (config) {
+        globals.checkConnection(config, function (success, res) {
 
-            if (success) {
+          if (success) {
 
-              globals.tryStopLND(function() {
+            globals.stopLND(function () {
 
-                globals.closeSettings();
-                globals.connectLNDGRPC(config);
+              globals.closeSettings();
+              globals.connectLNDGRPC(config);
 
-                close();
+              close();
 
-              });
-            } else {
-              $.connectSpinner.hide();
-              $.addAccount.show();
-              alert(res);
-            }
-          });
-
-        }, function(error) {
-
-          $.connectSpinner.hide();
-          $.addAccount.show();
-
-          alert(error);
+            });
+          } else {
+            $.connectSpinner.hide();
+            $.addAccount.show();
+            alert(res);
+          }
         });
-      }
-    },
+
+      }, function (error) {
+
+        $.connectSpinner.hide();
+        $.addAccount.show();
+
+        alert(error);
+      });
+    }
+  },
     true);
 }
 

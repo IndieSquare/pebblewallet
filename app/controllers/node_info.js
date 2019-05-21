@@ -19,9 +19,9 @@ function setURI(uri) {
   $.pubkey.text = uri;
 
   var newQrcodeView = qrcode.QRCode({
-      "text": uri,
-      "errorCorrectLevel": "H"
-    })
+    "text": uri,
+    "errorCorrectLevel": "H"
+  })
     .createQRCodeView({
       "width": 250,
       "height": 250,
@@ -30,9 +30,10 @@ function setURI(uri) {
   $.qrcode.add(newQrcodeView);
 }
 
-globals.setNodeInfo = function(nodeInfo) {
+globals.setNodeInfo = function (nodeInfo) {
   globals.console.log("setting node info", nodeInfo);
   $.pubkey.text = "";
+  globals.currentPubkey = nodeInfo.identity_pubkey;
   globals.currentAlias = nodeInfo.alias;
   if (nodeInfo.alias == undefined || nodeInfo.alias == "") {
     globals.currentAlias = nodeInfo.identity_pubkey.substr(0, 10) + "...";
@@ -54,7 +55,7 @@ globals.setNodeInfo = function(nodeInfo) {
     }
   } else {
     $.pubkey.text = nodeInfo.identity_pubkey;
-    $.host.text = ""; 
+    $.host.text = "";
     $.hostTitle.hide();
   }
   try {

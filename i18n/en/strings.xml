@@ -1,9 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+
+  <string name="not_recognized">not recognized</string>
+  <string name="game_terms">{title}\n\nis wanting to connect with pebble\n\nand is requesting permission to charge up to {max_amount} satoshis without confirmation</string>
+  <string name="game_start_button">connect</string>
+  <string name="already_uploading">upload already in progress</string>
+  <string name="label_send_all_check">are you sure you want to send all your funds to address {address}?</string>
+  <string name="label_send_all">send all</string>
+  <string name="restart_app">please restart the app for changes to take effect</string>
+  <string name="wait_for_sync">please wait for the wallet sync to be completed</string>
+  <string name="restoring_title">restoring funds</string>
+  <string name="channel_restore_description">the app will try and restore your channel and off chain balances, this may take some time especially on slower devices so it is recommened to keep the app open and the device plugged into a power socket</string>
+  <string name="channel_link_description">we recommend you link with your google account to allow automated google drive back ups of your channels\n\nyou can also link later from the app's settings</string>
+  <string name="later_button">link later</string>
+  <string name="back_up_not_found">we couldn't find a back up for this account</string>
+  <string name="restore_channel_funds">restore from google drive</string>
+  <string name="restore_back_up_title">restore back up</string>
+  <string name="restore_back_up">if you have backed up your channels to google drive you can restore by clicking the button below, if not you should skip this step</string>
+  <string name="last_back_up">last back up</string>
   <string name="channels_backup_title">back up channels</string>
-  <string name="channels_backup_description">export an encrypted file that will allow you to restore funds</string>
+  <string name="channels_backup_description">export an encrypted file that will allow you to restore funds</string> 
+  <string name="channel_backup_description">we recommend you link with your google account to allow automated google drive back ups of your channels\n\nyou can also email a one off back up</string>
+  <string name="link_google">link google drive</string>
+  <string name="back_up_email">email back up</string>
+  <string name="google_drive_linked">google drive linked! the app will now try and back up your channels for you in the background</string>
+  <string name="google_drive_error">error uploading, please try to relink and check your google account settings</string>
   <string name="channels_backup_title_email">Channel backup</string>
-  <string name="channels_backup_description_email">In the even that you have lost your device or there is a device error you can use the attached file to restore lost funds during a new installation of the pebble app</string>
+  <string name="channels_backup_description_email">In the event that you have lost your device or there is a device error you can use the attached file to restore lost funds during a new installation of the pebble app</string>
   <string name="not_enough_space">Your device does not have enough disk space to use the wallet, please free some space up and reload the app to try again</string>
   <string name="error_api">Unable to connect to API</string>
   <string name="error_api_description">check your internet connection and reload the app to try again, or continue with limited functionality</string>
@@ -28,7 +51,7 @@
   <string name="label_share">share</string>
   <string name="got_it">got it</string>
   <string name="no_transactions">you don't have any transactions yet\n\npress the menu button bottom right to deposit some bitcoin and get started!</string>
-  <string name="syncing_info">your wallet it currently doing some necessary syncing to validate the network and ensure your privacy, this may take several minutes</string>
+  <string name="syncing_info">your wallet is currently doing some necessary syncing to validate the network and ensure your privacy, this may take several minutes</string>
   <string name="block_height_sync">[block:{height}]</string>
   <string name="label_recover_wallet">recover wallet</string>
   <string name="label_host">host</string>
@@ -42,7 +65,7 @@
   <string name="closed">closed</string>
   <string name="blocks_can_claim">blocks until can claim</string>
   <string name="link_info">not sure how to link your node?\nclick here to find out how</string>
-  <string name="still_synchronizing">verifying blocks...</string>
+  <string name="still_synchronizing">doing busy stuff...</string>
   <string name="label_settings_logs">view logs</string>
 
   <string name="label_settings_logs_description">view the internal LNDs logs for errors</string>
@@ -229,9 +252,9 @@
   <!-- Settings !-->
   <string name="label_confirm_showpassphrase">Show the Recovery phrase?\n\nPlease do not show it to anybody. Also, screenshots are not secure as they may be seen by other apps.\n\nPlease note on paper and keep it in a safe place.</string>
   <string name="label_settings_important">Important</string>
-  <string name="label_settings_recoveryphrase">recovery Phrase</string>
-  <string name="label_settings_recoveryphrase_description">Check your Recovery phrase</string>
-  <string name="label_settings_currency_description">Choose your preferred currency</string>
+  <string name="label_settings_recoveryphrase">recovery phrase</string>
+  <string name="label_settings_recoveryphrase_description">check your Recovery phrase</string>
+  <string name="label_settings_currency_description">choose your preferred currency</string>
   <string name="label_settings_touchid">Touch ID</string>
   <string name="label_settings_touchid_description">Authorize transactions using your fingerprint</string>
   <string name="label_settings_pincode">PIN code</string>

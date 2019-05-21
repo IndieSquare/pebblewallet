@@ -6,20 +6,22 @@
 				<ScrollView class="tifill" scrollType="vertical" layout="vertical">
 					<View class="topSection" id="top">
 						<Label class="size15 white pull-left pull-bottom" id="gobackButton" onClick="close">L("label_goback")</Label>
+						<Label class="size15 white pull-right pull-bottom" id="sendAllButton" onClick="sendAll">L("label_send_all")</Label>
 
 						<Label class="title white">L("label_withdraw")</Label>
 
 						<View class="tisize pull-bottom" layout="vertical">
 							<View class="tisize">
-								<View class="tisize tokenAmountView" id="tokenAmountView" layout="horizontal">
+								<View class="tisize amountView" id="amountView" layout="horizontal">
 									<Label class="size40 white bold" id="amount"></Label>
-									<Label class="size20 white amountToken" id="amountToken"></Label>
+									<Label class="size20 white amountBTC" id="amountBTC"></Label>
 								</View>
-
+								<Label class="size20 white fiat" id="fiat"></Label>
 							</View>
 							<Label class="size15 white balance" id="balance"></Label>
 							<Label class="size15 white priority" id="priorityLabel" onClick="prioritySet"></Label>
 						</View>
+						<ImageView class="switchIcon" id="switchIcon" image="/images/icon_switch.png" onClick="switchAmount"/>
 					</View>
 					<TextField class="inputDestination" id="inputDestination"/>
 					<View class="keypad" id="keypad" layout="vertical">

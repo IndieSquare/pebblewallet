@@ -13,10 +13,10 @@ if (args.isPassphraseOnly != null) {
 
 var slider = globals.util.createSlider({
   init: false,
-  on: function() {
+  on: function () {
     $.nextButtonPassphrase.opacity = 1.0;
   },
-  off: function() {
+  off: function () {
     $.nextButtonPassphrase.opacity = 0.2;
   }
 });
@@ -50,7 +50,7 @@ function close() {
     "opacity": 0.0,
     "duration": closeDuration
   });
-  setTimeout(function() {
+  setTimeout(function () {
     $.win.close();
 
   }, closeDuration + 5);
@@ -67,17 +67,17 @@ function continueFromPassphrase() {
       close();
     } else {
 
-      setTimeout(function() {
+      setTimeout(function () {
 
         globals.console.log("generating user key and saving to keychain")
 
-        globals.nativeCrypto.createUserKey(function(success, userKey) {
+        globals.nativeCrypto.createUserKey(function (success, userKey) {
           if (success) {
             globals.userKey = userKey;
 
             Alloy.createController("components/pincode_screen", {
               "type": "set",
-              "callback": function(number) {
+              "callback": function (number) {
 
                 globals.passCodeHash = number;
 
@@ -88,7 +88,7 @@ function continueFromPassphrase() {
                 complete();
 
               },
-              "cancel": function() {}
+              "cancel": function () { }
             }).getView().open();
 
 
@@ -107,13 +107,13 @@ function continueFromPassphrase() {
 }
 
 function complete() {
-  setTimeout(function() {
+  setTimeout(function () {
 
     var seedArray = globals.decryptedPassphrase.split(","); //convert to string array
 
-    globals.lnGRPC.createWallet(globals.createPassword(globals.passCodeHash), seedArray, 0, function(error, response) {
-      console.log("create wallet", error);
-      console.log("create wallet", response);
+    globals.lnGRPC.createWallet(globals.createPassword(globals.passCodeHash), seedArray, -1, "", function (error, response) {
+      globals.console.log("create wallet", error);
+      globals.console.log("create wallet", response);
       if (error == true) {
         alert(response);
         return;
@@ -123,8 +123,12 @@ function complete() {
         globals.console.log("setting lnd mobile");
         Ti.App.Properties.setString("mode", "lndMobile");
         globals.alreadyUnlocked = true; //because we created a new wallet so no need to unlock
-        globals.screenView = Alloy.createController("frame").getView();
-        globals.screenView.open();
+
+
+        Alloy.createController("components/google_drive_link", { fromIntro: true })
+          .getView()
+          .open();
+
 
         close();
       }
@@ -135,7 +139,7 @@ function complete() {
 }
 
 if (OS_ANDROID) {
-  $.win.addEventListener('android:back', function() {
+  $.win.addEventListener('android:back', function () {
     return true;
   });
 }

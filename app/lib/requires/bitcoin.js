@@ -1,17 +1,17 @@
-module.exports = (function() {
+module.exports = (function () {
   var self = {};
 
   var bitcoin = require('vendor/util/bitcoinjs-lib')
 
   var bip21lib = bitcoin.bip21;
 
-  self.base64toHEX = function(base64) {
+  self.base64toHEX = function (base64) {
 
     return bitcoin.buffer(base64, 'base64').toString('hex');
 
   };
 
-  self.checkExpired = function(req) {
+  self.checkExpired = function (req) {
 
     var timeExp = (Date.now() / 1000) - req.timestamp;
 
@@ -25,7 +25,7 @@ module.exports = (function() {
 
   };
 
-  self.decodeLNPayReq = function(req) {
+  self.decodeLNPayReq = function (req) {
     var res = null;
     try {
       res = tools.bolt11.decode(req);
@@ -35,7 +35,7 @@ module.exports = (function() {
     return res;
   };
 
-  self.validateAddress = function(address, network = "mainnet") {
+  self.validateAddress = function (address, network = "mainnet") {
     var bitcoinNetwork = bitcoin.networks.bitcoin;
     if (network == "testnet") {
       bitcoinNetwork = bitcoin.networks.testnet;
@@ -49,7 +49,7 @@ module.exports = (function() {
 
   }
 
-  self.decodeBip21 = function(uri) {
+  self.decodeBip21 = function (uri) {
 
     try {
       var decoded = bip21lib.decode(uri);

@@ -1,9 +1,9 @@
-module.exports = (function() {
+module.exports = (function () {
   var self = {};
 
   var network = require("requires/network");
 
-  self.getTiker = function(callback) {
+  self.getTiker = function (callback) {
     globals.tikerType = {
       "BTC": {},
       "ETH": {}
@@ -12,14 +12,14 @@ module.exports = (function() {
       "chain": "btc",
       "version": "v1",
       "method": "markets/btc",
-      "callback": function(tiker) {
+      "callback": function (tiker) {
 
         globals.tikerType["BTC"] = tiker;
 
         if (callback != null) callback(tiker);
 
       },
-      "onError": function(error) {
+      "onError": function (error) {
         if (callback != null) callback();
       }
     });
@@ -37,7 +37,7 @@ module.exports = (function() {
     return x1 + x2;
   }
 
-  self.getFiatValue = function(currency, denomination = "BTC") {
+  self.getFiatValue = function (currency, denomination = "BTC") {
 
     if (!self.isAvailable(currency)) return null;
     var val = globals.tikerType["BTC"][currency].last;
@@ -49,7 +49,7 @@ module.exports = (function() {
 
   };
 
-  self.getFiatSymbol = function(currency) {
+  self.getFiatSymbol = function (currency) {
 
     var chainName = "BTC";
 
@@ -59,7 +59,7 @@ module.exports = (function() {
 
   };
 
-  self.to = function(type, quantity, currency, digit) {
+  self.to = function (type, quantity, currency, digit) {
 
     var chainName = "BTC";
 
@@ -85,7 +85,7 @@ module.exports = (function() {
     }
   };
 
-  self.swapCurrency = function(params) {
+  self.swapCurrency = function (params) {
 
     var chainName = "BTC";
 
@@ -98,7 +98,7 @@ module.exports = (function() {
     return (rate_to * BTC).toFixed2(4);
   };
 
-  self.getRate = function(currency) {
+  self.getRate = function (currency) {
     var chainName = "BTC";
 
     if (!self.isAvailable(chain, currency)) return null;
@@ -106,7 +106,7 @@ module.exports = (function() {
     return globals.tikerType[chainName][currency].last * xcp_btc;
   };
 
-  self.isAvailable = function(currency) {
+  self.isAvailable = function (currency) {
     var chainName = "BTC";
 
     if (globals.tikerType == null) return false;

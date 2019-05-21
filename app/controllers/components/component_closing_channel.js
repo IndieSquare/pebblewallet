@@ -11,7 +11,7 @@ $.pubKey.text = aChannel.channel.remote_node_pub;
 
 $.detailsButton.text = " " + $.detailsButton.text + " ";
 
-var local_balance_str = aChannel.channel.local_balance + "";
+var localBalanceStr = aChannel.channel.local_balance + "";
 
 var localBalanceText = aChannel.channel.local_balance + " SAT";
 var attr = Titanium.UI.createAttributedString({
@@ -25,7 +25,7 @@ var attr = Titanium.UI.createAttributedString({
         fontFamily: 'GillSans-Light',
         fontWeight: 'light'
       },
-      range: [localBalanceText.indexOf(local_balance_str), local_balance_str.length]
+      range: [localBalanceText.indexOf(localBalanceStr), localBalanceStr.length]
     },
     {
       type: Ti.UI.ATTRIBUTE_FONT,

@@ -1,5 +1,5 @@
 <Alloy>
-	<View class="transparent">
+	<Window id="win"> 
 		<View class="tifill background" id="background"></View>
 		<Label id="amountLab">+1</Label>
 		<View class="tifill mainView" id="mainView">
@@ -7,6 +7,16 @@
 			<Label id="closeButton" onClick="close">close</Label>
 		</View>
 
-	</View>
-
+		<View class="tifill" id="confView">
+		<View id="gameInfoView" layout="vertical">
+		<ImageView id="gameImage"/>
+		<Label id="gameTitle"/>
+		</View>
+<View id="gameButtonsView" layout="vertical">
+		<Button id="gameAcceptButton" onClick="connect"/>
+		<Button id="cancelButton" onClick="close"/>
+		</View>
+		</View>
+ 
+	</Window>
 </Alloy>

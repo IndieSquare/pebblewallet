@@ -18,8 +18,10 @@ Alloy.Globals = {
   api_key: 'a6db8ab60116e98d7920e5c65545835c',
   SAVE_FILE_PATH: Ti.Filesystem.applicationDataDirectory + '/save_file.json',
   defaultExpiry :10,
+  recoveryWindow :250,
   hubURITestnet:"027874b524c4f35a97e8eb788fdbbf8e96b532f85bafb7257a4f4f6f76ac22c508@35.221.84.241",
-  hubURIMainnet:"026eb42e3190b6a89f6f24824796270270e5aa6bdba11cd85bb0ec6a111c466213@35.221.97.245"
+  hubURIMainnet:"026eb42e3190b6a89f6f24824796270270e5aa6bdba11cd85bb0ec6a111c466213@35.221.97.245",
+  googleClientID:"755718566094-19ioe9glkud228ocfqp4ack4s2gapgp2.apps.googleusercontent.com"
 };
 
 Alloy.Globals.accountsKey = "AccountsV2";
@@ -98,5 +100,5 @@ if (Alloy.Globals.isiPhoneX) {
   Alloy.Globals.infoTop = 35;
 }
 
-Alloy.Globals.lndMobileNetwork = "mainnet";
-Alloy.Globals.bootstrap = true;
+Alloy.Globals.network = "mainnet";
+Alloy.Globals.bootstrap = false;

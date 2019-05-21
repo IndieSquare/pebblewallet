@@ -1,4 +1,4 @@
-module.exports = (function() {
+module.exports = (function () {
 
   var self = {};
 
@@ -45,22 +45,22 @@ module.exports = (function() {
     return animation;
   };
 
-  self.makeImage = function(params) {
+  self.makeImage = function (params) {
     var image = Ti.UI.createImageView(params);
     return image;
   };
 
-  self.makeImageButton = function(params) {
+  self.makeImageButton = function (params) {
     var image = Ti.UI.createImageView(params);
     if (params.listener != null) {
-      image.addEventListener("click", function() {
+      image.addEventListener("click", function () {
         params.listener(image);
       });
     }
     return image;
   };
 
-  self.makeLabel = function(params) {
+  self.makeLabel = function (params) {
     var basic = {
       color: "#000000",
       textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
@@ -108,7 +108,7 @@ module.exports = (function() {
     height: 30,
     bottom: 10
   });
-  cancelButton.addEventListener('click', function() {
+  cancelButton.addEventListener('click', function () {
     Barcode.cancel();
   });
 
@@ -131,7 +131,7 @@ module.exports = (function() {
     height: 30,
     bottom: 60
   });
-  enterInfoButton.addEventListener('click', function() {
+  enterInfoButton.addEventListener('click', function () {
     Barcode.cancel();
 
     if (qrMode == "invoice") {
@@ -140,10 +140,10 @@ module.exports = (function() {
         "small": true,
         "message": L("enter_payment_request_description"),
         "enterRequest": true,
-        "cancel": function() {
+        "cancel": function () {
 
         },
-        "confirm": function() {
+        "confirm": function () {
 
           globals.loadMainScreen();
 
@@ -158,10 +158,10 @@ module.exports = (function() {
         "conf": true,
         "message": L("enter_grpc_config"),
         "enterConfig": true,
-        "cancel": function() {
+        "cancel": function () {
 
         },
-        "confirm": function(res) {
+        "confirm": function (res) {
           currentCallbackQR(res);
 
         },
@@ -191,7 +191,7 @@ module.exports = (function() {
   var currentV = null;
   var scannedBarcodes = {},
     scannedBarcodesCount = 0;
-  Barcode.addEventListener("error", function(e) {
+  Barcode.addEventListener("error", function (e) {
     Ti.API.info("error received");
     if (currentV.error != undefined) {
       currentV.error({
@@ -199,14 +199,14 @@ module.exports = (function() {
       });
     }
   });
-  Barcode.addEventListener("cancel", function(e) {
+  Barcode.addEventListener("cancel", function (e) {
     if (currentV.cancel != undefined) {
       currentV.cancel({
         "cancel": e
       });
     }
   });
-  Barcode.addEventListener("success", function(e) {
+  Barcode.addEventListener("success", function (e) {
     globals.console.log("Success called with barcode: " + e.result);
 
     currentV.callback({
@@ -215,7 +215,7 @@ module.exports = (function() {
 
   });
 
-  self.openScanner = function(v) {
+  self.openScanner = function (v) {
     currentV = v;
 
     function open() {
@@ -238,15 +238,15 @@ module.exports = (function() {
       var permission = "android.permission.CAMERA";
       var has = Ti.Android.hasPermission(permission);
       if (!has) {
-        Ti.Android.requestPermissions([permission], function(e) {
+        Ti.Android.requestPermissions([permission], function (e) {
           if (e.success) {
             open();
           } else {
             var dialog = self.createDialog({
               message: L("label_permission_deny_camera"),
-              buttonNames: [L("label_go_settings"),L("label_close")]
+              buttonNames: [L("label_go_settings"), L("label_close")]
             });
-            dialog.addEventListener("click", function(e) {
+            dialog.addEventListener("click", function (e) {
               if (e.index != e.source.cancel) {
                 var intent = Ti.Android.createIntent({
                   action: "android.settings.APPLICATION_DETAILS_SETTINGS",
@@ -263,7 +263,7 @@ module.exports = (function() {
     } else open();
   };
 
-  self.group = function(params, layout) {
+  self.group = function (params, layout) {
     var basic = {
       width: Ti.UI.SIZE,
       height: Ti.UI.SIZE
@@ -276,14 +276,14 @@ module.exports = (function() {
       group[key] = params[key];
     }
 
-    group.addView = function(params) {
+    group.addView = function (params) {
       for (key in params) {
         group.add(params[key]);
         group[key] = params[key];
       }
     };
 
-    group.removeView = function(params) {
+    group.removeView = function (params) {
       for (key in params) {
         group.remove(params[key]);
         group[key] = null;
@@ -293,19 +293,19 @@ module.exports = (function() {
     return group;
   };
 
-  self.createDialog = function(params, listener) {
+  self.createDialog = function (params, listener) {
     if (params.title == null) params.title = "";
-    
-     if (params.buttonNames.length > 1 && params.cancel == undefined) {
-     	params.cancel = 1;
-     }
+
+    if (params.buttonNames.length > 1 && params.cancel == undefined) {
+      params.cancel = 1;
+    }
     var dialog = Ti.UI.createAlertDialog(params);
     if (listener != null) dialog.addEventListener("click", listener);
 
     return dialog;
   };
 
-  self.createInputDialog = function(params) {
+  self.createInputDialog = function (params) {
     var dialog = {};
     if (params.title == null) params.title = "";
 
@@ -326,7 +326,9 @@ module.exports = (function() {
 
       dialog.androidField = Ti.UI.createTextField(style);
       inputView.add(dialog.androidField);
-       
+      if (params.buttonNames.length > 1 && params.cancel == undefined) {
+        params.cancel = 1;
+      }
       origin = Ti.UI.createOptionDialog({
         title: params.title,
         message: params.message,
@@ -336,7 +338,9 @@ module.exports = (function() {
       });
       if (params.value) dialog.androidField.setValue(params.value);
     } else {
-      
+      if (params.buttonNames.length > 1 && params.cancel == undefined) {
+        params.cancel = 1;
+      }
       var style = {
         title: params.title,
         message: params.message,
@@ -347,17 +351,15 @@ module.exports = (function() {
       if (params.keyboardType) style.keyboardType = params.keyboardType;
       if (params.passwordMask) style.style = Ti.UI.iOS.AlertDialogStyle.SECURE_TEXT_INPUT;
       origin = Ti.UI.createAlertDialog(style);
-      
-      if (params.buttonNames.length > 1 && params.cancel == undefined) {
-     	params.cancel = 1;
-     	}
+
+
     }
     dialog.origin = origin;
 
     return dialog;
   };
 
-  self.showLoading = function(parent, params) {
+  self.showLoading = function (parent, params) {
     params.font = getFont(params);
     params.style = "dark";
     if (params.width == Ti.UI.FILL && params.height == Ti.UI.FILL) {
@@ -382,7 +384,7 @@ module.exports = (function() {
 
     parent.add(act);
 
-    act.removeSelf = function() {
+    act.removeSelf = function () {
       if (act != null) {
         parent.remove(act);
         act = null;
@@ -392,7 +394,7 @@ module.exports = (function() {
     return act;
   };
 
-  self.qrcodeCallback = function(e, params) {
+  self.qrcodeCallback = function (e, params) {
     var uri = bitcoin.decodeBip21((e.barcode.indexOf("bitcoin:") >= 0) ? e.barcode : "bitcoin:" + e.barcode);
     if (uri == null) {
       var matches = e.barcode.match(/[a-zA-Z0-9]{27,34}/);
@@ -411,45 +413,48 @@ module.exports = (function() {
     if (uri != null) params.callback(uri);
   };
 
-  self.readQRcodeAccount = function(params, any) {
+  self.readQRcodeAccount = function (params, any) {
     qrMode = "account";
     enterInfoButton.show();
     enterInfoButton.title = L("enter_config_url")
     self.readQRcode(params, any);
   };
 
-  self.readQRcodeNormal = function(params, any) {
+  self.readQRcodeNormal = function (params, any) {
 
     enterInfoButton.hide();
     self.readQRcode(params, any);
   };
 
-  self.readQRcodeInvoice = function(params, any) {
+  self.readQRcodeInvoice = function (params, any) {
     qrMode = "invoice";
     enterInfoButton.show();
     enterInfoButton.title = L('enter_invoice')
     self.readQRcode(params, any);
   };
 
-  self.readQRcode = function(params, any) {
+  self.readQRcode = function (params, any) {
+    globals.console.log("read qr code");
     currentCallbackQR = params.callback;
     if (any == false) {
 
       self.openScanner({
-        "callback": function(e) {
+        "callback": function (e) {
           self.qrcodeCallback(e, params);
         }
       });
     } else {
+      globals.console.log("opening scanner any");
       self.openScanner({
-        "callback": function(e) {
+        "callback": function (e) {
+          globals.console.log("callback qrcode");
           params.callback(e.barcode);
         }
       });
     }
   };
 
-  self.createSlider = function(params) {
+  self.createSlider = function (params) {
     var slider = {};
     var slideColor = "#5c8077";
     slider.is = params.init || false;
@@ -469,7 +474,7 @@ module.exports = (function() {
     swit.left = (!params.init) ? -18.6 : 16;
 
     slider.origin.add(swit);
-    slider.origin.addEventListener("click", function() {
+    slider.origin.addEventListener("click", function () {
       if (slider.editable) {
         if (slider.is) {
           if (OS_ANDROID) slider.origin.backgroundColor = "#666666";
@@ -498,13 +503,13 @@ module.exports = (function() {
       }
     });
 
-    slider.on = function() {
+    slider.on = function () {
       slider.is = true;
       swit.left = 16;
       slider.origin.backgroundColor = slideColor;
     };
 
-    slider.off = function() {
+    slider.off = function () {
       slider.is = false;
       swit.left = -18.6;
       slider.origin.backgroundColor = "#666666";
@@ -513,7 +518,7 @@ module.exports = (function() {
     return slider;
   };
 
-  self.getStatusBarHeight = function() {
+  self.getStatusBarHeight = function () {
     switch (Ti.Platform.displayCaps.density) {
       case 160:
         return 25;
@@ -528,33 +533,39 @@ module.exports = (function() {
     }
   };
 
-  self.getDisplayHeight = function() {
+  self.getDisplayHeight = function () {
     if (OS_ANDROID) {
-      return (Ti.Platform.displayCaps.platformHeight / Ti.Platform.displayCaps.logicalDensityFactor);
+      if (Ti.Platform.displayCaps.platformHeight > Ti.Platform.displayCaps.platformWidth) {
+        return (Ti.Platform.displayCaps.platformHeight / Ti.Platform.displayCaps.logicalDensityFactor);
+      }
+      return (Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor);
     }
     return Ti.Platform.displayCaps.platformHeight;
   };
 
-  self.getDisplayWidth = function() {
+  self.getDisplayWidth = function () {
     if (OS_ANDROID) {
-      return (Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor);
+      if (Ti.Platform.displayCaps.platformHeight > Ti.Platform.displayCaps.platformWidth) {
+        return (Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor);
+      }
+      return (Ti.Platform.displayCaps.platformHeight / Ti.Platform.displayCaps.logicalDensityFactor);
     }
     return Ti.Platform.displayCaps.platformWidth;
   };
 
-  self.convert_x = function(val) {
+  self.convert_x = function (val) {
     return (OS_ANDROID) ? (val / Ti.Platform.displayCaps.logicalDensityFactor) : val;
   };
 
-  self.convert_y = function(val) {
+  self.convert_y = function (val) {
     return (OS_ANDROID) ? (val / Ti.Platform.displayCaps.logicalDensityFactor) : val;
   };
 
-  self.isTestAccount = function() {
+  self.isTestAccount = function () {
     return (globals.datas.identifier === "test" && globals.datas.password === "test");
   };
 
-  self.satToBtc = function(value, format) {
+  self.satToBtc = function (value, format) {
 
     function roundFix(number, precision) {
       var multi = Math.pow(10, precision);
@@ -570,14 +581,14 @@ module.exports = (function() {
     return val;
   };
 
-  self.btcToSat = function(value) {
+  self.btcToSat = function (value) {
 
     var val = value * 100000000;
 
     return val;
   };
 
-  self.setReorg = function(parent) {
+  self.setReorg = function (parent) {
     var params = {};
 
     params.width = params.height = Ti.UI.FILL;
@@ -624,14 +635,72 @@ module.exports = (function() {
 
     parent.add(view);
 
-    view.removeSelf = function() {
+    view.removeSelf = function () {
       parent.remove(view);
       view = null;
     };
 
     return view;
   };
-  self.getConfig = function(network) {
+
+  self.getSCBFolderName = function () {
+    return "LNDChannelBackups";
+  }
+  self.getPassphraseHash = function () {
+    var passcodeHash = Titanium.Utils.sha256(globals.decryptedPassphrase).substring(0, 10);
+    globals.console.log("passcodeHash", passcodeHash);
+    return passcodeHash;
+  }
+  self.getSCBFileName = function () {
+    var trimPubKey = globals.currentPubkey.substring(0, 10);
+    var passphraseHash = self.getPassphraseHash();
+    var filename = trimPubKey + "_" + Alloy.Globals.network + '_channels_backup_' + passphraseHash + ".txt";
+    globals.console.log("filename", filename);
+    return filename
+  }
+
+  self.getSCBFileNameNoPubKey = function () {
+    var trimPubKey = globals.currentPubkey.substring(0, 10);
+    var passphraseHash = self.getPassphraseHash();
+    var filename = Alloy.Globals.network + '_channels_backup_' + passphraseHash + ".txt";
+    globals.console.log("filename", filename);
+    return filename
+  }
+
+  self.backUpChannels = function (callback) {
+
+
+    globals.lnGRPC.exportAllChannelBackups(function (error, response) {
+
+      if (error == true) {
+        callback(error, response);
+
+        return;
+      }
+
+      var fileName = self.getSCBFileName();
+
+      var f = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, fileName);
+      if (f.exists() === false) {
+        f.createFile();
+      }
+
+      if (OS_IOS) {
+        var multi_chan_backup = response.multi_chan_backup.multi_chan_backup;
+      } else if (OS_ANDROID) {
+        var multi_chan_backup = response.multi_chan_backup;
+      }
+      f.write(multi_chan_backup);
+
+      globals.lnGRPC.uploadGoogleDrive(multi_chan_backup, function (error, response) {
+
+        callback(error, response);
+      });
+
+    });
+  }
+
+  self.getConfig = function (network) {
 
     var configString = "[Application Options]\n\n";
     configString += "debuglevel=info\n"
@@ -642,15 +711,19 @@ module.exports = (function() {
 
     configString += "\n[Bitcoin]\n"
     configString += "bitcoin.active=1\n"
-    globals.console.log("config network",network);
-    if(network == "testnet"){
+    configString += "bitcoin.defaultchanconfs=1\n"
+    globals.console.log("config network", network);
+
+    if (network == "testnet") {
       configString += "bitcoin.testnet=1\n"
-    }else{
+    } else {
       configString += "bitcoin.mainnet=1\n"
     }
-    configString += "bitcoin.node=neutrino\n" 
+
+    configString += "bitcoin.node=neutrino\n"
 
     configString += "\n[Autopilot]\n\n"
+
     if (Ti.App.Properties.getInt("autoPilot", 1) == 0) {
 
       configString += "autopilot.active=0\n"
@@ -658,6 +731,7 @@ module.exports = (function() {
 
       configString += "autopilot.active=1\n"
     }
+
     configString += "autopilot.allocation=0.95\n"
     configString += "autopilot.private=1\n"
     configString += "autopilot.minconfs=0\n"
@@ -668,34 +742,33 @@ module.exports = (function() {
     configString += "\n[Neutrino]\n\n"
 
     var neutrinoPeer = "";
-    
-    if(network == "testnet"){
+
+    if (network == "testnet") {
       neutrinoPeer = globals.hubURITestnet.split("@")[1];
-      
-    }else{
-      neutrinoPeer = globals.hubURIMainnet.split("@")[1]; 
+
+    } else {
+      neutrinoPeer = globals.hubURIMainnet.split("@")[1];
     }
 
     globals.defaultPeer = neutrinoPeer;
 
     var customPeer = Ti.App.Properties.getString("customPeer", "");
-    if(customPeer != ""){
+    if (customPeer != "") {
       neutrinoPeer = customPeer;
-    } 
+    }
 
-    configString += neutrinoPeer = "neutrino.connect="+neutrinoPeer+"\n";
-  
+    configString += "neutrino.connect=" + neutrinoPeer + "\n";
 
-    //configString += "neutrino.connect=faucet.lightning.community\n";
-    //configString += "neutrino.connect=35.221.84.241\n"
+
+    //configString += "neutrino.addpeer=faucet.lightning.community\n"; 
     //configString += "neutrino.addpeer=btcd0.lightning.engineering\n" 
-    //configString += "neutrino.addpeer=35.221.97.245\n"
 
-    globals.console.log("config string",configString);
+
+    globals.console.log("config string", configString);
     return configString;
 
   }
-  self.saveLNDConf = function(network) {
+  self.saveLNDConf = function (network) {
 
     var configString = self.getConfig(network);
 
@@ -708,7 +781,7 @@ module.exports = (function() {
   }
 
 
-  self.saveTxid = function(txid, address) {
+  self.saveTxid = function (txid, address) {
 
     var txids = Ti.App.Properties.getString("txidsV1", "{}");
 
@@ -722,7 +795,7 @@ module.exports = (function() {
 
   }
 
-  self.scheduleReminderNotif = function() {
+  self.scheduleReminderNotif = function () {
     var notification = Ti.App.iOS.scheduleLocalNotification({
       userInfo: {
         "id": "check"
@@ -732,7 +805,7 @@ module.exports = (function() {
     });
   }
 
-  self.saveAddress = function(address) {
+  self.saveAddress = function (address) {
 
     var addresses = Ti.App.Properties.getString("addresses", "[]");
 
@@ -745,13 +818,13 @@ module.exports = (function() {
 
   }
 
-  self.getCurrentNetworkBlockHeight = function(network) {
-  
-    return globals.blockHeight[network]; 
+  self.getCurrentNetworkBlockHeight = function (network) {
+
+    return globals.blockHeight[network];
 
   }
 
-  self.addPullEvent = function(view, params) {
+  self.addPullEvent = function (view, params) {
     var a = null;
     if (OS_ANDROID) {
       a = view.children[0].convertPointToView({
@@ -812,20 +885,20 @@ module.exports = (function() {
       reload.opacity = 0.0;
     }
     if (OS_IOS) {
-      view.addEventListener('scroll', function(e) {
+      view.addEventListener('scroll', function (e) {
         if (view.contentOffset.y <= 0) scroll(view.contentOffset.y);
       });
-      view.addEventListener('dragEnd', function(e) {
+      view.addEventListener('dragEnd', function (e) {
         release(view.contentOffset.y);
       });
     } else if (OS_ANDROID) {
       var move = 0;
-      view.addEventListener('touchstart', function(e) {
+      view.addEventListener('touchstart', function (e) {
         s = e.y;
         move = 0;
         if (s_total < 0) s_total = 0;
       });
-      view.addEventListener('touchmove', function(e) {
+      view.addEventListener('touchmove', function (e) {
         if (move++ > 3) {
           globals.isScrolling = true;
           if (view.contentOffset.y <= 0 || view.children[0].top > top) {
@@ -843,7 +916,7 @@ module.exports = (function() {
           }
         }
       });
-      view.addEventListener('touchend', function(e) {
+      view.addEventListener('touchend', function (e) {
         globals.isScrolling = false;
         release(-view.children[0].top);
         s = 0;

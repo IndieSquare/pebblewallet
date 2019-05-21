@@ -1,17 +1,30 @@
 <Alloy>
+
   <View class="cell">
-    <View class="details" layout="vertical">
-      <Label id="active" class="activeTitle"/>
-      <Label id="alias"/>
-      <Label id="pubKey" class="pubKeyTitle"/>
-    </View>
-    <View class="amounts" layout="vertical">
+    <Label id="details" class="details"/>
+    
+    <View id="amountsBarOuter">
+    <View id="amountsBarLocal"/>
+       <View id="amountsBarRemote"/>
+     <View id="amountsLabel">
       <Label id="localAmount" class="localAmountTitle"/>
       <Label id="remoteAmount" class="remoteAmountTitle"/>
-    </View>
+  </View>
+       
+     </View>
+
+ 
+      <View id="bottomView">
     <View id="buttonView">
       <ActivityIndicator id="loadingSpinner"></ActivityIndicator>
-      <Label id="closeChannelButton" onClick="closeChannel">L('label_close')</Label>
+      <View id="closeChannelButton" onClick="closeChannel">
+        <Label id="closeChannelLabel" >L('label_close')</Label>
+      </View>
     </View>
+
+
+  <Label id="status"/>
+ </View>
+
   </View>
 </Alloy>

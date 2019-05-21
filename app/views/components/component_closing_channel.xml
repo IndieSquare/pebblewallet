@@ -8,8 +8,9 @@
       <Label id="localAmount" class="localAmountTitle"/>
       <Label id="remoteAmount" class="remoteAmountTitle"/>
     </View>
-    <Label id="detailsButton" onClick="viewDetails"/>
-
+    <View id="detailsButton" onClick="viewDetails">
+      <Label id="detailsLabel"/>
+    </View>
   </View>
 
 </Alloy>

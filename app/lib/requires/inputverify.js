@@ -1,21 +1,21 @@
-module.exports = (function() {
+module.exports = (function () {
   var self = {};
 
-  self.set = function(verifies) {
+  self.set = function (verifies) {
     self.verifies = verifies;
   };
 
-  self.push = function(verify) {
+  self.push = function (verify) {
     if (self.verifies == null) self.verifies = new Array();
     self.verifies.push(verify);
   };
 
-  self.unshift = function(verify) {
+  self.unshift = function (verify) {
     if (self.verifies == null) self.verifies = new Array();
     self.verifies.unshift(verify);
   };
 
-  self.check = function() {
+  self.check = function () {
     for (var i = 0; i < self.verifies.length; i++) {
       var verify = self.verifies[i];
       var checkValue = verify.target.value;

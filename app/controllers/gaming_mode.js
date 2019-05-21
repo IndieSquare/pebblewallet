@@ -1,112 +1,135 @@
-var win = Ti.UI.createWindow({
-  "orientationModes": [Ti.UI.PORTRAIT],
-  "navBarHidden": true,
-  "backgroundColor": "transparent",
-  "theme": (OS_ANDROID) ? "Theme.AppCompat.Translucent.NoTitleBar" : null,
-  "windowSoftInputMode": (OS_ANDROID) ? Ti.UI.Android.SOFT_INPUT_STATE_ALWAYS_HIDDEN : null
-});
+var args = arguments[0] || {};
+
+var webSocketUrl =  "ws://localhost:3000"
+if (OS_ANDROID) {
+  if (webSocketUrl.indexOf("localhost") != -1) {
+    webSocketUrl = "ws://10.0.2.2:3000"
+  }
+}
 var recivedAmount = 0;
-win.add($.gaming_mode);
-win.open();
+
 
 $.background.animate({
-  "opacity": 0.9,
+  "opacity": 1.0,
   "duration": 200
 });
 
-var util = require("requires/util");
-util.readQRcode({
-  "callback": continueGameMode
-}, true);
+
 
 var firstInvoice = false;
 
 function close() {
-  win.close();
+  globals.lnGRPC.closeWebSocket();
+  $.win.close();
 }
 
 var didConnectWS = false;
-var myPlayerID = "myUniqueID";
 
 function setBalanceText(amount) {
   var text = amount + " sat";
   var attrChannel = Ti.UI.createAttributedString({
     text: text,
     attributes: [{
-        type: Ti.UI.ATTRIBUTE_FONT,
-        value: {
-          fontSize: 94,
-          fontWeight: 'ultralight'
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 94,
+        fontWeight: 'ultralight'
 
-        },
-        range: [text.indexOf(amount + ""), (amount + "").length]
       },
-      {
-        type: Ti.UI.ATTRIBUTE_FONT,
-        value: {
-          fontSize: 18,
-          fontFamily: 'Helvetica Neue Light',
-        },
-        range: [text.indexOf(" sat"), (" sat").length]
-      }
+      range: [text.indexOf(amount + ""), (amount + "").length]
+    },
+    {
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 18,
+        fontFamily: 'Helvetica Neue Light',
+      },
+      range: [text.indexOf(" sat"), (" sat").length]
+    }
     ]
   });
 
   $.balanceText.attributedString = attrChannel;
 }
 
-function continueGameMode(req) {
-  globals.console.log(req);
+function continueGameMode(connectionInfo) {
 
+  globals.console.log("qr callback", connectionInfo);
+ 
+  connectionInfo = JSON.parse(connectionInfo);
+  globals.console.log(connectionInfo.data);
   $.balanceText.text = "connecting to game...";
 
-  globals.lndGRPC.startWebSocketAndCompletion("ws://lit-castle-74426.herokuapp.com", function(error, response) {
-    console.log("websocket", error + " " + response)
+  globals.lnGRPC.startWebSocket(connectionInfo.data, function (error, response) {
+    globals.console.log("websocket", error + " " + response)
 
-    if (didConnectWS == false) {
+    if (didConnectWS == false && response == "connected") {
       var JSONObjMsg = {
         "recipient": "game",
         "type": "link",
-        "data": myPlayerID,
+        "data": globals.currentPubkey,
+        "player": connectionInfo.player
       }
-      globals.lndGRPC.sendWebSocketMessage(JSON.stringify(JSONObjMsg));
+
+      globals.console.log("sending message", JSON.stringify(JSONObjMsg));
+      globals.lnGRPC.sendWebSocketMessage(JSON.stringify(JSONObjMsg));
       didConnectWS = true;
 
       $.balanceText.text = "connected to game!";
-      setTimeout(function() {
+      setTimeout(function () {
 
         setBalanceText(0);
       }, 2000)
     }
     try {
+      globals.console.log("got message", response);
       var jsonObject = JSON.parse(response);
-      if (jsonObject.recipient == myPlayerID) {
-        if (jsonObject.type == "createInvoice") {
-          globals.lndGRPC.addInvoiceAndExpiryAndMemoAndCompletion(parseInt(jsonObject.data), 60, "ws test", function(error, res) {
-            res = JSON.parse(res);
-            console.log(res);
-            var JSONObjMsg = {
-              "recipient": "game",
-              "type": "payreq",
-              "data": res.payment_request,
-            }
-            globals.lndGRPC.sendWebSocketMessage(JSON.stringify(JSONObjMsg));
 
+
+      if (jsonObject.recipient == globals.currentPubkey) {
+        if (jsonObject.type == "createInvoice") {
+          globals.console.log("requesting invoice");
+
+          globals.lnGRPC.addInvoice(jsonObject.amount, jsonObject.message, jsonObject.expiry, function (error, response) {
+
+            if (error == true) {
+              globals.console.error("add invoice", response);
+              alert(response);
+              return;
+
+            } else {
+
+              globals.console.log("response", response);
+
+              var JSONObjMsg = {
+                "recipient": jsonObject.payer,
+                "type": "payInvoice",
+                "payee": globals.currentPubkey,
+                "data": response.payment_request,
+              }
+
+              globals.console.log("JSONObjMsg", JSONObjMsg);
+
+              globals.lnGRPC.sendWebSocketMessage(JSON.stringify(JSONObjMsg));
+
+
+            }
           });
+
+
         } else if (jsonObject.type == "payment") {
           if (jsonObject.data == "success") {
-            if (firstInvoice == false) {
-              firstInvoice = true;
-              return;
-            }
+
             showDamage(true);
             recivedAmount += 1;
             setBalanceText(recivedAmount)
           }
         } else if (jsonObject.type == "payInvoice") {
-          globals.lndGRPC.sendPaymentAndCompletion(jsonObject.data, function(error, response) {
-            if (error != null) {
-              console.error(error);
+
+          globals.lnGRPC.sendPayment(jsonObject.data, -1, function (error, response) {
+            globals.console.log(response);
+            if (error == true) {
+              globals.console.error(error);
               return;
             }
 
@@ -114,8 +137,22 @@ function continueGameMode(req) {
             recivedAmount -= 1;
             setBalanceText(recivedAmount)
 
+            var JSONObjMsg = {
+              "recipient": jsonObject.payee,
+              "type": "payment",
+              "data": "success",
+            }
+
+            globals.lnGRPC.sendWebSocketMessage(JSON.stringify(JSONObjMsg));
+
+
           });
         }
+      } else if (jsonObject.op == "ping") {
+
+
+      } else {
+        globals.console.log("not mine", jsonObject.recipient + "   " + globals.currentPubkey);
       }
     } catch (e) {
 
@@ -145,4 +182,21 @@ function showDamage(up) {
     "duration": 800
   });
 
+}
+
+
+
+var data = JSON.parse(args.data);
+$.gameTitle.text = L('game_terms').format({ "title": "'" + data.game + "'", "max_amount": data.maxAmount });
+$.gameImage.image = data.icon;
+
+
+
+
+function connect() {
+  $.confView.animate({
+    "opacity": 0.0,
+    "duration": 200
+  });
+  continueGameMode(args.data);
 }

@@ -1,10 +1,10 @@
-module.exports = (function() {
+module.exports = (function () {
   var self = {};
 
   var util = require("requires/util");
   var network = require("requires/network");
 
-  self.start = function(callback) {
+  self.start = function (callback) {
     var deviceToken = null;
 
     function receivePush(e) {

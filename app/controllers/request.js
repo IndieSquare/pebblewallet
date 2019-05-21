@@ -122,14 +122,14 @@ function close(e) {
     "duration": 200
   });
 
-  setTimeout(function() {
+  setTimeout(function () {
     $.win.width = 0;
     $.win.close();
   }, 200);
 }
 
 if (OS_ANDROID) {
-  $.win.addEventListener('android:back', function() {
+  $.win.addEventListener('android:back', function () {
     close();
     return true;
   });
@@ -246,7 +246,9 @@ function closeQR() {
 function pressedRequest() {
 
   $.inputMemo.blur();
-  var quantity = $.amount.text.replace(/[^\d.-]/g, "");
+  var amountString = $.amount.text.toString();
+  globals.console.log("amount is ", amountString);
+  var quantity = amountString.replace(/[^\d.-]/g, "");
 
   quantity = parseInt(quantity);
 
@@ -263,7 +265,7 @@ function pressedRequest() {
 
   var expirySeconds = expiry * 60
   globals.console.log("expiry seconds", expirySeconds);
-  globals.lnGRPC.addInvoice(quantity, memo, expirySeconds, function(error, response) {
+  globals.lnGRPC.addInvoice(quantity, memo, expirySeconds, function (error, response) {
 
     showHideLoading(true);
     if (error == true) {
@@ -280,9 +282,9 @@ function pressedRequest() {
     needsToRefreshInvoices = true;
 
     var newQrcodeView = qrcode.QRCode({
-        "text": currentPaymentRequest,
-        "errorCorrectLevel": "H"
-      })
+      "text": currentPaymentRequest,
+      "errorCorrectLevel": "H"
+    })
       .createQRCodeView({
         "width": globals.display.width * 0.9,
         "height": globals.display.width * 0.9,
@@ -297,7 +299,7 @@ function pressedRequest() {
       globals.util.scheduleReminderNotif()
     }
 
-    globals.updateCurrentInvoice = function(invoice) {
+    globals.updateCurrentInvoice = function (invoice) {
       if (invoice.payment_request = currentPaymentRequest) {
         globals.updateCurrentInvoice = null;
         closeQR();
@@ -306,7 +308,7 @@ function pressedRequest() {
           isInvoice: true,
           token: "",
           type: "success",
-          callback: function() {
+          callback: function () {
 
             close();
           }
@@ -350,7 +352,8 @@ function copyClipboard() {
 }
 
 if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
-
-  alert(L("confirm_request"));
+  setTimeout(function () {
+    alert(L("confirm_request"));
+  }, 2000);
 
 }

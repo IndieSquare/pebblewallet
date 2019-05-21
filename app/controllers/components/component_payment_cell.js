@@ -62,10 +62,10 @@ if (isTransaction(aPayment)) {
   if (aPayment.dest_addresses != undefined && aPayment.dest_addresses.length > 0) {
 
     if (aPayment.dest_addresses.length > 1) {
-      aPayment.memo = aPayment.dest_addresses[1];
+      aPayment.memo = aPayment.dest_addresses[1].substring(0, 40) + "...";
     }
     if (aPayment.destinationAddress != undefined) {
-      aPayment.memo = aPayment.destinationAddress;
+      aPayment.memo = aPayment.destinationAddress.substring(0, 40) + "...";
     }
   }
 
@@ -122,42 +122,42 @@ function setAmount() {
     var attr = Titanium.UI.createAttributedString({
       text: aPaymentValueText,
       attributes: [{
-          type: Ti.UI.ATTRIBUTE_FONT,
-          value: {
-            fontSize: 18,
-            fontFamily: 'GillSans-Light',
-            fontWeight: 'light'
-          },
-          range: [aPaymentValueText.indexOf(valueAmt), valueAmt.length]
+        type: Ti.UI.ATTRIBUTE_FONT,
+        value: {
+          fontSize: 18,
+          fontFamily: 'GillSans-Light',
+          fontWeight: 'light'
         },
+        range: [aPaymentValueText.indexOf(valueAmt), valueAmt.length]
+      },
 
-        {
-          type: Ti.UI.ATTRIBUTE_FONT,
-          value: {
-            fontSize: 12,
-            fontFamily: 'GillSans-Light',
-            fontWeight: 'light'
-          },
-          range: [aPaymentValueText.indexOf(currency), currency.length]
+      {
+        type: Ti.UI.ATTRIBUTE_FONT,
+        value: {
+          fontSize: 12,
+          fontFamily: 'GillSans-Light',
+          fontWeight: 'light'
         },
-        {
-          type: Ti.UI.ATTRIBUTE_FONT,
-          value: {
-            fontSize: 12,
-            fontFamily: 'GillSans-Light',
-            fontWeight: 'light'
-          },
-          range: [aPaymentValueText.indexOf(symbol), symbol.length]
+        range: [aPaymentValueText.indexOf(currency), currency.length]
+      },
+      {
+        type: Ti.UI.ATTRIBUTE_FONT,
+        value: {
+          fontSize: 12,
+          fontFamily: 'GillSans-Light',
+          fontWeight: 'light'
         },
-        {
-          type: Ti.UI.ATTRIBUTE_FONT,
-          value: {
-            fontSize: 12,
-            fontFamily: 'GillSans-Light',
-            fontWeight: 'light'
-          },
-          range: [aPaymentValueText.indexOf(fiatAmt), fiatAmt.length]
-        }
+        range: [aPaymentValueText.indexOf(symbol), symbol.length]
+      },
+      {
+        type: Ti.UI.ATTRIBUTE_FONT,
+        value: {
+          fontSize: 12,
+          fontFamily: 'GillSans-Light',
+          fontWeight: 'light'
+        },
+        range: [aPaymentValueText.indexOf(fiatAmt), fiatAmt.length]
+      }
       ]
     });
 

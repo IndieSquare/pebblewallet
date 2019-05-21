@@ -20,14 +20,14 @@ function close() {
     "duration": 200
   });
 
-  setTimeout(function() {
+  setTimeout(function () {
     $.win.width = 0;
     $.win.close();
   }, 200);
 }
 
 if (OS_ANDROID) {
-  $.win.addEventListener('android:back', function() {
+  $.win.addEventListener('android:back', function () {
     close();
     return true;
   });
@@ -50,7 +50,13 @@ else if (currentFee === "half_hour_fee") $.checkedMed.visible = true;
 else $.checkedCustom.visible = true;
 
 function setCurrentFee(fee) {
+
+  globals.console.log("custom fee", fee);
+
   args.setFeeLabel(fee);
+
+
+  globals.console.log("custom fee", fee);
 
   Ti.App.Properties.setString("currentFee", fee);
 
@@ -60,35 +66,44 @@ function setCurrentFee(fee) {
   $.checkedCustom.visible = false;
 }
 
-$.highButton.addEventListener("click", function() {
+$.highButton.addEventListener("click", function () {
   setCurrentFee("fastest_fee");
   $.checkedHigh.visible = true;
   close();
 });
 
-$.medButton.addEventListener("click", function() {
+$.medButton.addEventListener("click", function () {
   setCurrentFee("half_hour_fee");
   $.checkedMed.visible = true;
   close();
 });
 
-$.lowButton.addEventListener("click", function() {
+$.lowButton.addEventListener("click", function () {
   setCurrentFee("low_fee");
   $.checkedLow.visible = true;
   close();
 });
 
-$.customButtonBtc.addEventListener("click", function() {
+$.customButtonBtc.addEventListener("click", function () {
   var dialog = globals.util.createInputDialog({
     "title": L("label_inputcustom"),
     "message": L("label_inputcustom_message"),
     "value": "",
     "keyboardType": Ti.UI.KEYBOARD_TYPE_DECIMAL_PAD,
-    "buttonNames": [L("label_close"), L("label_apply")]
+    "buttonNames": [L("label_apply"), L("label_close")]
   });
-  dialog.origin.addEventListener("click", function(e) {
-    var inputText = (OS_ANDROID) ? dialog.androidField.getValue() : e.text;
+  dialog.origin.addEventListener("click", function (e) {
+    globals.console.log(e);
+    if (OS_IOS) {
+      var inputText = e.text;
+    }
+    else if (OS_ANDROID) {
+      var inputText = dialog.androidField.getValue();
+    }
     if (e.index != e.source.cancel) {
+
+      globals.console.log("custom fee", inputText);
+
       if (isFinite(inputText)) {
         setCurrentFee(inputText);
         $.checkedCustom.visible = true;

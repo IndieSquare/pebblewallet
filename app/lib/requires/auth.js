@@ -25,7 +25,7 @@ module.exports = (function () {
 
     function input_password() {
       if (globals.passCodeHash != null) {
-
+        globals.console.log("calling pincode");
         Alloy.createController("components/pincode_screen", {
           "type": "check",
           "checkHash": globals.passCodeHash,
@@ -47,58 +47,58 @@ module.exports = (function () {
 
       }
     }
-if(OS_IOS){
-  authenticate()
-}
-else{
-    setTimeout(function(){
+    if (OS_IOS) {
       authenticate()
-  },500);
-}
-
-  function authenticate(){
-    var didShowPassCodeScreen = false;
-    if(OS_ANDROID){
-      if(globals.identity.isSupported() && globals.identity.deviceCanAuthenticate().canAuthenticate){
-        Alloy.createController("components/component_touchid").getView().open();
-      }else{
-        input_password();
-      }
+    }
+    else {
+      setTimeout(function () {
+        authenticate()
+      }, 500);
     }
 
-    globals.identity.authenticate({
-      reason: L("label_fingerprint"),
-      callback: function (e) {
-        globals.console.log(e);
-        if(globals.closeTouchID != undefined){
-          globals.closeTouchID();
+    function authenticate() {
+      var didShowPassCodeScreen = false;
+      if (OS_ANDROID) {
+        if (globals.identity.isSupported() && globals.identity.deviceCanAuthenticate().canAuthenticate) {
+          Alloy.createController("components/component_touchid").getView().open();
+        } else {
+          input_password();
         }
-        globals.identity.invalidate();
-        if (e.success) {
-          params.callback({
-            success: true,
-            reason: self.REASON_TOUCHID
-          });
-        }
-        else {
+      }
 
-          if (e.code == globals.identity.ERROR_USER_CANCEL && globals.identity.ERROR_USER_CANCEL != undefined) {
+      globals.identity.authenticate({
+        reason: L("label_fingerprint"),
+        callback: function (e) {
+          globals.console.log(e);
+          if (globals.closeTouchID != undefined) {
+            globals.closeTouchID();
+          }
+          globals.identity.invalidate();
+          if (e.success) {
             params.callback({
-              success: false,
-              reason: self.REASON_CANCEL
+              success: true,
+              reason: self.REASON_TOUCHID
             });
           }
           else {
-            if(didShowPassCodeScreen == false){ //on android passcode shows more than once on error
-              didShowPassCodeScreen = true;
-              input_password();
+
+            if (e.code == globals.identity.ERROR_USER_CANCEL && globals.identity.ERROR_USER_CANCEL != undefined) {
+              params.callback({
+                success: false,
+                reason: self.REASON_CANCEL
+              });
+            }
+            else {
+              if (didShowPassCodeScreen == false) { //on android passcode shows more than once on error
+                didShowPassCodeScreen = true;
+                input_password();
+              }
             }
           }
         }
-      }
-    });
+      });
 
-  }
+    }
 
   };
 
