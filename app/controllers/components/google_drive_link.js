@@ -167,7 +167,7 @@ else {
 
 function skip() {
 
-  if (args.fromIntro == true) {
+  if (args.fromIntro == false) {
     Alloy.createController("components/restore_screen")
       .getView()
       .open();

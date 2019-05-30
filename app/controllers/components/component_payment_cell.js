@@ -28,6 +28,8 @@ function updateInvoice(argsNew) {
 }
 
 if (isInvoice(aPayment)) {
+
+  console.log(aPayment);
   if (aPayment.settled == true || aPayment.settled == 1) {
     $.type.image = "/images/checkSymbol.png";
   } else {

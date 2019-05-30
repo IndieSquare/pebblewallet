@@ -483,6 +483,95 @@ globals.createPassword = function (usersPassCodeHash) {
 
 
 
+globals.testHold = function(){ 
+ 
+    function parseHexString(str) { 
+      var result = [];
+      while (str.length >= 8) { 
+          result.push(parseInt(str.substring(0, 8), 16));
+  
+          str = str.substring(8, str.length);
+      }
+  
+      return result;
+  }
+var preimage = globals.nativeCrypto.generateRandomData(32);
+
+
+console.log("start hold",preimage);
+   
+    var bytesPreimage = parseHexString(preimage);
+
+    var hash = globals.nativeCrypto.sha256(preimage);
+
+    console.log("hash is",hash);
+
+  globals.lnGRPC.addHoldInvoice(hash, 1, "test", 100000, function (error, response) {
+
+    if (error == true) {
+      globals.console.error("add hold invoice", response);
+      alert(response);
+      return;
+
+    } else {
+      //globals.testSettle(preimage);
+      globals.console.log("add hold response", response);
+
+
+      globals.lnGRPC.subscribeSingleInvoice(hash,function (error, response) {
+
+
+        globals.console.log("single invoice subscription res",error,response);
+  
+        if (error == false) {
+          console.log("invoice single res", response);
+  
+          if (response.settled != undefined && response.settled == true) {
+  
+            if (globals.updateCurrentInvoice != undefined) {
+              globals.updateCurrentInvoice(response);
+  
+            }
+  
+            var cellUpdateFunction = globals.invoiceUpdateFunctions[response.r_hash];
+            if (cellUpdateFunction != undefined) {
+              cellUpdateFunction(response);
+            }
+  
+          }
+        } 
+  
+      }); 
+ 
+
+    }
+  });
+ 
+
+}
+globals.testSettle = function(preimage){
+setTimeout(function(){
+ 
+  console.log("settle",preimage);
+  globals.lnGRPC.sendSettleInvoiceMsg(preimage, function (error, response) {
+
+    if (error == true) {
+      globals.console.error("settle invoice", response);
+      alert(response);
+      return;
+
+    } else {
+
+      globals.console.log("settle response", response);
+ 
+
+    }
+  });
+
+}); 
+
+}
+
 
 
 

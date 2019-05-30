@@ -44,7 +44,7 @@ function openCloseMenu() {
     $.darkView.touchEnabled = true;
 
   } else {
-
+    globals.testHold();
     $.mainView.touchEnabled = false;
     $.buttonImage.image = Alloy.Globals.currentMenuButton;
     $.othersView.touchEnabled = false;

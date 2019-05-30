@@ -6,7 +6,7 @@ module.exports = (function() {
   self.createUserKey = function(callback) {
 
     globals.console.log("generating user key and saving to keychain")
-    var userKey = self.generateRandomData();
+    var userKey = self.generateRandomData(16);
 
     if (userKey != undefined && userKey != "" && userKey.length == 32) { //check hex string is 32 chars long for 128 bit key
      
@@ -24,12 +24,12 @@ module.exports = (function() {
 
   }
 
-  self.generateRandomData = function() {
+  self.generateRandomData = function(size) {
 
     if (OS_IOS) {
 
       var secureRandom = require("ioscrypto/secureRandom");
-
+      size = 16;
       var secureRandomObj = new secureRandom();
 
       //need to convert to string by adding "" as native iOS module returns NSString object
@@ -42,13 +42,31 @@ module.exports = (function() {
 
     } else if (OS_ANDROID) {
       var androidCrypto = require("com.indiesquare.androidcrypto.AndroidCrypto")
-      var entropy = androidCrypto.generateRandomBytes() + "";
+      var entropy = androidCrypto.generateRandomBytes(size) + "";
 
       return entropy;
     }
     throw "not supported";
 
   };
+
+  self.sha256 = function(hexString) {
+
+    if (OS_IOS) {
+
+      throw "not implemented"
+
+    } else if (OS_ANDROID) {
+      var androidCrypto = require("com.indiesquare.androidcrypto.AndroidCrypto")
+      var hash = androidCrypto.sha256(hexString) + "";
+
+      return hash;
+    }
+    throw "not supported";
+
+  };
+
+
 
   self.saveItem = function(data, callback) {
 

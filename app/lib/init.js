@@ -4,7 +4,7 @@ globals.androidLaunchData = undefined;
 globals.allwaysShowGuides = false;
 globals.callbackApp = null;
 
-var logOff = true;
+var logOff = false;
 
 if (Alloy.CFG.isDevelopment != true) {
   logOff = true;
@@ -207,6 +207,41 @@ globals.processArgs = function (e) {
 
         if (error == true) {
           globals.console.error("add invoice", response);
+          alert(response);
+          return;
+
+        } else {
+          console.log(response.payment_request);
+          var intent = Ti.Android.createIntent({
+            action: Ti.Android.ACTION_MAIN,
+            packageName: callingApp,
+            className: 'com.unity3d.player.UnityPlayerActivity'
+          });
+          //set input data
+          intent.putExtra('payment_request', response.payment_request);
+
+          Ti.Android.currentActivity.startActivity(intent);
+        }
+
+      });
+
+    }  else if (url.indexOf("addholdinvoice") != -1) { //probably open channel nodeURI
+      globals.console.log("url is ", url);
+      url = url.replace("addholdinvoice?", "");
+
+      globals.console.log("url is ", url);
+      var amt = parseInt(getParameterValue(url, "hash"));
+      var amt = parseInt(getParameterValue(url, "amt"));
+      var memo = getParameterValue(url, "message");
+      var expirySeconds = parseInt(getParameterValue(url, "expiry"));
+      var callingApp = getParameterValue(url, "package");
+
+      globals.console.log("hash" + hash +" "+ amt + " " + memo + " " + expirySeconds + " " + callingApp);
+
+      globals.lnGRPC.addHoldInvoice(hash, amt, memo, expirySeconds, function (error, response) {
+
+        if (error == true) {
+          globals.console.error("add hold invoice", response);
           alert(response);
           return;
 
