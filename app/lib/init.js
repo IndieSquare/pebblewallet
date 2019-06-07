@@ -4,6 +4,7 @@ globals.androidLaunchData = undefined;
 globals.allwaysShowGuides = false;
 globals.callbackApp = null;
 
+var currentHOLDStatus = {};
 var logOff = false;
 
 if (Alloy.CFG.isDevelopment != true) {
@@ -165,6 +166,29 @@ function urlToObject(url) {
   return returnObj;
 }
 
+function checkHOLDGameStatus(){
+  globals.console.log("checking hold status",currentHOLDStatus);
+  if(currentHOLDStatus.ourState == "ACCEPTED" && currentHOLDStatus.theirState == "PAID"){
+                
+
+  globals.console.log("hold status ready");
+
+    var intent = Ti.Android.createIntent({
+      action: Ti.Android.ACTION_MAIN,
+      packageName: currentHOLDStatus.callingApp,
+      className: 'com.unity3d.player.UnityPlayerActivity'
+    }); 
+    intent.putExtra('status', "complete");
+
+    Ti.Android.currentActivity.startActivity(intent);
+    return;
+
+    }
+}
+
+function checkInvoice(rhash){
+
+}
 globals.processArgs = function (e) {
   var url = undefined;
   if (OS_IOS) {
@@ -182,7 +206,7 @@ globals.processArgs = function (e) {
     if (e != undefined) {
       url = e.data;
     }
-    globals.console.log("args ", e);
+    globals.console.log("args are ", e);
   }
   if (url != undefined) {
     url = url.replace('lightning://?', '');
@@ -225,17 +249,22 @@ globals.processArgs = function (e) {
 
       });
 
-    }  else if (url.indexOf("addholdinvoice") != -1) { //probably open channel nodeURI
+    }  else if (url.indexOf("addholdinvoice") != -1) {  
+
+
+      globals.console.log("add hold invoice");
+
+      currentHOLDStatus = {};
       globals.console.log("url is ", url);
       url = url.replace("addholdinvoice?", "");
 
       globals.console.log("url is ", url);
-      var amt = parseInt(getParameterValue(url, "hash"));
+      var hash =  getParameterValue(url, "hash");
       var amt = parseInt(getParameterValue(url, "amt"));
       var memo = getParameterValue(url, "message");
       var expirySeconds = parseInt(getParameterValue(url, "expiry"));
       var callingApp = getParameterValue(url, "package");
-
+      currentHOLDStatus.callingApp = callingApp;
       globals.console.log("hash" + hash +" "+ amt + " " + memo + " " + expirySeconds + " " + callingApp);
 
       globals.lnGRPC.addHoldInvoice(hash, amt, memo, expirySeconds, function (error, response) {
@@ -246,7 +275,28 @@ globals.processArgs = function (e) {
           return;
 
         } else {
-          console.log(response.payment_request);
+
+
+
+
+      globals.lnGRPC.subscribeSingleInvoice(hash,function (error, response) {
+
+
+        globals.console.log("single invoice subscription res",error,response);
+  
+        if (error == false) {
+          globals.console.log("invoice single res", response);
+          if(response.state == "ACCEPTED"){
+          currentHOLDStatus.ourState = response.state
+          }
+          checkHOLDGameStatus();
+       
+        } 
+  
+      }); 
+
+           
+          globals.console.log(response.payment_request);
           var intent = Ti.Android.createIntent({
             action: Ti.Android.ACTION_MAIN,
             packageName: callingApp,
@@ -260,19 +310,148 @@ globals.processArgs = function (e) {
 
       });
 
-    } else {
-      if (url.indexOf("&package=") != -1) {
-        var comps = url.split("&package=");
-        url = comps[0];
-        globals.callbackApp = comps[1];
-      }
+    } else if(url.indexOf("acceptholdinvoice") != -1) {
+
+      globals.console.log("accept hold invoice");
+      url = url.replace("acceptholdinvoice?", "");
+      var callingApp = getParameterValue(url, "package");
+      currentHOLDStatus.callingApp = callingApp;
+      var invoice = getParameterValue(url, "invoice");
+      globals.console.log(" invoice "+invoice+" package "+callingApp);
+ 
+
+
+        payHoldInvoice(invoice,function(){
+          currentHOLDStatus.theirState = "PAID"
+          checkHOLDGameStatus();
+        });
+       
+ 
+    }else if(url.indexOf("settleholdinvoice") != -1) {
+      globals.console.log("settle hold invoice");
+      url = url.replace("settleholdinvoice?", "");
+      
+      var preimage = getParameterValue(url, "preimage");
+      globals.console.log(" preimage "+preimage);
+ 
+
+      globals.lnGRPC.sendSettleInvoiceMsg(preimage, function (error, response) {
+
+        if (error == true) {
+          globals.console.error("settle invoice", response);
+          alert(response);
+          return;
+    
+        } else {
+          
+          globals.console.log("settle response", response);
+          globals.loadMainScreen();
+          alert("Hold invoice swept!");
+     
+    
+        }
+      });
+       
+ 
+    }else {
+       globals.console.log("parse lightning payreq");
       if (globals.continuePay != undefined) {
         globals.continuePay(url);
       } else {
         globals.console.error("continuePay not defined");
       }
     }
+    
   }
+}
+
+
+function payHoldInvoice(req,callback) {
+
+   globals.console.log("req",req);
+   
+   globals.lnGRPC.decodePayReq(req, function (error, res) {
+
+    if (error == true) {
+      alert(res);
+      return;
+    }
+
+    globals.console.log(res.payment_hash);
+
+    if (res.payment_hash != undefined) {
+
+      var rhash = res.payment_hash;
+
+      globals.console.log(res);
+      var memo = null;
+
+      if (res.description != undefined) {
+        memo = res.description;
+      } 
+
+      var urlName = "";
+
+      if (urlName.length > 10) {
+        urlName = urlName.substr(0, 10) + "...";
+      }
+      var needsAmount = false;
+
+      if (res.num_satoshis == 0) {
+        res.num_satoshis = undefined;
+      }
+
+      var message = L('text_request_pay_ln').format({
+        "url": urlName,
+        "value": res.num_satoshis,
+      });
+      if (res.num_satoshis == undefined) {
+        var message = L('text_request_pay_ln_no_amount').format({
+          "url": urlName,
+        });
+      }
+      if (memo != null) {
+        message = L('text_request_pay_ln_memo').format({
+          "url": urlName,
+          "memo": memo,
+          "value": res.num_satoshis
+        });
+        if (res.num_satoshis == undefined) {
+          message = L('text_request_pay_ln_memo_no_amount').format({
+            "url": urlName,
+            "memo": memo,
+          });
+        }
+
+      }
+      if (res.num_satoshis == undefined) {
+        needsAmount = true;
+      }
+      Alloy.createController("transaction_conf", {
+        "small": true,
+        "message": message,
+        "payReq": req,
+        "closeOnSend":true,//for hold as we get no resposne
+        "needsAmount": needsAmount,
+        "cancel": function () {
+          lock = false;
+        },
+        "confirm": function () {
+
+          globals.console.log("setting memo", rhash + " " + memo)
+          Ti.App.Properties.setString("memo_" + rhash, memo);
+          callback();
+          globals.loadMainScreen();
+
+          lock = false;
+ 
+        },
+
+      });
+    }
+
+  });
+
 }
 
 function getParameterValue(url, parameter) {

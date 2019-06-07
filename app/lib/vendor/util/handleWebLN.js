@@ -214,20 +214,17 @@ module.exports = (function() {
 
 
   self.handleAddInvoice = function(evalResult) {
-console.log("dfsdsd");
+ 
     var params = evalResult.data; 
     var amount = parseInt(params.amount);
-    var memo = null;
-    console.log("dfsdsd11111");
+    var memo = null; 
     if(params.memo){
        memo = params.memo;
     }
     var expiry = globals.defaultExpiry * 60;
     if(params.expiry){
       var expiry = parseInt(params.expiry);
-    }
-    console.log("dfsdsd222222");
-
+    } 
     globals.lnGRPC.addInvoice(amount, memo, expiry,  function(error, res) {
       globals.console.log("callback");
       globals.console.log("callback",error);
@@ -263,28 +260,38 @@ console.log("dfsdsd");
 
     globals.console.log("here1", params);
 
-    globals.lnGRPC.lookUpInvoiceAndCompletion(params.rhash, function(error, res) {
-      globals.console.log("callback");
-      if (error != null) {
+    globals.lnGRPC.lookUpInvoice(params.rhash, function(error, res) {
+
+      try{
+        if (error == true) {
+        
         globals.clearTask();
-        alert(error);
+ 
+        alert(res);
+ 
         return;
       }
-
-      res = JSON.parse(res);
-
+ 
       var returnMessage = JSON.stringify({
         "chain": evalResult.chain,
         "type": evalResult.type,
         "data": res
       });
+ 
 
       globals.evaluateJS("START_CALLBACK('" + returnMessage + "')", function(response, error) {
+
+ 
         if (error != undefined) {
           globals.console.error(error);
         }
         globals.lockBrowser(false);
       });
+    }
+    catch(e){
+      globals.clearTask();
+      alert(e);
+    }
 
     });
 

@@ -108,6 +108,8 @@ globals.nativeCrypto.loadItem(function (success, userKey) {
 
 
       if (Ti.App.Properties.getString(globals.accountsKey, undefined) == undefined && Ti.App.Properties.getString("passphrase", undefined) == undefined) {
+        globals.console.log("going to sign in 1")
+        
         //no grpc or passphrase saved
         goToSignIn();
         return;
@@ -133,6 +135,7 @@ globals.nativeCrypto.loadItem(function (success, userKey) {
   } else {
     globals.console.error("error loading from keychain");
   }
+  globals.console.log("going to sign in 2");
   goToSignIn();
 
 });

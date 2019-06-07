@@ -28,8 +28,7 @@ function updateInvoice(argsNew) {
 }
 
 if (isInvoice(aPayment)) {
-
-  console.log(aPayment);
+ 
   if (aPayment.settled == true || aPayment.settled == 1) {
     $.type.image = "/images/checkSymbol.png";
   } else {
@@ -96,7 +95,7 @@ function setAmount() {
       var fiatAmt = globals.tiker.to("BTC", valueAmtNoFormat, Ti.App.Properties.getString("currency", "USD"), 2) + "";
 
       var aPaymentValueText = valueAmt + " " + currency + " " + fiatAmt;
-      globals.console.log("h1", aPaymentValueText)
+       
 
     } else {
       var currency = globals.LNCurrencySat;
@@ -165,7 +164,7 @@ function setAmount() {
 
     $.value.attributedString = attr;
   } catch (e) {
-    console.error(e);
+    globals.console.error(e);
   }
 
 }

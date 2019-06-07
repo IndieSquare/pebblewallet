@@ -167,13 +167,17 @@ else {
 
 function skip() {
 
-  if (args.fromIntro == false) {
+  if (args.fromSignIn == true) {
     Alloy.createController("components/restore_screen")
       .getView()
       .open();
     close();
-  } else {
-    continueCreateAccount("");
+  } else { 
+   
+    globals.screenView = Alloy.createController("frame").getView();
+    globals.screenView.open();
+    $.win.close();
+   
   }
 }
 

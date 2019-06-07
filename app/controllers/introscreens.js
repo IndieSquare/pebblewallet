@@ -110,7 +110,7 @@ function complete() {
   setTimeout(function () {
 
     var seedArray = globals.decryptedPassphrase.split(","); //convert to string array
-
+    globals.console.log("create wallet");
     globals.lnGRPC.createWallet(globals.createPassword(globals.passCodeHash), seedArray, -1, "", function (error, response) {
       globals.console.log("create wallet", error);
       globals.console.log("create wallet", response);

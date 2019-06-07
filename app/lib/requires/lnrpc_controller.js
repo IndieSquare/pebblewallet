@@ -715,6 +715,46 @@ module.exports = (function () {
   };
 
 
+  self.describeGraph = function (callback) {
+    var lndController = getController();
+     
+    if (OS_ANDROID) {
+
+      if (lndController == lndMobileWrapper) {
+        var bytes = lngrpc.makeChannelGraphRequest();
+
+        globals.console.log("start describegraph");
+        lndController.describeGraph(bytes, new CallbackInterfaceLND({
+          eventFired: function (res) {
+
+            globals.console.log("callback describegraph", res);
+
+            res = JSON.parse(res);
+            if (res.error != true) {
+              res = lngrpc.parseChannelGraphRes(res.response);
+              res = JSON.parse(res)
+            }
+
+            globals.console.log("callback describegraph", res);
+
+            if (res.error == true) {
+              console.error("describegraph error");
+            }
+
+            globals.console.log(res.response);
+
+            callback(res.error, res.response);
+
+
+          }
+        }));
+      }
+    }  
+
+     
+  };
+
+
   self.exportAllChannelBackups = function (callback) {
     var lndController = getController();
     if (OS_ANDROID) {
@@ -1356,18 +1396,18 @@ module.exports = (function () {
   }
 
   self.sendPayment = function (payReq, amount, callback) {
-    globals.console.log("amount ", amount);
+    globals.console.log("sending payment amount ", amount);
     var lndController = getController();
     if (OS_ANDROID) {
 
       if (lndController == lndMobileWrapper) {
         var bytes = lngrpc.makeSendPaymentRequest(payReq, amount);
 
-        globals.console.log("start sp");
+        globals.console.log("start sending payment");
         lndController.sendPayment(bytes, new CallbackInterfaceLND({
           eventFired: function (res) {
 
-            globals.console.log("callback sp", res);
+            globals.console.log("callback sending payment", res);
             res = JSON.parse(res);
 
             if (res.error != true) {
@@ -1377,11 +1417,11 @@ module.exports = (function () {
 
             }
 
-            globals.console.log("callback sp", res);
+            globals.console.log("callback sending payment", res);
 
 
             if (res.error == true) {
-              console.error("sp error");
+              console.error("sending payment error");
             }
 
             globals.console.log(res.response);
@@ -1841,6 +1881,27 @@ module.exports = (function () {
         }));
       } else { 
 
+        lndController.SubscribeSingleInvoice(rhash, new CallbackInterface({
+          eventFired: function (res) {
+            globals.console.log(res);
+            res = JSON.parse(res);
+
+            if (res.error == true) {
+              console.error("subscribe single invoice error", res);
+              callback(true, res.response);
+              return;
+            }
+
+            globals.console.log("subscribe single Invoice", res.response);
+
+            if (ignoreResponse(res.response) == false) {
+
+              callback(res.error, res.response);
+            }
+
+          }
+        }));
+
       }
 
     } else if (OS_IOS) { 
@@ -1990,6 +2051,26 @@ module.exports = (function () {
   }
 
 
+  self.lookUpInvoice = function (rhash, callback) {
+    globals.console.log("rhash ", rhash);
+    var lndController = getController();
+    if (OS_ANDROID) {
+ 
+
+    } else if (OS_IOS) {
+
+      lndController.lookUpInvoiceAndCompletion(rhash, function (error, response) {
+
+        globals.console.log("lookup invoice", "error:" + error, " res:" + response);
+        var _res = formatResponse(error, response)
+        error = _res[0];
+        response = _res[1];
+        callback(error, response);
+      });
+    }
+  }
+
+
   self.addHoldInvoice = function (hash, amount, memo, expiry, callback) {
     globals.console.log("expiry is ", expiry);
     var lndController = getController();
@@ -2024,7 +2105,26 @@ module.exports = (function () {
 
           }
         }));
-      }  
+      } else {
+
+        lndController.AddHoldInvoice(hash, amount, expiry, memo, new CallbackInterface({
+          eventFired: function (res) {
+            globals.console.log(res);
+            res = JSON.parse(res);
+
+            if (res.error == true) {
+              console.error("add hold invoice error");
+            }
+
+            globals.console.log("add hold Invoice", res.response);
+
+            if (ignoreResponse(res.response) == false) {
+              callback(res.error, res.response);
+            }
+
+          }
+        }));
+      }
 
     } else if (OS_IOS) {
 
@@ -2063,7 +2163,26 @@ module.exports = (function () {
 
           }
         }));
-      }  
+      }  else{
+
+        lndController.SettleInvoice(preimage, new CallbackInterface({
+          eventFired: function (res) {
+            globals.console.log(res);
+            res = JSON.parse(res);
+
+            if (res.error == true) {
+              console.error("settle invoice error");
+            }
+
+            globals.console.log("settle Invoice", res.response);
+
+            if (ignoreResponse(res.response) == false) {
+              callback(res.error, res.response);
+            }
+
+          }
+        }));
+      }
 
     } else if (OS_IOS) {
 
@@ -2071,11 +2190,11 @@ module.exports = (function () {
     }
   }
 
-  self.sendCancelInvoiceMsg = function (preimage, callback) {
+  self.sendCancelInvoiceMsg = function (hash, callback) {
     var lndController = getController();
     if (OS_ANDROID) { 
       if (lndController == lndMobileWrapper) {
-        var bytes = lngrpc.makeCancelInvoiceMsg(preimage);
+        var bytes = lngrpc.makeCancelInvoiceMsg(hash);
 
         globals.console.log("start ci");
         lndController.cancelInvoice(bytes, new CallbackInterfaceLND({
@@ -2102,7 +2221,27 @@ module.exports = (function () {
 
           }
         }));
-      }  
+      }  else {
+
+        lndController.CancelInvoice(hash, new CallbackInterface({
+          eventFired: function (res) {
+            globals.console.log(res);
+            res = JSON.parse(res);
+
+            if (res.error == true) {
+              console.error("hash invoice error");
+            }
+
+            globals.console.log("hash Invoice", res.response);
+
+            if (ignoreResponse(res.response) == false) {
+              callback(res.error, res.response);
+            }
+
+          }
+        }));
+
+      }
 
     } else if (OS_IOS) {
 

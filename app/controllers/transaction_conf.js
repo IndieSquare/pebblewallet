@@ -363,10 +363,17 @@ function confirm() {
         Ti.App.Properties.setString("memo_" + currentRHASH, currentMemo);
       }
       setTimeout(function () {
-        args.confirm();
+        
         close();
+        args.confirm();
+
       }, 1000);
     });
+
+    if(args.closeOnSend == true){
+      close();
+      args.confirm();
+    }
 
   } else {
 

@@ -174,8 +174,9 @@ globals.loadMainScreen = function (dontShowSpinner) {
 
     if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
       Ti.App.Properties.setInt("last_channel_balance", channelConfirmedBalance);
-
-      globals.lightning_manager.bootStrapChannel(); //try to open one channel to pebble hub
+      if(globals.bootstrap == true){
+        globals.lightning_manager.bootStrapChannel(); //try to open one channel to pebble hub
+      }
 
     }
     totalConfirmedBalance = channelConfirmedBalance;

@@ -55,11 +55,16 @@ if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
     globals.console.log("is not autopilot");
     $.autoPilotImage.image = "/images/icon_unchecked.png";
   }
+
+  if(!Alloy.CFG.isDevelopment){
+  $.scrollView.remove($.describeGraph);
+  }
 } else {
   $.scrollView.remove($.autoPilot);
   $.scrollView.remove($.passphraseView);
   $.scrollView.remove($.logsView);
   $.scrollView.remove($.neutrinoPeer);
+  $.scrollView.remove($.describeGraph);
 }
 
 function changeNeutrinoPeer() {
@@ -197,5 +202,25 @@ function exportChannels() {
     .getView()
     .open();
 
+
+}
+
+
+
+function describeGraph() {
+  globals.lnGRPC.describeGraph(function (error, response) {
+
+    globals.console.log(error)
+
+    globals.console.log(response)
+if(error == false){
+    var nodes = response.nodes;
+    for(var i = 0;i<nodes.length;i++){
+      var aNode = nodes[i];
+      globals.console.log(aNode);
+    }
+  }
+
+  });
 
 }

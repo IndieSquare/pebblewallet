@@ -71,6 +71,14 @@
 						<Label class="size10 gray description">L("channels_backup_description")</Label>
 					</View>
 
+					<View id="describeGraph" class="box" layout="vertical" onClick="describeGraph">
+						<View class="mainBox" id="describeGraphButton">
+							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png"/>
+							<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png"/>
+							<Label class="size12 settingLabel">L("describe_graph")</Label>
+						</View> 
+					</View>
+
 					<Label id="version" class="size10 gray description"></Label>
 
 				</ScrollView>

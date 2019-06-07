@@ -709,9 +709,14 @@ module.exports = (function () {
     configString += "maxlogfiles=3\n"
     configString += "maxlogfilesize=10\n"
 
+    configString += "no-macaroons=1\n"
+    configString += "maxpendingchannels=2\n"
+
+    //configString += "[Routing]\n\n"
+    //configString += "routing.assumechanvalid=1\n"
+
     configString += "\n[Bitcoin]\n"
-    configString += "bitcoin.active=1\n"
-    configString += "bitcoin.defaultchanconfs=1\n"
+    configString += "bitcoin.active=1\n" 
     globals.console.log("config network", network);
 
     if (network == "testnet") {
@@ -719,6 +724,9 @@ module.exports = (function () {
     } else {
       configString += "bitcoin.mainnet=1\n"
     }
+
+
+    configString += "bitcoin.defaultchanconfs=1\n"
 
     configString += "bitcoin.node=neutrino\n"
 
@@ -731,10 +739,11 @@ module.exports = (function () {
 
       configString += "autopilot.active=1\n"
     }
+    
+    configString += "autopilot.active=0\n"
 
-    configString += "autopilot.allocation=0.95\n"
-    configString += "autopilot.private=1\n"
-    configString += "autopilot.minconfs=0\n"
+    configString += "autopilot.allocation=0.95\n" 
+    configString += "autopilot.minconfs=1\n"
     configString += "autopilot.allocation=0.95\n"
     configString += "autopilot.minchansize=20000\n"
     configString += "autopilot.maxchansize=16000000\n"
@@ -755,13 +764,16 @@ module.exports = (function () {
     var customPeer = Ti.App.Properties.getString("customPeer", "");
     if (customPeer != "") {
       neutrinoPeer = customPeer;
-    }
-
+    } 
     configString += "neutrino.connect=" + neutrinoPeer + "\n";
 
 
-    //configString += "neutrino.addpeer=faucet.lightning.community\n"; 
-    //configString += "neutrino.addpeer=btcd0.lightning.engineering\n" 
+    if (network == "testnet") {
+     configString += "neutrino.addpeer=btcd-testnet.lightning.computer\n" 
+    }else{
+      configString += "neutrino.addpeer=faucet.lightning.community\n"; 
+      
+    }
 
 
     globals.console.log("config string", configString);
