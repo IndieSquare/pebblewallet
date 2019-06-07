@@ -338,9 +338,15 @@ function confirm() {
     globals.lnGRPC.sendPayment(args.payReq, args.num_satoshis, function (error, response) {
       $.loading.visible = false;
       $.cancelButtonSmall.visible = false;
-      globals.console.log(error);
       if (error == true) {
+        globals.console.error(response);
         alert(response);
+        if(args.onerror != undefined){
+          args.onerror(response);
+          return; 
+        }
+
+        
         $.cancelButtonSmall.visible = false;
         $.loading.visible = false;
         $.mainInfo.visible = true;
@@ -348,11 +354,16 @@ function confirm() {
       }
 
       if (response.payment_error != undefined && response.payment_error != "") {
-        alert(response.payment_error);
+        
         $.notpaid.visible = true;
         setTimeout(function () {
-
+          
+          alert(response.payment_error);
           close();
+          if(args.onerror != undefined){
+            args.onerror(response.payment_error);
+            
+          }
         }, 1000);
         return;
       }

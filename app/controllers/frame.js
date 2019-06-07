@@ -155,8 +155,7 @@ globals.connectLNDGRPC = function (config) {
 
 };
 
-globals.loadMainScreen = function (dontShowSpinner) {
- //globals.testSettle("659d8bb9090195abdb2cb9c268eb18f251fca3ce883a416579bd2332fc23c94c");
+globals.loadMainScreen = function (dontShowSpinner) { 
   globals.menuWidget.show();
   globals.lnGRPC.getChannelBalance(function (error, response) {
     $.statusText.text = "";
@@ -189,9 +188,13 @@ globals.loadMainScreen = function (dontShowSpinner) {
 
     globals.tryAndBackUpChannels();
 
+    globals.canProcessArgs = true;
     if (didGetArguments == false) {
       didGetArguments = true;
+      globals.console.log("processing args start");
+     
       globals.processArgs();
+       
     }
 
 
