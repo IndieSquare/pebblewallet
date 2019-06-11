@@ -251,6 +251,7 @@ function showDisclaimer(callback) {
 
             if (e.index == 0) {
               Alloy.Globals.network = "testnet";
+              Ti.App.Properties.setInt("autoPilot", 0);
 
             }
             else if (e.index == 2) {

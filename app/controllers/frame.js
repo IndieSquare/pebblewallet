@@ -27,7 +27,7 @@ function setTestnet() {
   globals.LNCurrency = "tBTC";
   globals.LNCurrencySat = "tSat";
   globals.dappStoreUrl = globals.discoverEndpoint + "?lndbtcMode=true&testnet=true";
-  globals.console.log("dappStoreUrl",globals.dappStoreUrl);
+  globals.console.log("dappStoreUrl", globals.dappStoreUrl);
 
 }
 
@@ -37,7 +37,7 @@ function setMainnet() {
   globals.LNCurrency = "BTC";
   globals.LNCurrencySat = "sat";
   globals.dappStoreUrl = globals.discoverEndpoint + "?lndbtcMode=true&testnet=false";
-  globals.console.log("dappStoreUrl",globals.dappStoreUrl);
+  globals.console.log("dappStoreUrl", globals.dappStoreUrl);
 
 
 }
@@ -88,7 +88,7 @@ globals.connectLNDGRPC = function (config) {
     globals.nodeInfo = null;
     globals.console.log("connecting...");
     $.connecting.visible = false;
-    $.statusText.text = "connecting...";
+    $.statusText.text = L("connecting");
 
     if (error == true) {
       globals.console.log("error", error);
@@ -155,7 +155,8 @@ globals.connectLNDGRPC = function (config) {
 
 };
 
-globals.loadMainScreen = function (dontShowSpinner) { 
+globals.loadMainScreen = function (dontShowSpinner) {
+
   globals.menuWidget.show();
   globals.lnGRPC.getChannelBalance(function (error, response) {
     $.statusText.text = "";
@@ -173,7 +174,7 @@ globals.loadMainScreen = function (dontShowSpinner) {
 
     if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
       Ti.App.Properties.setInt("last_channel_balance", channelConfirmedBalance);
-      if(globals.bootstrap == true){
+      if (globals.bootstrap == true) {
         globals.lightning_manager.bootStrapChannel(); //try to open one channel to pebble hub
       }
 
@@ -184,7 +185,7 @@ globals.loadMainScreen = function (dontShowSpinner) {
 
     globals.listPayments(dontShowSpinner);
     startSubscribeInvoices();
- 
+
 
     globals.tryAndBackUpChannels();
 
@@ -192,9 +193,9 @@ globals.loadMainScreen = function (dontShowSpinner) {
     if (didGetArguments == false) {
       didGetArguments = true;
       globals.console.log("processing args start");
-     
+
       globals.processArgs();
-       
+
     }
 
 
@@ -203,12 +204,13 @@ globals.loadMainScreen = function (dontShowSpinner) {
 }
 
 function startSubscribeInvoices() {
+  
   globals.console.log("starting subscribe invoice");
   setTimeout(function () {
     globals.lnGRPC.subscribeInvoices(function (error, response) {
 
 
-      globals.console.log("invoice subscription res",error,response);
+      globals.console.log("invoice subscription res", error, response);
 
       if (error == false) {
         console.log("invoice res", response);
@@ -227,20 +229,20 @@ function startSubscribeInvoices() {
 
         }
       } else {
-        if(response.indexOf("io.grpc.StatusRuntimeException:") != -1){ //some bug in grpc or btcpay if this error shows need to restart subscription invoice
-           globals.console.log("restart invoice subscription");
-           startSubscribeInvoices();
+        if (response.indexOf("io.grpc.StatusRuntimeException:") != -1) { //some bug in grpc or btcpay if this error shows need to restart subscription invoice
+          globals.console.log("restart invoice subscription");
+          startSubscribeInvoices();
         }
-      
+
 
       }
 
     });
   }, 1000);
 }
- 
-    
- 
+
+
+
 
 function startSubscribeTransactions() {
   globals.console.log("starting subscribe transactions");
@@ -375,11 +377,51 @@ globals.launchPayScan = function () {
 
 globals.continuePay = function (req) {
 
-  var bitcoin = require("requires/bitcoin");
-  globals.console.log("req",req);
+ 
+  globals.console.log("req", req);
+  
+  if (req.toLowerCase().startsWith("lnurl")) {
+     
+    try { 
+      var bech32 = require('vendor/util/bech32')
+      
+      var dec = bech32.decode(req, 30000)
+       
+      let bytes = globals.bitcoin.bitcoin.buffer.from(bech32.fromWords(dec.words))
+      
+      var url = bytes.toString('utf8');
+   
+      xhr.open("GET", url);
+   
+      xhr.onload = function () {
+   
+        try {
+          var result = JSON.parse(this.responseText);
+        } catch (e) { 
+          alert(e);
+        }
+         
+      },
+        xhr.onerror = function (e) {
+  alert(e);
+        };
+      xhr.send();
+  
+
+
+    }
+    catch (e) {
+      alert(e);
+    }
+
+
+    return;
+  }
+
+
 
   if (req.indexOf("bitcoin:") != -1) {
-    var decodedURI = bitcoin.decodeBip21(req);
+    var decodedURI = globals.bitcoin.decodeBip21(req);
 
     if (decodedURI.address != undefined) {
       try {
@@ -394,7 +436,7 @@ globals.continuePay = function (req) {
     return;
   }
 
-  if (bitcoin.validateAddress(req, Alloy.Globals.network) == true) {
+  if (globals.bitcoin.validateAddress(req, Alloy.Globals.network) == true) {
 
     Alloy.createController("withdraw", {
       destination: req,
@@ -409,7 +451,7 @@ globals.continuePay = function (req) {
   if (req.indexOf("LIGHTNING:") != -1) {
     req = req.replace("LIGHTNING:", '');
   }
-   globals.lnGRPC.decodePayReq(req, function (error, res) {
+  globals.lnGRPC.decodePayReq(req, function (error, res) {
 
     if (error == true) {
       alert(res);
@@ -429,7 +471,7 @@ globals.continuePay = function (req) {
         memo = res.description;
       }
 
-      if (bitcoin.checkExpired(res)) {
+      if (globals.bitcoin.checkExpired(res)) {
 
         alert(L('text_payment_expired'));
         return;
@@ -488,7 +530,7 @@ globals.continuePay = function (req) {
           globals.loadMainScreen();
 
           lock = false;
- 
+
         },
 
       });
@@ -499,21 +541,21 @@ globals.continuePay = function (req) {
 }
 
 $.connecting.visible = true;
- 
-globals.getStartUpInfo(function(){
-if (globals.unlocked == true) {
-  continueLoad();
-} else {
-  globals.auth.check({
-    "title": "",
-    "callback": function (e) {
-      if (e.success) {
-        continueLoad();
 
+globals.getStartUpInfo(function () {
+  if (globals.unlocked == true) {
+    continueLoad();
+  } else {
+    globals.auth.check({
+      "title": "",
+      "callback": function (e) {
+        if (e.success) {
+          continueLoad();
+
+        }
       }
-    }
-  });
-}
+    });
+  }
 
 });
 function continueLoad() {
@@ -565,13 +607,13 @@ function startLoadFromCache() {
   if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
 
     if (Alloy.Globals.network == "testnet") {
-    
+
       setTestnet();
 
-    }else{
+    } else {
 
       setMainnet();
-    
+
     }
 
     $.connecting.visible = false;
@@ -591,7 +633,7 @@ function startLoadFromCache() {
           return;
         }
 
-        globals.lnGRPC.unlockWallet(globals.createPassword(globals.passCodeHash),-1,"", function (error, response) {
+        globals.lnGRPC.unlockWallet(globals.createPassword(globals.passCodeHash), -1, "", function (error, response) {
           console.log("unlock wallet err ", error);
           console.log("unlock wallet", response);
 
@@ -682,38 +724,6 @@ function setSyncingUI() {
   channelConfirmedBalance = Ti.App.Properties.getInt("last_channel_balance", 0);
   setBalances(true);
 
-   var matrix2d = Ti.UI.create2DMatrix();
-  matrix2d = matrix2d.rotate(180); // in degrees
-  var a = Ti.UI.createAnimation({
-    transform: matrix2d,
-    duration: 600,
-    repeat: 1000000, //not sure how to set to unlimited
-    curve: Titanium.UI.ANIMATION_CURVE_LINEAR
-  });
-  $.syncIcon.animate(a);
-  globals.console.log("starting animation"); 
-   
-}
-if(OS_IOS){
- var syncIcon = null;
-globals.reAddSyncIcon = function(){
- if($.syncStatus.visible == false){
-   return;
- }
-
-  $.syncStatus.remove($.syncIcon);
-
-  if(syncIcon != null){
-  $.syncStatus.remove(syncIcon);
-  }
-  syncIcon = Ti.UI.createImageView({
-    image:"/images/syncIcon.png",
-    left:5,
-    top:0,
-    height:25,
-  });
-  $.syncStatus.add(syncIcon);
-
   var matrix2d = Ti.UI.create2DMatrix();
   matrix2d = matrix2d.rotate(180); // in degrees
   var a = Ti.UI.createAnimation({
@@ -722,11 +732,43 @@ globals.reAddSyncIcon = function(){
     repeat: 1000000, //not sure how to set to unlimited
     curve: Titanium.UI.ANIMATION_CURVE_LINEAR
   });
-  syncIcon.animate(a);
+  $.syncIcon.animate(a);
+  globals.console.log("starting animation");
+
 }
+if (OS_IOS) {
+  var syncIcon = null;
+  globals.reAddSyncIcon = function () {
+    if ($.syncStatus.visible == false) {
+      return;
+    }
+
+    $.syncStatus.remove($.syncIcon);
+
+    if (syncIcon != null) {
+      $.syncStatus.remove(syncIcon);
+    }
+    syncIcon = Ti.UI.createImageView({
+      image: "/images/syncIcon.png",
+      left: 5,
+      top: 0,
+      height: 25,
+    });
+    $.syncStatus.add(syncIcon);
+
+    var matrix2d = Ti.UI.create2DMatrix();
+    matrix2d = matrix2d.rotate(180); // in degrees
+    var a = Ti.UI.createAnimation({
+      transform: matrix2d,
+      duration: 600,
+      repeat: 1000000, //not sure how to set to unlimited
+      curve: Titanium.UI.ANIMATION_CURVE_LINEAR
+    });
+    syncIcon.animate(a);
+  }
 }
 function checkSyncStatus() {
-  
+
   globals.lnGRPC.getInfo("", function (error, response) {
     globals.console.log("getInfo1", error);
     globals.console.log("getInfo1", response);
@@ -755,7 +797,7 @@ function checkSyncStatus() {
       if (percentage == 100) {
         andTimeSince100++;
       }
-      if(Ti.App.Properties.getBool("didLoadFirstTime",false) == false){
+      if (Ti.App.Properties.getBool("didLoadFirstTime", false) == false) {
         globals.showSyncingInfo();
       }
       if (percentage < 100 && andTimeSince100 < 20) {
@@ -771,24 +813,24 @@ function checkSyncStatus() {
         checkSyncStatus()
       }, 6000);
 
-      if(Ti.App.Properties.getBool("didLoadFirstTime",false) == true){
+      if (Ti.App.Properties.getBool("didLoadFirstTime", false) == true) {
         if (globals.didGetTransactionsOnce == false) { //kind of heavy so only grab once whilst syncing
           setBalances();
           globals.listPayments();
         }
       }
-      
+
 
     } else {
       if (response.synced_to_chain == 1) {
         globals.synced = true;
-        Ti.App.Properties.setBool("didLoadFirstTime",true);
+        Ti.App.Properties.setBool("didLoadFirstTime", true);
         globals.hideSyncingInfo();
         try {
 
-          Ti.App.Properties.setInt("latest_block_height_" + Alloy.Globals.network , response.block_height);
+          Ti.App.Properties.setInt("latest_block_height_" + Alloy.Globals.network, response.block_height);
           var currentTimeStamp = Math.floor(Date.now() / 1000);
-          Ti.App.Properties.setInt("latest_time_stamp_" + Alloy.Globals.network , currentTimeStamp);
+          Ti.App.Properties.setInt("latest_time_stamp_" + Alloy.Globals.network, currentTimeStamp);
 
           $.syncStatus.visible = false;
           globals.nodeInfo = response;
@@ -804,7 +846,7 @@ function checkSyncStatus() {
           }*/
 
           globals.loadMainScreen();
-          
+
           globals.tryAndBackUpChannels();
 
         } catch (e) {
@@ -831,16 +873,16 @@ if (OS_ANDROID) {
   });
 }
 
-globals.tryAndBackUpChannels = function(){
-  
-  if(Ti.App.Properties.getString("google_drive_linked",undefined) != undefined){
-    if(globals.synced == true){
-    globals.console.log("attempting to back up channels");
-    globals.util.backUpChannels(function(error,response){
-    
-    });
+globals.tryAndBackUpChannels = function () {
 
-  }
+  if (Ti.App.Properties.getString("google_drive_linked", undefined) != undefined) {
+    if (globals.synced == true) {
+      globals.console.log("attempting to back up channels");
+      globals.util.backUpChannels(function (error, response) {
+
+      });
+
+    }
   }
 }
 

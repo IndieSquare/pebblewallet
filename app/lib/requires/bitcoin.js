@@ -2,7 +2,7 @@ module.exports = (function () {
   var self = {};
 
   var bitcoin = require('vendor/util/bitcoinjs-lib')
-
+  self.bitcoin = bitcoin;
   var bip21lib = bitcoin.bip21;
 
   self.base64toHEX = function (base64) {
@@ -23,16 +23,6 @@ module.exports = (function () {
 
     return false;
 
-  };
-
-  self.decodeLNPayReq = function (req) {
-    var res = null;
-    try {
-      res = tools.bolt11.decode(req);
-    } catch (e) {
-      return null;
-    }
-    return res;
   };
 
   self.validateAddress = function (address, network = "mainnet") {

@@ -70,8 +70,19 @@
 	backgroundColor: "#0AFFFFFF",
 	layout:"vertical"
 }
-".localAmountTitle" : { 
-	left:5,
+".localAmounts":{
+height:Ti.UI.SIZE,
+width:Ti.UI.SIZE, 
+	layout:"vertical",
+	left:5
+}
+".remoteAmounts":{
+height:Ti.UI.SIZE,
+width:Ti.UI.SIZE, 
+	layout:"vertical",
+	right:5
+}
+".localAmountTitle" : {  
 	textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT,
 	textAlign: "left",
 	color: Alloy.Globals.fontColor1,
@@ -81,8 +92,8 @@
 		fontWeight: 'light'
 	}
 }
+
 ".remoteAmountTitle" : { 
-	right:5,
 	textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT,
 	textAlign: "right",
 	color: Alloy.Globals.fontColor1,
@@ -93,10 +104,32 @@
 	}
 }
 
+".localAmountTitleFiat" : {  
+	textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT,
+	textAlign: "left",
+	color: Alloy.Globals.fontColor1,
+	font: {
+		fontSize: 13,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	}
+}
+
+".remoteAmountTitleFiat" : { 
+	textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT,
+	textAlign: "right",
+	color: Alloy.Globals.fontColor1,
+	font: {
+		fontSize: 13,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	}
+}
+
 "#amountsBarOuter":{
 	top:10,
 	width:"98%",
-	height:20,
+	height:40,
 	backgroundColor:Alloy.Globals.mainColor, 
 }
 
@@ -108,13 +141,13 @@ width:Ti.UI.SIZE,
 "#amountsBarLocal":{
 	left:0,
 	width:"30%",
-	height:20,
+	height:40,
 	backgroundColor:Alloy.Globals.mainColor,
 }
 
 "#amountsBarRemote":{
 	right:0,
 	width:"70%",
-	height:20,
+	height:40,
 	backgroundColor:Alloy.Globals.mainColorLighter,
 }

@@ -3,10 +3,33 @@
 	<View class="receiveViewOuter">
 
 		<View class="receiveView">
-			<View id="buttonsView">
+
+		<TableView class="paymentList" id="paymentList">
+		<HeaderView>
+		<View id="buttonsView">
+		<View id="buttonsViewInner">
 				<Label id="generateDepositAddress" onClick="generateDepositAddress">L('generate_deposit')</Label>
 				<Label id="withdraw" onClick="goToWithdraw">L('label_withdraw_button')</Label>
+				<Label id="transactions">L('transactions')</Label>
+				<Label id="noTransactions">L("no_transactions_onchain")</Label> 
+				</View>
 			</View>
+		</HeaderView>
+			<FooterView>
+
+				<View class="tableViewFooter" id="tableViewFooter" visible="false">
+
+					<View class="tisize" layout="horizontal">
+
+						<ActivityIndicator class="indicatorDark" visible="true"/>
+						<Label class="loadingLabelFooter">L("label_loading")</Label>
+					</View>
+				</View>
+			</FooterView>
+		</TableView>
+
+		<ActivityIndicator id="initialLoading"/>
+			
 		</View>
 
 	</View>

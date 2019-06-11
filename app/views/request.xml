@@ -70,7 +70,6 @@
 
 			<View id="qrcode">
 				<View class="qrCodeBackground"/>
-
 				<View class="qrCodeOuter">
 					<View id="qrCodeInner" onClick="copyClipboard"/>
 					<View class="statusView">
@@ -79,6 +78,7 @@
 					</View>
 				</View>
 				<Label class="size15 white pull-left pull-bottom" id="closeButton" onClick="closeQR">L("label_close")</Label>
+				<Label id="checkPayment" onClick="checkPayment">L("check_payment")</Label>
 
 			</View>
 		</View>

@@ -42,7 +42,7 @@ if (OS_IOS) {
 } else {
 	$.localAmount.text = localBalanceText;
 }
-$.status.text = aChannel.confirmation_height;
+//$.status.text = aChannel.confirmation_height;
 
 var remoteBalanceText = aChannel.channel.remote_balance + " SAT";
 if (OS_IOS) {

@@ -35,6 +35,11 @@ if (isInvoice(aPayment)) {
 
     $.type.image = "/images/clockIcon.png";
   }
+
+  if (aPayment.state == "CANCELED"){
+    $.type.image = "/images/dameSymbol.png";
+  }
+
   aPayment.value = aPayment.value;
   globals.invoiceUpdateFunctions[aPayment.r_hash] = updateInvoice;
 

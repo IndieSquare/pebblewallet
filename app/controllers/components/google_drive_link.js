@@ -1,11 +1,13 @@
 var args = arguments[0] || {};
 
 function startBackUp() {
-
+globals.console.log("starting backup");
   $.backUpGoogleDrive.hide();
   $.backUpGoogleDriveSpinner.show();
 
   globals.util.backUpChannels(function (error, response) {
+
+    globals.console.log("backup res",response + " "+ error);
     $.backUpGoogleDrive.show();
     $.backUpGoogleDriveSpinner.hide();
     if (error == true) {
@@ -33,6 +35,7 @@ function startBackUp() {
 
 function startLink() {
 
+  globals.console.log("linking google drive");
   $.linkGoogleButton.hide();
   $.linkGoogleDriveSpinner.show();
 

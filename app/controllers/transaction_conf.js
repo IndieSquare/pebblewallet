@@ -358,11 +358,13 @@ function confirm() {
         $.notpaid.visible = true;
         setTimeout(function () {
           
-          alert(response.payment_error);
+         
           close();
           if(args.onerror != undefined){
             args.onerror(response.payment_error);
             
+          }else{
+            alert(response.payment_error);
           }
         }, 1000);
         return;

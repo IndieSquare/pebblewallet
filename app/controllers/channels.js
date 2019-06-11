@@ -122,7 +122,7 @@ function updateChannelsList() {
       className: 'openChannel',
       backgroundSelectedColor: 'transparent',
       rowIndex: i,
-      height: 100
+      height: 120
     });
 
     if (OS_IOS) {

@@ -7,8 +7,15 @@
     <View id="amountsBarLocal"/>
        <View id="amountsBarRemote"/>
      <View id="amountsLabel">
+     <View class="localAmounts">
       <Label id="localAmount" class="localAmountTitle"/>
+      <Label id="localAmountFiat" class="localAmountTitleFiat"/>
+       </View>
+
+     <View class="remoteAmounts">
       <Label id="remoteAmount" class="remoteAmountTitle"/>
+      <Label id="remoteAmountFiat" class="remoteAmountTitleFiat"/>
+      </View>
   </View>
        
      </View>

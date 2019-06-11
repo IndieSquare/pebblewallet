@@ -51,6 +51,8 @@
   <string name="label_share">share</string>
   <string name="got_it">got it</string>
   <string name="no_transactions">you don't have any transactions yet\n\npress the menu button bottom right to deposit some bitcoin and get started!</string>
+  <string name="no_transactions_onchain">you don't have any transactions yet</string>
+  
   <string name="syncing_info">your wallet is currently doing some necessary syncing to validate the network and ensure your privacy, this may take several minutes</string>
   <string name="block_height_sync">[block:{height}]</string>
   <string name="label_recover_wallet">recover wallet</string>
@@ -117,6 +119,7 @@
 
   <string name="label_connect">connect</string>
 
+  <string name="connecting">connecting...</string>
   <string name="label_accounts">accounts</string>
   <string name="add_account">add account</string>
   <string name="channel_opening">opening channel</string>
@@ -291,5 +294,8 @@
   <string name="label_enter_destination">Please enter a destination address</string>
   <string name="label_send_destination">destination</string>
   <string name="label_send_confirmation">Send\n{amount} {token}\n{amount2} to {address}</string>
-
+  <string name="describe_graph">describe graph</string>
+  <string name="game_amount_exceeded">Authorized charge amount exceeded</string>
+  <string name="not_yet_paid">not yet paid</string>
+  <string name="check_payment">check payment</string>
 </resources>

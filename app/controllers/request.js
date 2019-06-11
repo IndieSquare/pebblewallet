@@ -27,7 +27,7 @@ globals.console.log("fiat value", fiatValue);
 var currentPaymentRequest = "";
 $.requestLabel.title = $.requestLabel.title.toUpperCase();
 var needsToRefreshInvoices = false;
-
+var currentRhash = null
 $.numberPadDot.hide();
 
 function switchAmount(e) {
@@ -274,7 +274,7 @@ function pressedRequest() {
       return;
 
     }
-
+    currentRhash = response.r_hash;
     currentPaymentRequest = response.payment_request;
     globals.console.log("add invoice", response);
 
@@ -355,5 +355,38 @@ if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
   setTimeout(function () {
     alert(L("confirm_request"));
   }, 2000);
+
+}
+
+function checkPayment(){
+
+  if(OS_IOS){
+  var rhash = globals.bitcoin.base64toHEX(currentRhash);
+  }
+  else{
+    var rhash = currentRhash;
+  }
+  
+  globals.lnGRPC.lookUpInvoice(rhash, function(error, res) {
+ 
+    if (error == true) {
+
+      alert(res);
+
+      return;
+    }
+
+    globals.console.log(res);
+
+    if(res.settled == true){
+      globals.updateCurrentInvoice(res);
+    }else{
+      alert(L("not_yet_paid"));
+    }
+
+
+
+  });
+
 
 }

@@ -4,7 +4,7 @@ globals.androidLaunchData = undefined;
 globals.allwaysShowGuides = false;
 globals.callbackApp = null;
 globals.canProcessArgs = false;
-var currentHOLDStatus = {};
+
 var logOff = false;
 
 if (Alloy.CFG.isDevelopment != true) {
@@ -146,3 +146,4 @@ function loadingFromInit() {
 
 
 require("vendor/util/handleLaunchOptions.js");
+

@@ -1,13 +1,16 @@
 var args = arguments[0] || {};
 
-var webSocketUrl =  "ws://localhost:3000"
+var webSocketUrl = "ws://localhost:3000"
 if (OS_ANDROID) {
   if (webSocketUrl.indexOf("localhost") != -1) {
     webSocketUrl = "ws://10.0.2.2:3000"
   }
-}
+} 
+
 var recivedAmount = 0;
 
+var maxAmount = 0;
+var currentAmount = 0;
 
 $.background.animate({
   "opacity": 1.0,
@@ -55,7 +58,7 @@ function setBalanceText(amount) {
 function continueGameMode(connectionInfo) {
 
   globals.console.log("qr callback", connectionInfo);
- 
+
   connectionInfo = JSON.parse(connectionInfo);
   globals.console.log(connectionInfo.data);
   $.balanceText.text = "connecting to game...";
@@ -89,6 +92,7 @@ function continueGameMode(connectionInfo) {
       if (jsonObject.recipient == globals.currentPubkey) {
         if (jsonObject.type == "createInvoice") {
           globals.console.log("requesting invoice");
+
 
           globals.lnGRPC.addInvoice(jsonObject.amount, jsonObject.message, jsonObject.expiry, function (error, response) {
 
@@ -125,7 +129,23 @@ function continueGameMode(connectionInfo) {
             setBalanceText(recivedAmount)
           }
         } else if (jsonObject.type == "payInvoice") {
+          globals.console.log("send payment",jsonObject.data);
 
+          globals.lnGRPC.decodePayReq(jsonObject.data, function (error, res) {
+
+            if (error == true) {
+              alert(res);
+              return;
+            }
+
+            currentAmount += parseInt(res.num_satoshis);
+            globals.console.log("currentAmount",currentAmount);
+            if (currentAmount > maxAmount) {
+              alert(L("game_amount_exceeded"))
+              return;
+            }
+
+            
           globals.lnGRPC.sendPayment(jsonObject.data, -1, function (error, response) {
             globals.console.log(response);
             if (error == true) {
@@ -145,7 +165,7 @@ function continueGameMode(connectionInfo) {
 
             globals.lnGRPC.sendWebSocketMessage(JSON.stringify(JSONObjMsg));
 
-
+          });
           });
         }
       } else if (jsonObject.op == "ping") {
@@ -187,6 +207,9 @@ function showDamage(up) {
 
 
 var data = JSON.parse(args.data);
+
+currentAmount = 0;
+maxAmount = data.maxAmount;
 $.gameTitle.text = L('game_terms').format({ "title": "'" + data.game + "'", "max_amount": data.maxAmount });
 $.gameImage.image = data.icon;
 

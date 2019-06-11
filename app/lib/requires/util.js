@@ -2,8 +2,7 @@ module.exports = (function () {
 
   var self = {};
 
-  var currentCallbackQR = null;
-  var bitcoin = require("requires/bitcoin");
+  var currentCallbackQR = null; 
   var tiker = require("requires/tiker");
   var qrMode = "";
   globals.tikerLoaded = false;
@@ -395,7 +394,7 @@ module.exports = (function () {
   };
 
   self.qrcodeCallback = function (e, params) {
-    var uri = bitcoin.decodeBip21((e.barcode.indexOf("bitcoin:") >= 0) ? e.barcode : "bitcoin:" + e.barcode);
+    var uri = globals.bitcoin.decodeBip21((e.barcode.indexOf("bitcoin:") >= 0) ? e.barcode : "bitcoin:" + e.barcode);
     if (uri == null) {
       var matches = e.barcode.match(/[a-zA-Z0-9]{27,34}/);
       var vals = {};
@@ -647,6 +646,9 @@ module.exports = (function () {
     return "LNDChannelBackups";
   }
   self.getPassphraseHash = function () {
+    if (globals.decryptedPassphrase == undefined) {
+      globals.decryptedPassphrase = " ";
+    }
     var passcodeHash = Titanium.Utils.sha256(globals.decryptedPassphrase).substring(0, 10);
     globals.console.log("passcodeHash", passcodeHash);
     return passcodeHash;
@@ -677,9 +679,9 @@ module.exports = (function () {
 
         return;
       }
-
+      globals.console.log("back up res ", response + " " + error)
       var fileName = self.getSCBFileName();
-
+      globals.console.log("filename ", fileName)
       var f = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, fileName);
       if (f.exists() === false) {
         f.createFile();
@@ -716,7 +718,7 @@ module.exports = (function () {
     //configString += "routing.assumechanvalid=1\n"
 
     configString += "\n[Bitcoin]\n"
-    configString += "bitcoin.active=1\n" 
+    configString += "bitcoin.active=1\n"
     globals.console.log("config network", network);
 
     if (network == "testnet") {
@@ -739,10 +741,9 @@ module.exports = (function () {
 
       configString += "autopilot.active=1\n"
     }
-    
-    configString += "autopilot.active=0\n"
+ 
 
-    configString += "autopilot.allocation=0.95\n" 
+    configString += "autopilot.allocation=0.95\n"
     configString += "autopilot.minconfs=1\n"
     configString += "autopilot.allocation=0.95\n"
     configString += "autopilot.minchansize=20000\n"
@@ -764,17 +765,16 @@ module.exports = (function () {
     var customPeer = Ti.App.Properties.getString("customPeer", "");
     if (customPeer != "") {
       neutrinoPeer = customPeer;
-    } 
+    }
     configString += "neutrino.connect=" + neutrinoPeer + "\n";
 
 
     if (network == "testnet") {
-     configString += "neutrino.addpeer=btcd-testnet.lightning.computer\n" 
-    }else{
-      configString += "neutrino.addpeer=faucet.lightning.community\n"; 
-      
-    }
+      configString += "neutrino.addpeer=btcd-testnet.lightning.computer\n"
+    } else {
+      configString += "neutrino.addpeer=faucet.lightning.community\n";
 
+    }
 
     globals.console.log("config string", configString);
     return configString;

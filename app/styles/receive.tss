@@ -8,12 +8,18 @@
 	top: 0
 }
 
-"#buttonsView":{
-	top:20,
-	layout: 'vertical',
-	width: Ti.UI.SIZE,
+"#buttonsView":{ 
+	top: 40,
+	width: Ti.UI.FILL,
 	height: Ti.UI.SIZE,
 }
+"#buttonsViewInner":{ 
+	layout: 'vertical',
+	width: Ti.UI.FILL,
+	height: Ti.UI.SIZE,
+}
+
+
 "#description" : {
 	top: 10
 }
@@ -28,12 +34,52 @@
 	borderColor: Alloy.Globals.mainColorDarker
 }
 "#generateDepositAddress" : {
-	top: 40,
+	top:30,
 	width: 270,
-	height: 40,
-	borderRadius: 20,
+	height: 50,
+	borderRadius: 25,
 	borderWidth: 1,
 	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
 	color: Alloy.Globals.mainColorDarker,
 	borderColor: Alloy.Globals.mainColorDarker
+}
+"#transactions":{
+	top:35,
+	left:10,
+	color:Alloy.Globals.mainColor,
+	font: {
+		fontSize: 20,
+		fontFamily: 'GillSans-light',
+		fontWeight: 'light'
+	}
+}
+".paymentList" : {
+	top: 0,
+	backgroundColor: "transparent",
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL,
+	separatorStyle: Titanium.UI.TABLE_VIEW_SEPARATOR_STYLE_NONE
+}
+".paymentList[platform=ios]" : {
+	selectionStyle: Titanium.UI.iOS.TableViewCellSelectionStyle.NONE
+}
+".paymentList[platform=android]" : {
+	selectionStyle: 'none'
+}
+"#initialLoading" : {
+	indicatorColor: Alloy.Globals.mainColor,
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
+	style: Ti.UI.ActivityIndicatorStyle.PLAIN,
+	top: 250
+}
+
+"#noTransactions":{
+	top: 20,
+	font: {
+		fontSize: 18,
+		fontFamily: 'GillSans-light',
+		fontWeight: 'light'
+	},
+	textAlign:"center"
 }

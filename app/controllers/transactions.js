@@ -65,10 +65,19 @@ function listPayments(dontShowSpinner) {
         delete paymentsResponse.payments;
       }
 
-      var paymentsAndInvoices = invoicesResponse.concat(paymentsResponse).sort(function (x, y) {
+      globals.transactions = invoicesResponse.concat(paymentsResponse).sort(function (x, y) {
         return y.creation_date - x.creation_date;
       });
-      globals.console.log("get transactions");
+ 
+      $.initialLoading.hide();
+        globals.didGetTransactionsOnce = true;
+        if (globals.transactions.length == 0) {
+
+          $.noTransactions.show();
+        }
+
+        addPayments(globals.transactions);
+     /* globals.console.log("get transactions");
       globals.lnGRPC.getTransactions(function (error, transactionsResponse) {
 
         if (error == true) {
@@ -117,7 +126,7 @@ function listPayments(dontShowSpinner) {
 
         addPayments(transactions);
 
-      });
+      });*/
 
     });
 

@@ -78,6 +78,15 @@ if (aChannel.local_balance != undefined) {
 
 $.localAmount.attributedString = attr;
 
+
+
+var valueAmtNoFormat = globals.util.satToBtc(parseInt(aChannel.local_balance + ""));
+var fiatAmt = globals.tiker.to("BTC", valueAmtNoFormat, Ti.App.Properties.getString("currency", "USD"), 2) + "";
+
+
+
+$.localAmountFiat.text = fiatAmt;
+
 var remoteBalanceStr = aChannel.remote_balance;
 var remoteBalanceText = remoteBalanceStr + " SAT";
 
@@ -107,6 +116,15 @@ var attr2 = Titanium.UI.createAttributedString({
 });
 
 $.remoteAmount.attributedString = attr2;
+
+
+
+var valueAmtNoFormat = globals.util.satToBtc(parseInt(aChannel.remote_balance + ""));
+var fiatAmt = globals.tiker.to("BTC", valueAmtNoFormat, Ti.App.Properties.getString("currency", "USD"), 2) + "";
+
+
+
+$.remoteAmountFiat.text = fiatAmt;
 
 function continueCloseChannel() {
 
