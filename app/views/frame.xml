@@ -1,38 +1,41 @@
 <Alloy>
 	<Window class="container" onPostlayout="didLoad" id="win">
+<ImageView id="pattern" image="/images/pattern.png"/>
 
-		<Require src="transactions"/>
-
-		<View class="topbar" id="tokenTopBar">
-
-			<View class="topBarTop" id="topBarTop">
-
+		<Require id="transactions" src="transactions"/>
+ 
 				<View id="syncStatus">
-					<ImageView id="syncIcon" image="/images/syncIcon.png"/>
+					<Label id="syncPercentage"></Label>
 					<Label id="syncText">L('syncing_text')</Label>
+					<Label id="syncTextDescription">L('syncing_text_description')</Label>
 				</View>
 
 				<ActivityIndicator id="connecting"/>
 				<Label id="statusText"></Label>
-				<View class="info" id="info">
-					<View class="infoInner">
-						<Label class="cryptoValue" id="totalBalance"></Label>
-						<Label class="fiatValue" id="totalBalanceFiat"></Label>
-					</View>
-				</View>
+				 
 				<Label id="walletName" onClick="showNodeInfo"></Label>
-			</View>
-
-		</View>
+		 
 
 		<View id="nodeInfo">
 			<Require src="node_info"/>
 		</View>
-		<Require src="components/menu_widget"/>
+		 
+		<ImageView class="overlay"/>
+
+		<ImageView id="globeIcon" image="/images/globeIcon.png" onClick="loadDiscover"/>
+
+		<ImageView id="scanIcon" image="/images/scanIcon.png" onClick="scanNormal"/>
+
+		<ImageView id="networkIcon" image="/images/networkSymbol.png" onClick="goToChannels"/>
+
+		<Label id="depositButton" onClick="goToDeposit">L('deposit')</Label>
+
 
 		<View id="discover">
 			<Require src="dapps"/>
 		</View>
+
+		
 
 	</Window>
 </Alloy>

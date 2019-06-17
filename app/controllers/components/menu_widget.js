@@ -8,8 +8,7 @@ $.bookmarkList.touchEnabled = false;
 
 var menuIsOpen = false;
 
-globals.menuWidget = $.menuButton;
-
+ 
 globals.openCloseMenu = function () {
   openCloseMenu();
 };

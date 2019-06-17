@@ -1,22 +1,12 @@
 
-var sHeight = Ti.Platform.displayCaps.platformHeight;
-if (Ti.Platform.displayCaps.platformHeight < Ti.Platform.displayCaps.platformwidth) {
-  sHeight = Ti.Platform.displayCaps.platformwidth;
-}
-$.channelsFunds.height = sHeight - Alloy.Globals.btclnTopBarHeight;
-$.channelsFunds.top = Alloy.Globals.btclnTopBarHeight;
-$.channels.top = $.switchTab.height;
-$.funds.top = $.switchTab.height;
-globals.switchTabHeight = $.switchTab.height;
+  
 var walletConfirmedBalance = 0;
 var walletUnconfirmedBalance = 0;
-
-globals.channelsFundsView = $.getView();
+ 
 setBalances();
 
 globals.currentOnchainBalance = 0;
-
-$.onchain_description.hide();
+ 
 
 function close(e) {
   globals.console.log("closed");
@@ -53,18 +43,16 @@ if (OS_IOS) {
     "duration": 200
   });
 }
-
-$.statusText.text = L('loading_balance');
+ 
 $.totalBalanceFiat.hide();
 $.totalBalance.hide();
-globals.getWalletBalance = function () {
-  $.statusText.text = L('loading_balance');
+function getWalletBalance() { 
   $.totalBalanceFiat.hide();
   $.totalBalance.hide();
   globals.console.log("getting wallet balance");
 
   globals.lnGRPC.getWalletBalance(function (error, response) {
-    $.statusText.text = "";
+     
     $.onchain_description.show();
     if (error == true) {
       globals.console.error("error", error);
@@ -95,7 +83,7 @@ globals.getWalletBalance = function () {
 }
 
 setTimeout(function () {
-  globals.getWalletBalance();
+   getWalletBalance();
 }, 300);
 
 function setBalances() {
@@ -185,56 +173,114 @@ function setBalances() {
   $.totalBalanceFiat.attributedString = attrTotal;
 
 }
+ 
+ 
+ 
 
-function selectChannels() {
+$.noTransactions.hide();
 
-  $.channelsTab.backgroundColor = Alloy.Globals.mainColorDarker;
-  $.fundsTab.backgroundColor = Alloy.Globals.mainColorLighter;
-  $.fundsTab.opacity = 0.5;
-  $.channelsTab.opacity = 1.0;
-  $.channels.show();
-  $.funds.hide();
+var control = Ti.UI.createRefreshControl({
+  tintColor: Alloy.Globals.mainColor
+});
+control.id = "refreshControl";
 
-  if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
-    if (Ti.App.Properties.getBool("didShowGuideScreenChannels", false) == false || globals.allwaysShowGuides) {
-      Ti.App.Properties.setBool("didShowGuideScreenChannels", true)
-      setTimeout(function () {
-        Alloy.createController("/components/guide_screen", {
-          title: L("channels"),
-          text: L("channels_help")
-        }).getView().open();
-      }, 300);
-    }
-  }
+control.addEventListener('refreshstart', function (e) {
 
-  globals.getChannels();
-}
 
-function selectFunds() {
-  $.fundsTab.opacity = 1.0;
-  $.channelsTab.opacity = 0.5;
-  $.fundsTab.backgroundColor = Alloy.Globals.mainColorDarker;
-  $.channelsTab.backgroundColor = Alloy.Globals.mainColorLighter;
-  $.channels.hide();
-  $.funds.show();
-}
+  getWalletBalance();
+  loadTransactions();
 
-selectFunds();
+});
+var didLoadOnce = false;
+$.paymentList.refreshControl = control;
 
-if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
 
-  if (Ti.App.Properties.getBool("didShowGuideScreenDeposit", false) == false || globals.allwaysShowGuides) {
-    setTimeout(function () {
-      Ti.App.Properties.setBool("didShowGuideScreenDeposit", true)
-      Alloy.createController("/components/guide_screen", {
-        title: L("deposit"),
-        text: L("deposit_help"),
-      }).getView().open();
-    }, 500);
+      function loadTransactions(){
 
-  }
-}
+        globals.console.log("get transactions");
+        if(didLoadOnce == false){
+          didLoadOnce = true;
+        //$.initialLoading.show();
+        }
+        globals.lnGRPC.getTransactions(function (error, transactionsResponse) {
 
-function getBalance() {
-  globals.getWalletBalance();
-}
+          if (error == true) {
+            globals.console.error("get transactions error", error);
+  
+            alert("error getting transactions");
+            return;
+          }
+          //$.initialLoading.hide();
+          globals.console.log("get transactions", transactionsResponse);
+  
+          if (OS_IOS) {
+            if (transactionsResponse.transactions == undefined) {
+              transactionsResponse.transactions = [];
+            }
+  
+            transactionsResponse = transactionsResponse.transactions;
+            delete transactionsResponse.transactions;
+          }
+  
+          var fitleredTransactions = [];
+   
+          for (var i = 0; i < transactionsResponse.length; i++) {
+            var aTransaction = transactionsResponse[i];
+            aTransaction.creation_date = aTransaction.time_stamp;
+            aTransaction.isTransaction = true;
+            if(aTransaction.amount != undefined && aTransaction.amount != 0){
+              fitleredTransactions.push(aTransaction); 
+            }
+  
+          }
+
+            if(fitleredTransactions.reverse != undefined){
+              fitleredTransactions = fitleredTransactions.reverse();
+            } 
+          if (fitleredTransactions.length == 0) { 
+            $.noTransactions.show();
+          }
+  
+          addPayments(fitleredTransactions);
+  
+        });
+      }
+      
+
+      function addPayments(payments) { 
+        control.endRefreshing();
+        var tableData = [];
+      
+        for (var i = 0; i < payments.length; i++) {
+          var aPayment = payments[i];
+      
+          var args = {
+            "id": i,
+            "payment": aPayment,
+      
+          };
+      
+          var row = Ti.UI.createTableViewRow({
+            className: 'payment',
+            backgroundSelectedColor: 'transparent',
+            rowIndex: i,
+            height: Ti.UI.SIZE
+          });
+      
+          row.add(Alloy.createController('components/component_payment_cell', args).getView());
+      
+          tableData.push(row);
+      
+        }
+ 
+      
+        $.paymentList.data = tableData;
+        globals.console.log("finished payments");
+      }
+
+
+      loadTransactions();
+
+      function showSend(){
+        Alloy.createController("withdraw").getView().open();
+      }

@@ -1,14 +1,31 @@
 <Alloy>
 
+	<Window id="win" class="container">
+<View class="tifill background" id="background"></View>
+		<View class="mainView" id="mainView">
+		<ImageView id="pattern" image="/images/pattern.png"/>
 	<View class="receiveViewOuter">
 
-		<View class="receiveView">
-			<View id="buttonsView">
+	<ImageView class="overlay"/>
+      <Label id="closeButton" onClick="close">L("label_goback")</Label>
+
+	  <Label id="walletButton" onClick="goToWallet">L("label_wallet")</Label>
+
+    <ActivityIndicator id="spinner"></ActivityIndicator>
+<View id="depositAddressView" layout="vertical"> 
+      <View class="qrcodeImage" id="qrcode" onClick="copyClipboard"/>
+      <Label id="address"></Label>
+    </View>
+	 
+	 			<View class="generateView" id="generateView">
 				<Label id="generateDepositAddress" onClick="generateDepositAddress">L('generate_deposit')</Label>
-				<Label id="withdraw" onClick="goToWithdraw">L('label_withdraw_button')</Label>
-			</View>
-		</View>
+				 <Label id="generateDepositAddressDesc">generate an address and send bitcoin to it, this will start the process of the wallet connecting you to the lightning network</Label>
+		 </View>
+
+	 
 
 	</View>
+	</View>
+	</Window>
 
 </Alloy>

@@ -10,53 +10,173 @@
 	backgroundColor: "#000000",
 	opacity: 0
 }
+ 
 "#blockingView" : {
 	width: Ti.UI.FILL,
 	height: Ti.UI.FILL
 }
+
+".seperator1":{ 
+	width:"90%",
+	height:1,
+	opacity:0.7,
+	backgroundColor:"#454647"
+}
 ".mainView" : {
 	width: "100%",
+	height: Ti.UI.FILL,
+	backgroundColor:"white",
 	left: Alloy.Globals.display.width
 }
 ".mainView[platform=android]" : {
 	left: 0
 }
-"#requestSpinner" : {
+"#sendSpinner" : {
 	width: Ti.UI.SIZE,
 	height: Ti.UI.SIZE,
-	indicatorColor: "white"
+	indicatorColor: Alloy.Globals.mainColor
 }
-"#requestSpinner[platform=ios]" : {
+"#sendSpinner[platform=ios]" : {
 	style: Titanium.UI.ActivityIndicatorStyle.BIG,
-	indicatorColor: "white"
+	indicatorColor: Alloy.Globals.mainColor
 }
-".topSection" : {
+".amounts" : {
 	width: Ti.UI.FILL,
-	height: 185,
-	top: 0,
-	backgroundColor: Alloy.Globals.mainColor
+	height:Ti.UI.SIZE,
+	top:10,
+
 }
-".inputMemo" : {
-	width: "100%",
+"#pattern":{
+	top:0,
+	width:"100%", 
+}  
+".outer":{
+	layout:"vertical",
+	width: Ti.UI.SIZE,
+	height: 400,
+}
+ 
+ 
+"#expiryControls" : {
+	right: 10,
+	height: Ti.UI.SIZE,
+	width:Ti.UI.SIZE, 
+	layout: 'horizontal'
+}
+"#expiryDescription" : {
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	left:10, 
+	textAlign: "left", 
+}
+".expiryOuter":{
+	height: Ti.UI.SIZE,
+	width: Ti.UI.FILL,
+	top:30, 
+}
+".plusminus" : {
+	width: 40,
+	height: Ti.UI.SIZE,
+	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+	color: Alloy.Globals.mainColor,
+	font: {
+		fontSize: 25,
+		fontFamily: 'Gill Sans',
+		fontWeight: 'bold'
+	}
+}
+"#time" : {
+	height: Ti.UI.SIZE,
+	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+	width: 80,
+	color: Alloy.Globals.mainColor,
+	font: {
+		fontSize: 20,
+		fontFamily: 'Gill Sans',
+		fontWeight: 'light'
+	}
+}
+
+".memo" : {
+	width: "90%",
 	height: 40,
+	top:10, 
 	padding: {
 		right: 7,
 		left: 7
 	},
-	textAlign: "left",
-	backgroundColor: "#ffffff"
+	textAlign: "left", 
+	backgroundColor:"transparent",
+	autocapitalization:Titanium.UI.TEXT_AUTOCAPITALIZATION_NONE,
+	autocorrect:false
+}
+"#amount":{
+	backgroundColor:"transparent",
+	width:Ti.UI.SIZE,
+	keyboardType: Ti.UI.KEYBOARD_TYPE_DECIMAL_PAD,
+	padding: {
+		right: 7,
+		left: 7
+	},
 }
 ".amountView" : {
 	top: 0
 }
-".amountSat" : {
+".amountBTC" : {
+	font: {
+		fontSize: 30,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	},
 	bottom: 5
 }
+".amount":{
+	font: {
+		fontSize: 60,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	}
+}
+".fiatView":{
+	top:45
+}
+
 ".fiat" : {
-	top: 45
+	font: {
+		fontSize: 30,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	},
+	textAlign:"center",
+	width:Ti.UI.SIZE, 
+	backgroundColor:"transparent",
+	keyboardType: Ti.UI.KEYBOARD_TYPE_DECIMAL_PAD,
+	padding: {
+		right: 7,
+		left: 7
+	},
+}
+
+".fiatSymbol" : {
+	font: {
+		fontSize: 30,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	},
+	width:Ti.UI.SIZE, 
+	backgroundColor:"transparent",
+	keyboardType: Ti.UI.KEYBOARD_TYPE_DECIMAL_PAD
+}
+".switchIcon" : {
+	height: 30,
+	top: 100,
+	right: 10
 }
 ".balance" : {
 	top: 10
+}
+".priority" : {
+	top: 5
 }
 ".switchIcon" : {
 	height: 30,
@@ -70,9 +190,10 @@
 	width: Ti.UI.FILL,
 	height: "20%"
 }
-"#padrowtop" : {
-	width: Ti.UI.FILL,
-	height: "14%"
+"#numberPadQrcode" : {
+	width: 60,
+	height: 60,
+	backgroundImage: "/images/icon_qrcode.png"
 }
 ".numberPad" : {
 	backgroundColor: "transparent",
@@ -85,53 +206,6 @@
 		fontWeight: 'light'
 	}
 }
-"#expiry" : {
-	width: "66.5%",
-	height: Ti.UI.FILL
-}
-"#expiryInner" : {
-	width: Ti.UI.FILL,
-	height: Ti.UI.SIZE,
-	layout: 'vertical'
-}
-"#expiryControls" : {
-	top: 5,
-	height: Ti.UI.SIZE,
-	layout: 'horizontal'
-}
-"#expiryDescription" : {
-	height: Ti.UI.SIZE,
-	width: Ti.UI.FILL,
-	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
-	color: Alloy.Globals.mainColor,
-	font: {
-		fontSize: 20,
-		fontFamily: 'Gill Sans',
-		fontWeight: 'light'
-	}
-}
-".plusminus" : {
-	width: "33.2%",
-	height: Ti.UI.SIZE,
-	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
-	color: Alloy.Globals.mainColor,
-	font: {
-		fontSize: 25,
-		fontFamily: 'Gill Sans',
-		fontWeight: 'bold'
-	}
-}
-"#time" : {
-	height: Ti.UI.SIZE,
-	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
-	width: "33.2%",
-	color: Alloy.Globals.mainColor,
-	font: {
-		fontSize: 20,
-		fontFamily: 'Gill Sans',
-		fontWeight: 'light'
-	}
-}
 ".text" : {
 	color: Alloy.Globals.mainColor,
 	font: {
@@ -139,15 +213,16 @@
 		fontWeight: 'light'
 	}
 }
-"#requestLabel" : {
+"#generateLabel" : {
 	backgroundColor: 'transparent',
+	color:"black",
 	title: L("request_title"),
-	color: 'white',
 	font: {
 		fontSize: 25,
 		fontFamily: 'GillSans-Light',
 		fontWeight: 'light'
-	}
+	},
+	top:50
 }
 "#numberPadDel" : {
 	title: L('label_del')
@@ -157,60 +232,17 @@
 	height: Alloy.Globals.topBarHeight,
 	left: 10
 }
-"#numberPadRequest" : {
-	backgroundColor: Alloy.Globals.mainColorLighter,
-	width: "33.2%",
-	height: Ti.UI.FILL,
-	font: {
-		fontSize: 28,
-		fontFamily: 'GillSans-Light',
-		fontWeight: 'light'
-	}
-}
-"#qrcode" : {
-	width: Ti.UI.FILL,
-	height: Ti.UI.FILL
-}
-".qrCodeBackground" : {
-	width: Ti.UI.FILL,
-	height: Ti.UI.FILL,
-	backgroundColor: "#000000",
-	opacity: 0.6
-}
-".qrCodeOuter" : {
-	width: Ti.UI.SIZE,
-	height: Ti.UI.SIZE,
-	layout: 'vertical'
-}
-"#qrCodeInner" : {
-	width: Ti.UI.SIZE,
-	height: Ti.UI.SIZE
-}
-".statusView" : {
-	top: 10,
-	layout: 'horizontal',
-	width: Ti.UI.SIZE,
-	height: Ti.UI.SIZE
-}
-"#statusSpinner" : {
-	width: Ti.UI.SIZE,
-	height: Ti.UI.SIZE,
-	style: Ti.UI.ActivityIndicatorStyle.PLAIN,
-	indicatorColor: Alloy.Globals.mainColor
-}
-"#statusText" : {
-	width: Ti.UI.SIZE,
-	height: Ti.UI.SIZE,
-	left: 5,
-	color: 'white',
-	font: {
-		fontSize: 18,
-		fontFamily: 'GillSans-Light',
-		fontWeight: 'light'
-	}
-}
-"#closeButton" : {
+
+"#sendAllButton" : {
 	top: 0,
 	height: Alloy.Globals.topBarHeight,
-	left: 10
+	right: 10,
+	textAlign:"right"
+}
+
+".overlay":{
+	backgroundImage:"/images/gradientOverlay.png",
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL,
+	touchEnabled:false,
 }

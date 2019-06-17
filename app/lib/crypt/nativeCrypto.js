@@ -120,12 +120,9 @@ module.exports = (function() {
     keychainItem.addEventListener('read', function(e) {
 
       if (e.success == 1) {
-        try {
+        
           callback(true, e.value);
-        } catch (err) {
-          globals.console.error(err);
-          callback(false);
-        }
+        
 
       } else {
 

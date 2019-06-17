@@ -13,41 +13,43 @@
 	textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT
 }
 
-"#syncStatus" : {
-	height: 50,
-	width: 400,
-	left: 10,
-	top: Alloy.Globals.infoTop, 
+"#syncStatus" : { 
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
+	layout:"vertical", 
 	visible: false, 
 }
-"#syncIcon" : {
-	height: 25,
-	left: 5,
-	top:0,
-}
-"#syncText" : {
-	left: 40,
-	color: "white",
+"#syncPercentage" : { 
 	font: {
-		fontFamily: "Gil sans",
-		fontSize: 13
-	},
-	textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT,
-	top:0
+		fontFamily: Alloy.Globals.lightFont,
+		fontWeight: "light",
+		fontSize: 90
+	}
 }
+ 
+"#syncText" : {  
+	font: {
+		fontFamily: Alloy.Globals.lightFont,
+		fontSize: 14
+	}
+}
+
+ 
+"#syncTextDescription" : {  
+	top:50,
+	width:"90%",
+	font: {
+		fontFamily: Alloy.Globals.lightFont,
+		fontSize: 14
+	}
+}
+
 "#scroller" : {}
 ".topBarTop" : {
 	height: Alloy.Globals.btclnTopBarHeight,
-	width: "100%",
-	backgroundImage: "/images/gradient.jpg"
+	width: "100%", 
 }
-".info" : {
-	height: "100%"
-}
-".infoInner" : {
-	layout: "vertical",
-	height: Ti.UI.SIZE
-}
+
 ".refresh" : {
 	width: 25,
 	height: 25,
@@ -84,60 +86,67 @@
 ".topBarBottom" : {
 	height: Ti.UI.SIZE,
 	width: Ti.UI.SIZE,
-	backgroundColor: "#ededed"
+	backgroundColor:"transparent"
 }
 ".topBarTab" : {
 	width: "24.9%",
 	height: "100%",
-	backgroundColor: "#ededed"
+	backgroundColor: "transparent"
 }
 "#nodeInfo" : {
 	top: 0,
 	height: Ti.UI.FILL,
-	width: Ti.UI.FILL,
-	backgroundColor: 'maroon'
+	width: Ti.UI.FILL, 
 }
-".topbar" : {
-	top: 0,
-	layout: "vertical",
-	height: Ti.UI.SIZE
-}
-".topTabLabel" : {
-	color: "#bebebe",
-	font: {
-		fontSize: 12,
-		fontFamily: "Gil Sans"
-	}
-}
-".currentTab" : {
-	width: "24.99%",
-	height: 1,
-	bottom: 0,
-	backgroundColor: Alloy.Globals.mainColor
-}
-".topBarOuter" : {
-	layout: "horizontal",
-	width: "100%",
-	height: 0
-}
+
 "#connecting" : {
 	visible: true,
-	indicatorColor: "white",
+	indicatorColor: "#454647",
 	width: Ti.UI.SIZE,
 	height: Ti.UI.SIZE,
 	style: Ti.UI.ActivityIndicatorStyle.BIG, 
 }
-"#statusText" : {
-	color: "white",
-	font: {
-		fontFamily: "Gil sans",
-		fontSize: 16
-	},
-	touchEnabled:false
+ 
+".overlay":{
+	backgroundImage:"/images/gradientOverlay.png",
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL,
+	touchEnabled:false,
 }
-".fiatValue" : {
-	color: "white"
+
+"#globeIcon":{
+	bottom:10,
+	left:10,
+width:40, 
+}  
+
+"#scanIcon":{
+		bottom:10,
+	right:10,
+width:40, 
+}   
+
+"#networkIcon":{
+		top:20,
+	left:10,
+width:30, 
+}  
+
+"#pattern":{
+	top:0,
+	width:"100%", 
+}  
+
+
+"#depositButton":{
+	right: 10,
+	color: "black",
+	font: Alloy.Globals.buttonFont,
+	textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT,
+	top:20
 }
-".cryptoValue" : {
-	color: "white"
+
+"#depositButton[if=Alloy.Globals.isiPhoneX]" : {
+	top: 30
 }
+ 

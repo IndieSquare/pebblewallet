@@ -1,3 +1,6 @@
+self = {};
+self.transactions = $.transactions;
+self.connecting = $.connecting;
 globals.LNCurrencySat = "sat";
 $.nodeInfo.top = globals.util.getDisplayHeight();
 $.nodeInfo.hide();
@@ -26,8 +29,8 @@ function setTestnet() {
   Alloy.Globals.network = "testnet";
   globals.LNCurrency = "tBTC";
   globals.LNCurrencySat = "tSat";
-  globals.dappStoreUrl = globals.discoverEndpoint + "?lndbtcMode=true&testnet=true";
-  globals.console.log("dappStoreUrl",globals.dappStoreUrl);
+  globals.dappStoreUrl = "https://shop.nayuta.co/";
+  globals.console.log("dappStoreUrl", globals.dappStoreUrl);
 
 }
 
@@ -36,30 +39,31 @@ function setMainnet() {
   Alloy.Globals.network = "mainnet";
   globals.LNCurrency = "BTC";
   globals.LNCurrencySat = "sat";
-  globals.dappStoreUrl = globals.discoverEndpoint + "?lndbtcMode=true&testnet=false";
-  globals.console.log("dappStoreUrl",globals.dappStoreUrl);
+  globals.dappStoreUrl = "https://shop.nayuta.co/";
+  globals.console.log("dappStoreUrl", globals.dappStoreUrl);
 
 
 }
 
 globals.connectLNDGRPC = function (config) {
+ 
+
   globals.synced = true;
   globals.didGetTransactionsOnce = false;
   globals.hideNoTransactions();
   stopSyncUI();
   clearTimeout(continueSyncTimeout);
-  /*if (OS_IOS) {
-    Ti.App.iOS.cancelLocalNotification("check");
-  }*/
+   
   globals.console.log("connectLNDGRPC")
-  globals.clearTransactionsTable();
-  globals.showTransactionsLoader();
+  globals.clearTransactionsTable(); 
 
   $.statusText.text = "";
   $.connecting.visible = true;
   $.syncStatus.visible = false;
-  $.totalBalanceFiat.text = "";
-  $.totalBalance.text = "";
+  
+  
+  $.transactions.totalBalanceFiat.text = "";
+  $.transactions.totalBalance.text = "";
 
   Ti.App.Properties.setString("mode", "grpc");
   Alloy.Globals.openChannels = [];
@@ -87,10 +91,11 @@ globals.connectLNDGRPC = function (config) {
     $.walletName.text = "";
     globals.nodeInfo = null;
     globals.console.log("connecting...");
-    $.connecting.visible = false;
-    $.statusText.text = "connecting...";
+     
 
     if (error == true) {
+
+    $.connecting.visible = false;
       globals.console.log("error", error);
       alert(error);
       return;
@@ -102,6 +107,7 @@ globals.connectLNDGRPC = function (config) {
 
     globals.lnGRPC.getInfo("", function (error, response) {
       if (error == true) {
+
         globals.console.error("get info error", error);
         globals.console.error("get info error", response);
 
@@ -117,6 +123,8 @@ globals.connectLNDGRPC = function (config) {
         return;
 
       }
+
+      globals.console.log("getting info 2");
       globals.synced = true;
       globals.nodeInfo = response;
       globals.setNodeInfo(globals.nodeInfo);
@@ -137,7 +145,7 @@ globals.connectLNDGRPC = function (config) {
           $.walletName.text = L('wallet_info')
         }
       }
-
+      self.fadeInUI();
       globals.loadMainScreen();
 
       var details = response;
@@ -155,52 +163,7 @@ globals.connectLNDGRPC = function (config) {
 
 };
 
-globals.loadMainScreen = function (dontShowSpinner) { 
-  globals.menuWidget.show();
-  globals.lnGRPC.getChannelBalance(function (error, response) {
-    $.statusText.text = "";
-
-    if (error == true) {
-      globals.console.log("error", error);
-    }
-
-    globals.console.log("get channel balance", response.balance);
-
-    channelConfirmedBalance = 0;
-    if (response.balance != undefined) {
-      channelConfirmedBalance = parseInt(response.balance);
-    }
-
-    if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
-      Ti.App.Properties.setInt("last_channel_balance", channelConfirmedBalance);
-      if(globals.bootstrap == true){
-        globals.lightning_manager.bootStrapChannel(); //try to open one channel to pebble hub
-      }
-
-    }
-    totalConfirmedBalance = channelConfirmedBalance;
-
-    setBalances(true);
-
-    globals.listPayments(dontShowSpinner);
-    startSubscribeInvoices();
  
-
-    globals.tryAndBackUpChannels();
-
-    globals.canProcessArgs = true;
-    if (didGetArguments == false) {
-      didGetArguments = true;
-      globals.console.log("processing args start");
-     
-      globals.processArgs();
-       
-    }
-
-
-  });
-
-}
 
 function startSubscribeInvoices() {
   globals.console.log("starting subscribe invoice");
@@ -208,7 +171,7 @@ function startSubscribeInvoices() {
     globals.lnGRPC.subscribeInvoices(function (error, response) {
 
 
-      globals.console.log("invoice subscription res",error,response);
+      globals.console.log("invoice subscription res", error, response);
 
       if (error == false) {
         console.log("invoice res", response);
@@ -227,20 +190,20 @@ function startSubscribeInvoices() {
 
         }
       } else {
-        if(response.indexOf("io.grpc.StatusRuntimeException:") != -1){ //some bug in grpc or btcpay if this error shows need to restart subscription invoice
-           globals.console.log("restart invoice subscription");
-           startSubscribeInvoices();
+        if (response.indexOf("io.grpc.StatusRuntimeException:") != -1) { //some bug in grpc or btcpay if this error shows need to restart subscription invoice
+          globals.console.log("restart invoice subscription");
+          startSubscribeInvoices();
         }
-      
+
 
       }
 
     });
   }, 1000);
 }
- 
-    
- 
+
+
+
 
 function startSubscribeTransactions() {
   globals.console.log("starting subscribe transactions");
@@ -268,96 +231,40 @@ function switchFiatBTC() {
   } else {
     globals.fiatMode = false;
   }
-  setBalances();
+  $.transactions.API.setBalances();
 
   for (var i = 0; i < globals.updateValuesFuncs.length; i++) {
     globals.updateValuesFuncs[i]();
   }
 }
-
-function setBalances() {
-  var channelConfirmedValueBTC = globals.util.satToBtc(parseInt(channelConfirmedBalance), true);
-
-  var currentCurrency = globals.LNCurrencySat;
-
-  var channelConfirmedValueStr = "";
-  if (Ti.App.Properties.getString("denomination", "") == "BTC") {
-
-    channelConfirmedValueStr = channelConfirmedValueBTC;
-    currentCurrency = globals.LNCurrency;
-  } else {
-    channelConfirmedValueStr = parseInt(channelConfirmedBalance).toLocaleString();
-  }
-
-
-
-  globals.console.log("confirmed bal", channelConfirmedValueStr);
-  var totalText = channelConfirmedValueStr + " " + currentCurrency;
-
-  var channelConfirmedValueFiat = globals.util.satToBtc(parseInt(channelConfirmedBalance));
-
-  var currencyFiat = Ti.App.Properties.getString("currency", "USD");
-
-  var channelConfirmedValueFiat = globals.tiker.to("BTC", channelConfirmedValueFiat, currencyFiat, 2);
-
-  if (Alloy.Globals.network == "testnet") {
-    currencyFiat = "t" + currencyFiat;
-  }
-  var totalTextFiat = channelConfirmedValueFiat + " " + currencyFiat;
-
-  var attrTotal = Ti.UI.createAttributedString({
-    text: totalText,
-    attributes: [{
-      type: Ti.UI.ATTRIBUTE_FONT,
-      value: {
-        fontSize: 50,
-        fontFamily: Alloy.Globals.lightFont,
-        fontWeight: "light",
-      },
-      range: [totalText.indexOf(channelConfirmedValueStr), (channelConfirmedValueStr).length]
-    },
-    {
-      type: Ti.UI.ATTRIBUTE_FONT,
-      value: {
-        fontSize: 30,
-        fontFamily: Alloy.Globals.lightFont,
-        fontWeight: "light",
-      },
-      range: [totalText.indexOf(" " + currentCurrency), (" " + currentCurrency).length]
-    }
-    ]
-  });
-
-  $.totalBalance.attributedString = attrTotal;
-
-  attrTotal = Ti.UI.createAttributedString({
-    text: totalTextFiat,
-    attributes: [{
-      type: Ti.UI.ATTRIBUTE_FONT,
-      value: {
-        fontSize: 30,
-        fontFamily: Alloy.Globals.lightFont,
-        fontWeight: "light",
-      },
-      range: [totalTextFiat.indexOf(channelConfirmedValueFiat + ""), (channelConfirmedValueFiat + "").length]
-    },
-    {
-      type: Ti.UI.ATTRIBUTE_FONT,
-      value: {
-        fontSize: 30,
-        fontFamily: Alloy.Globals.lightFont,
-        fontWeight: "light",
-      },
-      range: [totalTextFiat.indexOf(" " + currencyFiat), (" " + currencyFiat).length]
-    }
-    ]
-  });
-
-  $.totalBalanceFiat.attributedString = attrTotal;
+ 
+function didLoad() {
 
 }
+$.globeIcon.opacity = 0;
 
-function didLoad() {
+  $.scanIcon.opacity = 0;
+
+  $.networkIcon.opacity = 0;
+
+  $.depositButton.opacity = 0;
+
+  
+
+self.fadeInUI = function(){
+
+  var a = Ti.UI.createAnimation({ 
+    duration: 1000,
+    opacity: 1, 
+  });
+   
+  $.globeIcon.animate(a);
+
+  $.scanIcon.animate(a);
+
+  $.networkIcon.animate(a);
+
+  $.depositButton.animate(a);
 
 }
 
@@ -365,7 +272,7 @@ globals.btclnView = $.win;
 
 globals.console.log("opened");
 
-globals.launchPayScan = function () {
+self.launchPayScan = function () {
 
   globals.util.readQRcodeInvoice({
     "callback": globals.continuePay
@@ -375,11 +282,145 @@ globals.launchPayScan = function () {
 
 globals.continuePay = function (req) {
 
-  var bitcoin = require("requires/bitcoin");
-  globals.console.log("req",req);
+
+  globals.console.log("req", req);
+
+  if (req.toLowerCase().startsWith("lnurl") || req.toLowerCase().startsWith("lightning:lnurl")) {
+
+    req = req.replace("lightning:", "");
+    req = req.replace("LIGHTNING:", "");
+
+    globals.console.log("lnurl", req);
+
+    try {
+      var bech32 = require('vendor/util/bech32')
+
+      var dec = bech32.decode(req, 30000)
+
+      let bytes = globals.bitcoin.bitcoin.buffer.from(bech32.fromWords(dec.words))
+
+      var url = bytes.toString('utf8');
+
+      globals.console.log("url", url);
+      var requestResult = null;
+      var callbackUrl = "";
+      Alloy.createController("confirmation_screen", {
+        "showLoading": true,
+        "message": "",
+        "cancel": function () {
+        },
+        "first": function (controller,errorCallback) {
+
+
+          var xhr = Ti.Network.createHTTPClient({
+            onload: function (e) {
+
+              globals.console.log("response data", this.responseText);
+              requestResult = JSON.parse(this.responseText); 
+
+               callbackUrl = requestResult.callback + "?k1=" + requestResult.k1 + "&remoteid=" + globals.currentPubkey + "&private=0";
+
+              globals.console.log("callback url", callbackUrl);
+
+              if (requestResult.tag == "channelRequest") {
+
+                var message = L("channel_request").format({ "uri": requestResult.callback, "capacity": requestResult.capacity, "push":requestResult.push })
+
+                  controller.setMessage(message);
+
+              }
+
+
+
+            },
+            onerror: function (e) {
+              Ti.API.debug(e.error);
+              alert(e.error);
+              errorCallback();
+            },
+            timeout: 5000 // milliseconds
+          });
+
+          xhr.open('GET', url);
+          xhr.send();
+        },
+        "task": function (callback, errorCallback) {
+
+          globals.lnGRPC.connectPeer(requestResult.uri,
+
+            function (error, res) {
+
+              globals.console.log("res", res);
+              globals.console.log("error", error);
+              var peerAlreadyAdded = false;
+
+              if ((res + "").indexOf("already connected") != -1) {
+
+                peerAlreadyAdded = true;
+
+              }
+
+              if (error == 1) {
+                error = true;
+              }
+
+              if (error == true && peerAlreadyAdded == false) {
+                errorCallback();
+                return;
+              }
+              
+              globals.console.log("requesting channel",callbackUrl);
+
+              var xhr = Ti.Network.createHTTPClient({
+                onload: function (e) {
+                  globals.console.log("response data", this.responseText);
+
+                  callback();
+
+                },
+                onerror: function (e) {
+                  Ti.API.debug(e.error);
+                  errorCallback();
+                  alert(e.error);
+
+                },
+                timeout: 8000 // milliseconds
+              });
+
+              xhr.open('GET', callbackUrl);
+              xhr.send();
+
+ 
+            });
+        }
+        ,
+        "confirm": function () {
+
+
+
+
+        },
+
+      });
+
+
+
+
+
+    }
+    catch (e) {
+      globals.console.error(e);
+      alert(e);
+    }
+
+
+    return;
+  }
+
+
 
   if (req.indexOf("bitcoin:") != -1) {
-    var decodedURI = bitcoin.decodeBip21(req);
+    var decodedURI = globals.bitcoin.decodeBip21(req);
 
     if (decodedURI.address != undefined) {
       try {
@@ -388,13 +429,13 @@ globals.continuePay = function (req) {
           amount: decodedURI.amount
         }).getView().open();
       } catch (e) {
-        globals.console.log(e);
+        globals.console.error(e);
       }
     }
     return;
   }
 
-  if (bitcoin.validateAddress(req, Alloy.Globals.network) == true) {
+  if (globals.bitcoin.validateAddress(req, Alloy.Globals.network) == true) {
 
     Alloy.createController("withdraw", {
       destination: req,
@@ -409,7 +450,7 @@ globals.continuePay = function (req) {
   if (req.indexOf("LIGHTNING:") != -1) {
     req = req.replace("LIGHTNING:", '');
   }
-   globals.lnGRPC.decodePayReq(req, function (error, res) {
+  globals.lnGRPC.decodePayReq(req, function (error, res) {
 
     if (error == true) {
       alert(res);
@@ -429,7 +470,7 @@ globals.continuePay = function (req) {
         memo = res.description;
       }
 
-      if (bitcoin.checkExpired(res)) {
+      if (globals.bitcoin.checkExpired(res)) {
 
         alert(L('text_payment_expired'));
         return;
@@ -485,10 +526,11 @@ globals.continuePay = function (req) {
           globals.console.log("setting memo", rhash + " " + memo)
           Ti.App.Properties.setString("memo_" + rhash, memo);
 
+          self.fadeInUI();
           globals.loadMainScreen();
 
           lock = false;
- 
+
         },
 
       });
@@ -500,42 +542,24 @@ globals.continuePay = function (req) {
 
 $.connecting.visible = true;
  
-globals.getStartUpInfo(function(){
-if (globals.unlocked == true) {
-  continueLoad();
-} else {
-  globals.auth.check({
-    "title": "",
-    "callback": function (e) {
-      if (e.success) {
-        continueLoad();
-
-      }
-    }
-  });
-}
-
-});
-function continueLoad() {
-
-  if (globals.tikerLoaded == false) {
-
-    globals.tiker.getTiker(function () {
-
-      if (globals.stopHyperloop == false) {
-
-        startLoadFromCache()
-      }
-
-    });
+  if (globals.unlocked == true) {
+    continueLoad();
   } else {
-    setTimeout(function () {
+    globals.auth.check({
+      "title": "",
+      "callback": function (e) {
+        if (e.success) {
+          continueLoad();
 
-      if (globals.stopHyperloop == false) {
-        startLoadFromCache()
+        }
       }
-    }, 100);
+    });
   }
+ 
+function continueLoad() {
+ 
+        startLoadFromCache()
+       
 }
 
 globals.startLNDMobile = function () {
@@ -546,8 +570,7 @@ globals.startLNDMobile = function () {
   $.statusText.text = "";
   $.totalBalanceFiat.text = "";
   $.totalBalance.text = "";
-  globals.clearTransactionsTable();
-  globals.showTransactionsLoader();
+  globals.clearTransactionsTable(); 
 
   Ti.App.Properties.setString("mode", "lndMobile")
   startLoadFromCache()
@@ -555,7 +578,7 @@ globals.startLNDMobile = function () {
 }
 
 function startLoadFromCache() {
-
+  globals.console.log("starting");
   globals.nodeInfo = null;
   $.walletName.text = "";
   if (globals.stopHyperloop == true) {
@@ -564,23 +587,27 @@ function startLoadFromCache() {
 
   if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
 
+  globals.console.log("lndmobile");
+
     if (Alloy.Globals.network == "testnet") {
-    
+
       setTestnet();
 
-    }else{
+    } else {
 
       setMainnet();
-    
+
     }
 
-    $.connecting.visible = false;
+    $.connecting.visible = true;
     $.syncStatus.visible = false;
-    $.statusText.text = L("initializing_wallet");
+   // $.statusText.text = L("initializing_wallet");
 
 
     if (globals.alreadyUnlocked == false) {
       globals.console.log("starting lnd mobile");
+
+      $.connecting.visible = true;
       globals.lnGRPC.startLNDMobile(function (error, response) {
 
         console.log("lndMobile1", error);
@@ -591,7 +618,7 @@ function startLoadFromCache() {
           return;
         }
 
-        globals.lnGRPC.unlockWallet(globals.createPassword(globals.passCodeHash),-1,"", function (error, response) {
+        globals.lnGRPC.unlockWallet(globals.createPassword(globals.passCodeHash), -1, "", function (error, response) {
           console.log("unlock wallet err ", error);
           console.log("unlock wallet", response);
 
@@ -604,13 +631,7 @@ function startLoadFromCache() {
 
 
           setTimeout(function () {
-            if (Ti.App.Properties.getBool("didShowGuideScreenSync", false) == false || globals.allwaysShowGuides) {
-              Ti.App.Properties.setBool("didShowGuideScreenSync", true)
-              Alloy.createController("/components/guide_screen", {
-                title: L("intro_sync_title"),
-                text: L("intro_sync_description")
-              }).getView().open();
-            }
+         
             andTimeSince100 = 0;
             checkSyncStatus()
 
@@ -621,18 +642,9 @@ function startLoadFromCache() {
       });
 
     } else {
-      setTimeout(function () {
-        if (Ti.App.Properties.getBool("didShowGuideScreenSync", false) == false || globals.allwaysShowGuides) {
-          Ti.App.Properties.setBool("didShowGuideScreenSync", true)
-          Alloy.createController("/components/guide_screen", {
-            title: L("intro_sync_title"),
-            text: L("intro_sync_description")
-          }).getView().open();
-        }
-        andTimeSince100 = 0;
-        checkSyncStatus()
-
-      }, 1000);
+      
+      checkSyncStatus();
+      
     }
 
   } else {
@@ -674,59 +686,31 @@ function stopSyncUI() {
 }
 
 function setSyncingUI() {
-
+try{
+  
+  console.log("setting ui");
   $.syncStatus.visible = true;
+
+  console.log("setting ui2");
   $.statusText.text = "";
+
+  console.log("setting ui3");
 
   walletConfirmedBalance = Ti.App.Properties.getInt("last_wallet_balance", 0);
   channelConfirmedBalance = Ti.App.Properties.getInt("last_channel_balance", 0);
-  setBalances(true);
+  $.transactions.API.setBalances(true);
 
-   var matrix2d = Ti.UI.create2DMatrix();
-  matrix2d = matrix2d.rotate(180); // in degrees
-  var a = Ti.UI.createAnimation({
-    transform: matrix2d,
-    duration: 600,
-    repeat: 1000000, //not sure how to set to unlimited
-    curve: Titanium.UI.ANIMATION_CURVE_LINEAR
-  });
-  $.syncIcon.animate(a);
-  globals.console.log("starting animation"); 
    
 }
-if(OS_IOS){
- var syncIcon = null;
-globals.reAddSyncIcon = function(){
- if($.syncStatus.visible == false){
-   return;
- }
-
-  $.syncStatus.remove($.syncIcon);
-
-  if(syncIcon != null){
-  $.syncStatus.remove(syncIcon);
-  }
-  syncIcon = Ti.UI.createImageView({
-    image:"/images/syncIcon.png",
-    left:5,
-    top:0,
-    height:25,
-  });
-  $.syncStatus.add(syncIcon);
-
-  var matrix2d = Ti.UI.create2DMatrix();
-  matrix2d = matrix2d.rotate(180); // in degrees
-  var a = Ti.UI.createAnimation({
-    transform: matrix2d,
-    duration: 600,
-    repeat: 1000000, //not sure how to set to unlimited
-    curve: Titanium.UI.ANIMATION_CURVE_LINEAR
-  });
-  syncIcon.animate(a);
+catch(e){
+  globals.console.error(e);
 }
+
 }
+ 
 function checkSyncStatus() {
-  
+
+  var nextCheckTime = 6000;
   globals.lnGRPC.getInfo("", function (error, response) {
     globals.console.log("getInfo1", error);
     globals.console.log("getInfo1", response);
@@ -744,10 +728,26 @@ function checkSyncStatus() {
     if (response.block_height == undefined) {
       response.block_height = 0;
     }
+    globals.console.log("here 1");
+ 
+     
     if (response.synced_to_chain == undefined || response.synced_to_chain == false) {
+      
+      $.syncPercentage.animate({});
+      $.syncPercentage.animate(Ti.UI.createAnimation({
+        opacity: 0.1,
+        autoreverse: true,
+        repeat: 6,
+        duration: nextCheckTime / 6
+      }));
+
+      $.connecting.visible = false;
+      globals.console.log("here 2");
       globals.synced = false;
       setSyncingUI();
+      globals.console.log("here 3");
       var currentNetworkBlockHeight = globals.util.getCurrentNetworkBlockHeight(Alloy.Globals.network);
+      globals.console.log("here 4");
       var percentage = Math.floor(((response.block_height / currentNetworkBlockHeight) * 100));
       if (percentage > 100) {
         percentage = 100;
@@ -755,60 +755,89 @@ function checkSyncStatus() {
       if (percentage == 100) {
         andTimeSince100++;
       }
-      if(Ti.App.Properties.getBool("didLoadFirstTime",false) == false){
-        globals.showSyncingInfo();
-      }
+      globals.console.log("here 5");
+      
       if (percentage < 100 && andTimeSince100 < 20) {
-        $.syncText.text = percentage + "% " + L("synchronizing") + " " + L("block_height_sync").format({
+        $.syncText.text =  L("synchronizing") + " " + L("block_height_sync").format({
           height: response.block_height
         });
+
+       
+
+
       } else {
         $.syncText.text = L("still_synchronizing");
+        nextCheckTime = 2000;
       }
 
+
+
+      var percentageText =  percentage + "%";
+      var attrTotal = Ti.UI.createAttributedString({
+        text:  percentageText,
+        attributes: [{
+          type: Ti.UI.ATTRIBUTE_FONT,
+          value: {
+            fontSize: 90,
+            fontFamily: Alloy.Globals.lightFont,
+            fontWeight: "light",
+          },
+          range: [percentageText.indexOf(percentage + ""), percentage+"".length]
+        },
+        {
+          type: Ti.UI.ATTRIBUTE_FONT,
+          value: {
+            fontSize: 40,
+            fontFamily: Alloy.Globals.lightFont,
+            fontWeight: "light",
+          },
+          range: [percentageText.indexOf("%"), "%".length]
+        },
+        ]
+      });
+    
+      $.syncPercentage.attributedString = attrTotal;
+
+
+
+      globals.console.log("here 6");
       continueSyncTimeout = setTimeout(function () {
         globals.console.log("continue check sync")
         checkSyncStatus()
-      }, 6000);
-
-      if(Ti.App.Properties.getBool("didLoadFirstTime",false) == true){
+      }, nextCheckTime);
+      globals.console.log("here 7");
+      if (Ti.App.Properties.getBool("didLoadFirstTime", false) == true) {
         if (globals.didGetTransactionsOnce == false) { //kind of heavy so only grab once whilst syncing
-          setBalances();
+          $.transactions.API.setBalances();
           globals.listPayments();
         }
       }
-      
+
 
     } else {
       if (response.synced_to_chain == 1) {
         globals.synced = true;
-        Ti.App.Properties.setBool("didLoadFirstTime",true);
-        globals.hideSyncingInfo();
+        Ti.App.Properties.setBool("didLoadFirstTime", true);
+         
         try {
 
-          Ti.App.Properties.setInt("latest_block_height_" + Alloy.Globals.network , response.block_height);
+          Ti.App.Properties.setInt("latest_block_height_" + Alloy.Globals.network, response.block_height);
           var currentTimeStamp = Math.floor(Date.now() / 1000);
-          Ti.App.Properties.setInt("latest_time_stamp_" + Alloy.Globals.network , currentTimeStamp);
+          Ti.App.Properties.setInt("latest_time_stamp_" + Alloy.Globals.network, currentTimeStamp);
 
           $.syncStatus.visible = false;
-          globals.nodeInfo = response;
-          globals.setNodeInfo(globals.nodeInfo);
-          $.walletName.text = L('wallet_info')
-          globals.lndMobileStarted = true;
-
-          /*if (OS_IOS) {
-            Ti.App.iOS.cancelLocalNotification("check");
-            if (Ti.App.Properties.getBool("didRequest")) {
-              globals.util.scheduleReminderNotif();
-            }
-          }*/
-
-          globals.loadMainScreen();
+          //globals.nodeInfo = response;
+          //globals.setNodeInfo(globals.nodeInfo);
           
-          globals.tryAndBackUpChannels();
+          globals.lndMobileStarted = true;
+ 
+          self.fadeInUI();
+          globals.loadMainScreen();
+
+          //globals.tryAndBackUpChannels();
 
         } catch (e) {
-          console.error(e);
+          globals.console.error(e);
         }
       }
     }
@@ -831,16 +860,16 @@ if (OS_ANDROID) {
   });
 }
 
-globals.tryAndBackUpChannels = function(){
-  
-  if(Ti.App.Properties.getString("google_drive_linked",undefined) != undefined){
-    if(globals.synced == true){
-    globals.console.log("attempting to back up channels");
-    globals.util.backUpChannels(function(error,response){
-    
-    });
+globals.tryAndBackUpChannels = function () {
 
-  }
+  if (Ti.App.Properties.getString("google_drive_linked", undefined) != undefined) {
+    if (globals.synced == true) {
+      globals.console.log("attempting to back up channels");
+      globals.util.backUpChannels(function (error, response) {
+
+      });
+
+    }
   }
 }
 
@@ -870,16 +899,56 @@ globals.hideShowNodeInfo = function (show) {
     $.nodeInfo.animate(a);
   }
 }
+ 
 
-/*
-if (OS_IOS) {
-  Ti.App.iOS.registerUserNotificationSettings({
-    types: [
-      Ti.App.iOS.USER_NOTIFICATION_TYPE_ALERT,
-      Ti.App.iOS.USER_NOTIFICATION_TYPE_SOUND,
-      Ti.App.iOS.USER_NOTIFICATION_TYPE_BADGE
-    ]
-  });
-}*/
+$.pattern.animate(Ti.UI.createAnimation({
+  opacity: 0.2,
+  autoreverse: true,
+  repeat: 100,
+  duration: 8000
+}));
 
-globals.menuWidget.show();
+
+function goToChannels(){
+  Alloy.createController("channels").getView().open();
+}
+function goToDeposit(){
+  Alloy.createController("receive").getView().open();
+}
+
+globals.closeDiscover = function () { 
+  globals.discover.visible = false;
+}
+
+function loadDiscover() {
+  if (globals.discover.visible) {
+    globals.closeDiscover();
+  } else { 
+
+    globals.discover.visible = true;
+
+    globals.loadWebView();
+  } 
+}
+function scanNormal(){
+  globals.util.readQRcodeNormal({
+    "callback": function (e) {
+      try {
+        var data = JSON.parse(e);
+        if (data.game != undefined) {
+          Alloy.createController("/gaming_mode", {
+            data: e
+          }).getView().open();
+        }
+      }
+      catch (error) {
+        globals.continuePay(e);
+      }
+
+    }
+  }, true);
+}
+$.transactions.API.setParentController(self);
+
+
+ 

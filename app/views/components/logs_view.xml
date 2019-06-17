@@ -4,9 +4,9 @@
 			<View class="tifill background" id="background"></View>
 			<View class="tifill mainView" id="mainView" layout="vertical">
 				<View class="topbar" id="topbar">
-					<Label class="size15 white pull-left pull-bottom" id="gobackButton" onClick="close">L("label_goback")</Label>
+					<Label class="size15 pull-left pull-bottom" id="gobackButton" onClick="close">L("label_goback")</Label>
 					<Label class="title">L("label_logs")</Label>
-						<Label class="size15 white pull-right pull-bottom" id="emailButton" onClick="share">L("label_share")</Label>
+						<Label class="size15 pull-right pull-bottom" id="emailButton" onClick="share">L("label_share")</Label>
 				</View>
 				<ScrollView id="scrollView" class="tifill scrollView" scrollType="vertical" layout="vertical">
 

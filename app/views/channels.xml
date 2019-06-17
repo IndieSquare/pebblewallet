@@ -1,23 +1,27 @@
 <Alloy>
+<Window id="win">
+		<View class="tifill background" id="background"></View>
+		<View class="mainView" id="mainView">
 
-	<View class="mainView">
-
+	<ImageView class="overlay"/>
+   <Label id="closeButton" onClick="close">L("label_goback")</Label>
+	<Label id="addChannelButton" onClick="openChannelForm">L('label_open_channel')</Label>
+				
 		<ActivityIndicator id="firstLoader"/>
 		<TableView id="table">
 
-			<HeaderView >
-				<View class="headerView">
-					<Label id="addChannelButton" onClick="openChannelForm">L('label_open_channel')</Label>
-				</View>
-			</HeaderView>
+			 
 
 			<FooterView>
-				<View height="70">
-					<Label id="connectToPebbleHUB" onClick="connectToPebbleHUB">L('connect_pebble_hub')</Label>
-				</View>
+				 
 			</FooterView>
 		</TableView>
 
+		<Label id="noChannels">L("no_channels")</Label>
+	
+
 	</View>
+	</View>
+</Window> 
 
 </Alloy>

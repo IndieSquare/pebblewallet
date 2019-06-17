@@ -1,15 +1,18 @@
 <Alloy>
-	<Window class="container">
+	<Window id="signin" class="container">
 		<View class="tifill wrapper" id="wrapper">
+		<ImageView id="pattern" image="/images/pattern.png"/>
 			<ScrollView class="tisize" id="signinView" layout="vertical" scrollType="vertical">
 				<ImageView class="logo" id="logo" image="/images/icon_logo_white.png"/>
 				<ActivityIndicator id="loadingSpinner"></ActivityIndicator>
 				<View id="buttons" visible="false">
 					<View class="button newwallet" id="newwalletButton" onClick="createNewAccount">
-						<Label class="size20 white">L("label_newwallet")</Label>
+						<Label class="buttonTitle">L("label_newwallet")</Label>
+						<View class="thinline"/>
 					</View>
-					<View class="button-thin hasuser" id="hasuserButton" onClick="hasPassphrase">
-						<Label class="size18 white">L("label_loginasuser")</Label>
+					<View class="button hasuser" id="hasuserButton" onClick="hasPassphrase">
+						<Label class="buttonTitle">L("label_loginasuser")</Label>
+						<View class="thinline"/>
 					</View>
 
 					<View class="tisize inputs" id="inputs" visible="false">
@@ -39,8 +42,7 @@
 										<ImageView class="lndIcon"></ImageView>
 									</View>
 								</View>
-								<Label class="foundOutMore" onClick="goToLinkInfo">L("link_info")</Label>
-
+								 
 								<Label class="cancelLabel" onClick="cancel">L("label_goback")</Label>
 
 							</View>
@@ -52,9 +54,9 @@
 			</View>
 
 		</ScrollView>
-		<View class="tisize" id="privacypolicy" layout="vertical" visible="false" onClick="goToPrivacy">
-			<Label class="size12 white">L("label_privecypolicy")</Label>
-			<Label class="size8 white">L("label_privecypolicy_description")</Label>
-		</View>
+
+		
+<ImageView class="overlay"/>
+		 
 	</Window>
 </Alloy>

@@ -7,5 +7,5 @@
 ".topBarTop" : {
   height: Alloy.Globals.btclnTopBarHeight,
   width: "100%",
-  backgroundImage: "/images/gradient.jpg"
+  backgroundColor:Alloy.Globals.mainColor
 }

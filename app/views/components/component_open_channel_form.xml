@@ -1,14 +1,16 @@
 <Alloy>
+	<Window class="transparent" id="win">
+	<View class="tifill background" id="background"></View>
 	<View id="mainView" focusable="true">
-		<View id="backView"/>
-		<View id="boxView" focusable="true">
+	 
 			<View id="form" layout="vertical" focusable="true">
 
 				<Label id="titleLabel">L('open_channel_title')</Label>
 				<View id="items" layout="vertical">
-					<TextField id="peerField"/>
+					<View class="peerOuter"><TextField id="peerField"/>	<Button id="qrButton" onClick="startScan"/></View>
+					<View class="seperator"/>
 
-					<View class="fieldView" top="30" focusable="true">
+					<View class="fieldView" top="40" focusable="true">
 						<TextField id="amountField" onKeypressed="updateAmount" onChange="androidChangeValue" focusable="true">
 							<KeyboardToolbar platform="ios">
 								<Toolbar>
@@ -21,7 +23,9 @@
 						<Label id="cryptoSymbol"></Label>
 					</View>
 
-					<View class="fieldView" top="10">
+					<View class="seperator"/>
+
+					<View class="fieldView" top="20">
 						<TextField id="amountFieldFiat" onKeypressed="updateAmountFiat" onChange="androidChangeValueFiat" focusable="true">
 							<KeyboardToolbar platform="ios">
 								<Toolbar>
@@ -33,23 +37,21 @@
 						</TextField>
 						<Label id="fiatSymbol"></Label>
 					</View>
-					<Button id="recButton" class="buttonStyle" onClick="setRec"/>
+					<View class="seperator"/>
+					
+					<!--<Button id="recButton" class="buttonStyle" onClick="setRec"/>-->
 
 				</View>
 
-				<View id="peerFieldView" layout="horizontal">
-					<Button id="qrButton" class="buttonStyle" onClick="startScan"/>
+				<View id="buttonsView">
+				<Label id="statusLabel">L('label_loading')</Label>
 					<Button id="openChannelButton" class="buttonStyle" onClick="startOpenChannel"/>
 				</View>
 
 			</View>
-			<View id="status">
-
-				<Label id="statusLabel">L('label_loading')</Label>
-
-			</View>
-			<Button id="closeButton" onClick="close"/>
-		</View>
+			 
+			<Label id="closeButton" onClick="close">L('label_close')</Label>
+		
 	</View>
-
+</Window>
 </Alloy>

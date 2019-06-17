@@ -8,6 +8,8 @@ $.sendLabel.title = $.sendLabel.title.toUpperCase();
 
 var isFiatMode = false;
 var FiatSymbol = globals.tiker.getFiatSymbol(currencyFiat);
+$.fiatSymbol.text = FiatSymbol;
+
 globals.console.log("fiat symbol", FiatSymbol);
 var timer = null;
 var fiat_conf = "";
@@ -16,6 +18,60 @@ var fiatValue = globals.tiker.getFiatValue(currencyFiat, "BTC");
 globals.console.log("fiat value", fiatValue);
 
 
+function selectedFiat(){
+  coolDown = false;
+  globals.console.log("selected fiat");
+  isFiatMode = true; 
+}
+function selectedCrypto(){
+  coolDown = false;
+  globals.console.log("selected crypto")
+  isFiatMode = false; 
+}
+var coolDown = false;
+function updateValues(){
+  if(coolDown){
+    return;
+  }
+  if (!isFiatMode) {
+    var inputValue = $.amount.value;
+
+    if(inputValue.startsWith("0") && !inputValue.startsWith("0.")){
+coolDown = true;
+$.amount.value = $.amount.value.substr(1,$.amount.value.length);
+inputValue = $.amount.value;
+coolDown = false;
+    }
+
+    var val = (inputValue * fiatValue).toFixed2(4);
+    if(isNaN(val)){
+      val = 0;
+    }
+    if (fiatValue == 0) val = 0;
+    $.fiat.value = addCommas(val);
+
+  } else {
+
+    if($.fiat.value.startsWith("0") && !$.fiat.value.startsWith("0.")){
+      coolDown = true;
+      $.fiat.value = $.amount.value.substr(1,$.fiat.value.length);
+      coolDown = false;
+          }
+
+          
+
+    var inputValue = parseFloat($.fiat.value) / fiatValue;
+    globals.console.log("inputvalue",inputValue);
+    coolDown = true;
+    val = inputValue.toFixed2(4);
+    if(isNaN(val)){
+      val = 0;
+    }
+    $.amount.value = val;
+    coolDown = false;
+  }
+    
+}
 function showHideLoading(hide) {
   if (hide) {
     $.blockingView.hide();
@@ -83,18 +139,15 @@ if (OS_IOS) {
   });
 }
 
-$.amount.text = "0";
+$.amount.value = "0";
 $.amountBTC.text = globals.LNCurrency;
-
-$.keypad.height = globals.display.height - 225;
-
+ 
 
 function switchAmount(e) {
 
-  if (!isFiatMode) {
-    $.numberPadDot.show();
+  if (!isFiatMode) { 
     isFiatMode = true;
-    inputValue = $.fiat.text.replace(FiatSymbol, "").replace(/[^\d.-]/g, "");
+    inputValue = $.fiat.value.replace(FiatSymbol, "").replace(/[^\d.-]/g, "");
 
     $.fiat.top = 0;
     $.fiat.applyProperties($.createStyle({
@@ -112,10 +165,9 @@ function switchAmount(e) {
       classes: "size12 white",
       apiName: "Label"
     }));
-  } else {
-    $.numberPadDot.hide();
+  } else { 
     isFiatMode = false;
-    inputValue = $.amount.text;
+    inputValue = $.amount.value;
 
     $.fiat.top = 45;
     $.fiat.applyProperties($.createStyle({
@@ -148,7 +200,10 @@ function setFeeLabel(fee) {
   }
 
 }
-
+function hideKeyboard(e) {
+  $.fiat.blur();
+  $.amount.blur();
+}
 
 function checkAndSetValue() {
   globals.console.log("checkAndSetValue");
@@ -207,15 +262,15 @@ function updateFields(button, abstAmount) {
   globals.console.log(fiatValue);
 
   if (!isFiatMode) {
-    $.amount.text = inputValue;
+    $.amount.value = inputValue;
 
     var val = (inputValue * fiatValue).toFixed2(4);
     if (fiatValue == 0) val = 0;
-    $.fiat.text = FiatSymbol + addCommas(val);
+    $.fiat.value =   addCommas(val);
 
   } else {
-    $.fiat.text = FiatSymbol + addCommas(inputValue);
-    $.amount.text = (inputValue / fiatValue).toFixed2(4) + "";
+    $.fiat.value =  addCommas(inputValue);
+    $.amount.value = (inputValue / fiatValue).toFixed2(4) + "";
   }
 
 }
@@ -229,7 +284,7 @@ function setValues(vals) {
     $.inputDestination.value = vals.address.toString();
 
     if (vals.amount != null) {
-      updateFields(null, vals.amount);
+      $.amount.value =  vals.amount;
     }
   }
 
@@ -242,7 +297,7 @@ function prioritySet() {
     .getView().open();
 }
 
-function pressedQRCode() {
+function scanQRCode() {
   globals.util.readQRcodeNormal({
     "callback": setValues
   }, false);
@@ -251,7 +306,7 @@ function pressedQRCode() {
 function pressedSend() {
 
   var result = null;
-  var quantity = $.amount.text.replace(/[^\d.-]/g, "");
+  var quantity = $.amount.value.replace(/[^\d.-]/g, "");
   quantity = parseFloat(quantity);
   quantity = globals.util.btcToSat(quantity);
 
@@ -352,8 +407,8 @@ function continueSend(quantity, fee) {
   });
 }
 
-var currentFee = Ti.App.Properties.getString("currentFee", "half_hour_fee");
-setFeeLabel(currentFee);
+//var currentFee = Ti.App.Properties.getString("currentFee", "half_hour_fee");
+//setFeeLabel(currentFee);
 
 if (args.destination != undefined) {
   $.inputDestination.value = args.destination;
@@ -362,20 +417,24 @@ if (args.destination != undefined) {
 if (args.amount != undefined) {
   updateFields(null, args.amount);
 }
-
+ 
 
 $.balance.text = L("loading");
 
 setTimeout(function () {
   globals.lnGRPC.getWalletBalance(function (error, response) {
 
-    if (response.confirmed_balance != undefined) {
+    if (response.confirmed_balance == undefined) {
+
+      response.confirmed_balance = 0;
+      
+    }
       globals.console.log("blance ", response.confirmed_balance)
 
       globals.console.log("blance ", parseInt(response.confirmed_balance))
       globals.currentOnchainBalance = parseInt(response.confirmed_balance);
       $.balance.text = globals.util.satToBtc(globals.currentOnchainBalance) + " " + globals.LNCurrency;
-    }
+   
 
   });
 

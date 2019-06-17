@@ -1,25 +1,13 @@
 {
   "global": {},
   "env:development": {
-    "isLocal": false,
-    "isDevelopment": true,
-    "api_uri": "https://api3.indiesquare.me/",
-    "pebble_api":"https://pebbleapi.indiesquare.net/",
-    "network": "mainnet"
+    "isDevelopment": true
   },
   "env:test": {
-    "isLocal": false,
-    "isDevelopment": true,
-    "api_uri": "https://api3.indiesquare.me/",
-    "pebble_api":"https://pebbleapi.indiesquare.net/",
-    "network": "mainnet"
+    "isDevelopment": true
   },
   "env:production": {
-    "isLocal": false,
-    "isDevelopment": false,
-    "api_uri": "https://api3.indiesquare.me/",
-    "pebble_api":"https://pebbleapi.indiesquare.net/",
-    "network": "mainnet"
+    "isDevelopment": false
   },
   "os:android": {
     "scheme_url": "Ti.Android.currentActivity.intent.data"

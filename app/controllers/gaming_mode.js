@@ -155,7 +155,7 @@ function continueGameMode(connectionInfo) {
         globals.console.log("not mine", jsonObject.recipient + "   " + globals.currentPubkey);
       }
     } catch (e) {
-
+      globals.console.error(e);
     }
 
   });

@@ -8,8 +8,7 @@ if (aChannel.channel.local_balance == undefined) {
 if (aChannel.channel.remote_balance == undefined) {
 	aChannel.channel.remote_balance = 0;
 }
-
-$.detailsButton.text = " " + $.detailsButton.text + " ";
+ 
 
 var localBalanceText = aChannel.channel.local_balance + " SAT";
 if (OS_IOS) {

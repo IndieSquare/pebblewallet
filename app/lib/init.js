@@ -4,11 +4,15 @@ globals.androidLaunchData = undefined;
 globals.allwaysShowGuides = false;
 globals.callbackApp = null;
 globals.canProcessArgs = false;
-var currentHOLDStatus = {};
-var logOff = false;
 
+var logLevel = "debug";
+
+globals.blockHeight = {
+  testnet:1541579,
+  mainnet:580066,
+}
 if (Alloy.CFG.isDevelopment != true) {
-  logOff = true;
+  logLevel = "none";
 }
 
 globals.console = {
@@ -16,19 +20,19 @@ globals.console = {
     if (data == null) {
       data = "";
     }
-    if (Alloy.CFG.isDevelopment && logOff == false) console.log(str, data);
+    if (Alloy.CFG.isDevelopment && logLevel == "debug" ) console.log(str, data);
   },
   "error": function (str, data) {
     if (data == null) {
       data = "";
     }
-    if (Alloy.CFG.isDevelopment && logOff == false) console.error(str, data);
+    if (Alloy.CFG.isDevelopment && (logLevel == "error" || logLevel == "debug" )) console.error(str, data);
   },
   "warn": function (str, data) {
     if (data == null) {
       data = "";
     }
-    if (Alloy.CFG.isDevelopment && logOff == false) console.warn(str, data);
+    if (Alloy.CFG.isDevelopment && logLevel == "debug") console.warn(str, data);
   }
 };
 

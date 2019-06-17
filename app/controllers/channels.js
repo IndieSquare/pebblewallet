@@ -1,5 +1,7 @@
 $.firstLoader.show();
 
+$.mainView.left = globals.util.getDisplayWidth() * -1;
+
 $.firstLoader.top = Alloy.Globals.btclnTopHeight - 30;
 
 $.table.height = globals.util.getDisplayHeight() - Alloy.Globals.btclnTopBarHeight - globals.switchTabHeight;
@@ -89,8 +91,7 @@ function showOpenChannel() {
 var control = Ti.UI.createRefreshControl({
   tintColor: Alloy.Globals.mainColor,
 });
-control.addEventListener('refreshstart', function (e) {
-  globals.getWalletBalance();
+control.addEventListener('refreshstart', function (e) { 
   globals.getChannels();
 
 });
@@ -98,9 +99,9 @@ control.addEventListener('refreshstart', function (e) {
 $.table.refreshControl = control;
 
 function openChannelForm() {
-  Alloy.createController("components/component_open_channel_form", {
-    parent: globals.channelsFundsView
-  })
+  
+
+  Alloy.createController("components/component_open_channel_form").getView().open();
 
 }
 
@@ -285,20 +286,56 @@ function updateChannelsList() {
     tableData.push(openChannelsSection);
   }
 
+
+  if(tableData.length == 0){
+    $.noChannels.show();
+  }else{
+    $.noChannels.hide();
+  }
   $.table.data = tableData;
 
 }
-
-
-function connectToPebbleHUB() {
-
-  var openChannelsFormObject = Alloy.createController("components/component_open_channel_form", {
-    parent: globals.channelsFundsView
-  })
-
-  openChannelsFormObject.API.setPubKey(globals.getIndieSquareHub());
-}
+ 
 
 setTimeout(function () {
   globals.getChannels();
 }, 2000);
+
+
+
+
+function close(e) {
+  globals.console.log("closed");
+
+  if (OS_ANDROID) {
+    $.win.close();
+    return;
+  }
+
+  $.background.animate({
+    "opacity": 0,
+    "duration": 200
+  });
+
+  $.mainView.animate({
+    "left": -globals.display.width,
+    "duration": 200
+  });
+
+  setTimeout(function () {
+    $.win.width = 0;
+    $.win.close();
+  }, 200);
+}
+
+$.background.animate({
+  "opacity": 0.5,
+  "duration": 200
+});
+
+if (OS_IOS) {
+  $.mainView.animate({
+    "left": 0,
+    "duration": 200
+  });
+}

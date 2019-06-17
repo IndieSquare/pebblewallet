@@ -11,7 +11,7 @@ module.exports = (function () {
       try {
         globals.console.error(error);
         message = JSON.parse(error);
-      } catch (e) { }
+      } catch (e) {  globals.console.error(e);}
     }
     globals.console.error("Error: " + e.error + ":" + e.code + ": " + JSON.stringify(message));
 
@@ -50,7 +50,7 @@ module.exports = (function () {
       var results = "";
       try {
         results = JSON.parse(this.responseText);
-      } catch (e) { }
+      } catch (e) { globals.console.error(e); }
       params.callback(results);
       if (params.always != null) params.always();
 
@@ -68,36 +68,7 @@ module.exports = (function () {
     return xhr;
   };
 
-  self.getStartUpInfo = function (callback) {
-
-    var xhr = Ti.Network.createHTTPClient();
-
-    var url = Alloy.CFG.pebble_api;
-    globals.console.log("loading " + url)
-    xhr.open("GET", url);
-
-    xhr.onload = function () {
-      var results = "";
-      try {
-
-        results = JSON.parse(this.responseText);
-
-        callback(null, results);
-
-      } catch (e) {
-
-        callback(e, null);
-      }
-
-    },
-      xhr.onerror = function (e) {
-        globals.console.error("start up error", e);
-        callback(e, null);
-      };
-    xhr.send();
-
-    return xhr;
-  };
+ 
 
   self.connectGET = function (params) {
 
@@ -124,7 +95,7 @@ module.exports = (function () {
       var results = "";
       try {
         results = JSON.parse(this.responseText);
-      } catch (e) { }
+      } catch (e) { globals.console.error(e); }
       params.callback(results);
       if (params.always != null) params.always();
     },

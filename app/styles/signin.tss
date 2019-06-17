@@ -1,14 +1,15 @@
 ".wrapper" : {
-	backgroundColor: Alloy.Globals.mainColor
+	backgroundColor: "white"
 }
 "#loadingSpinner" : {
 	width: Ti.UI.SIZE,
 	height: 0,
 	visible: false,
-	top: 0
+	top: 0,
+	indicatorColor:Alloy.Globals.mainColor
 }
 ".logo" : {
-	width: 150,
+	width: 180,
 	top: 0
 }
 "#recoverView":{
@@ -20,26 +21,22 @@
 	height: Ti.UI.SIZE,
 }
 ".button" : {
-	width: "90%",
-	height: 50,
-	borderRadius: 25,
-	borderColor: 'white',
-	borderWidth: 1,
-	backgroundColor: Alloy.Globals.mainColorLighter
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
+	layout:"vertical", 
+	
 }
-".button-thin" : {
-	width: "90%",
-	height: 35,
-	borderRadius: 17.5,
-	borderColor: 'white',
-	borderWidth: 1,
-	backgroundColor: Alloy.Globals.mainColorLighter
-}
+ 
+ ".thinline":{
+	 height:1,
+	 width: "100%",
+	 backgroundColor:"black", 
+ }
 ".newwallet" : {
-	top: 50
+	top: 40
 }
 ".hasuser" : {
-	top: 120
+	top: 130
 }
 ".signin" : {
 	top: 210,
@@ -67,6 +64,13 @@
 ".link" : {
 	layout: 'vertical',
 	top: 20
+}
+".buttonTitle":{
+	color:"black",
+	font: {
+		fontFamily: Alloy.Globals.lightFont,
+		fontSize: 25
+	}
 }
 ".recoverTitle" : {
 	top: 0,
@@ -136,3 +140,17 @@
 "#loadingSpinnerConnect" : {
 	visible: false
 }
+
+
+ 
+".overlay":{
+	backgroundImage:"/images/gradientOverlay.png",
+	width: Ti.UI.FILL,
+	height: "60%",
+	bottom:0,
+	touchEnabled:false,
+}
+"#pattern":{
+	top:0,
+	width:"100%", 
+}  

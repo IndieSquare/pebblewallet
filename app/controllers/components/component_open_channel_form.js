@@ -28,12 +28,10 @@ function setUp() {
   $.amountFieldFiat.hintText = L('label_enter_funding_hint').format({
     "currency": currencyFiat
   });
-  $.status.hide();
-  $.form.show();
-
+  $.statusLabel.hide(); 
+  $.openChannelButton.show()
   $.openChannelButton.title = "  " + L('open_channel_text') + "  ";
-  $.recButton.title = "  " + L('set_rec_channel') + "  ";
-
+   
   $.cryptoSymbol.text = globals.LNCurrencySat;
 
   $.fiatSymbol.text = currencyFiat
@@ -121,9 +119,9 @@ function startOpenChannel() {
   var host = lightningAddress.split('@')[1];
   globals.console.log(pubKey);
   globals.console.log(host);
-  $.status.text = L("label_loading")
-  $.status.show();
-  $.form.hide();
+  $.statusLabel.text = L("label_loading")
+  $.statusLabel.show(); 
+  $.openChannelButton.hide();
   $.amountField.blur();
   $.peerField.blur();
   globals.lnGRPC.connectPeer(lightningAddress,
@@ -145,15 +143,14 @@ function startOpenChannel() {
           parent: $.getView(),
           errorMessage: res,
           type: "fail",
-          callback: function () {
-            globals.getWalletBalance();
+          callback: function () { 
             globals.listPayments();
             close();
           }
         }).getView();
 
-        $.status.hide()
-        $.form.show();
+        $.statusLabel.hide() 
+        $.openChannelButton.show()
 
       } else {
 
@@ -171,14 +168,13 @@ function startOpenChannel() {
                 parent: $.getView(),
                 errorMessage: res,
                 type: "fail",
-                callback: function () {
-                  globals.getWalletBalance();
+                callback: function () { 
                   globals.listPayments();
                   close();
                 }
               }).getView();
-              $.status.hide()
-              $.form.show();
+              $.statusLabel.hide() 
+              $.openChannelButton.show()
             } else {
 
               globals.console.log("res is ", res);
@@ -226,29 +222,45 @@ var startScan = function () {
   });
 };
 
-function close() {
-
-  globals.lnGRPC.clearChannelChecker();
-
-  $.amountField.blur();
-
-  $.amountFieldFiat.blur();
-
-  $.boxView.animate({
-    "curve": Ti.UI.ANIMATION_CURVE_EASE_IN_OUT,
-    "opacity": 0.0,
-    "duration": 200
-  },
-    function () {
-      $.args.parent.remove($.getView());
-      $.boxView.opacity = 1;
-
-      $.status.hide()
-      $.form.show();
-    });
-
-}
+ 
 
 setUp();
 
-$.args.parent.add($.getView());
+
+
+function close(e) {
+  globals.console.log("closed");
+
+  if (OS_ANDROID) {
+    $.win.close();
+    return;
+  }
+
+  $.background.animate({
+    "opacity": 0,
+    "duration": 200
+  });
+
+  $.mainView.animate({
+    "top": globals.display.height,
+    "duration": 200
+  });
+
+  setTimeout(function () {
+    $.win.width = 0;
+    $.win.close();
+  }, 200);
+}
+
+$.background.animate({
+  "opacity": 0.5,
+  "duration": 200
+});
+
+if (OS_IOS) {
+  $.mainView.animate({
+    "top": 0,
+    "duration": 200
+  });
+}
+ 

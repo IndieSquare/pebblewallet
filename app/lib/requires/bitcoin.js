@@ -2,7 +2,7 @@ module.exports = (function () {
   var self = {};
 
   var bitcoin = require('vendor/util/bitcoinjs-lib')
-
+  self.bitcoin = bitcoin;
   var bip21lib = bitcoin.bip21;
 
   self.base64toHEX = function (base64) {

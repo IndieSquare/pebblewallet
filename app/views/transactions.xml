@@ -1,8 +1,27 @@
 <Alloy>
-	<View class="mainView">
-		<Label id="noTransactions">L("no_transactions")</Label>
-		<Label id="syncingInfo">L("syncing_info")</Label>
+	<View id="mainView" class="mainView">
 		<TableView class="paymentList" id="paymentList">
+		<HeaderView>
+ 
+				<View class="info" id="info">
+				<View class="infoInner">
+					<View class="balances">
+						<Label class="cryptoValue" id="totalBalance"></Label>
+						<Label class="fiatValue" id="totalBalanceFiat"></Label>
+					</View>
+					<View class="options">
+
+						<Label class="receiveButton"  onClick="showReceive">L('receive')</Label>
+					<Label class="payButton" onClick="showPay">L('pay')</Label>
+					</View>
+					
+				</View>
+				<View class="sepreator1"/>
+				<ActivityIndicator id="listTopSpinner" visible="false"/>
+				</View>
+
+				
+		</HeaderView>
 			<FooterView>
 
 				<View class="tableViewFooter" id="tableViewFooter" visible="false">
@@ -15,7 +34,6 @@
 				</View>
 			</FooterView>
 		</TableView>
-
-		<ActivityIndicator id="initialLoading"/>
+		<Label id="noTransactions">L("no_transactions")</Label> 
 	</View>
 </Alloy>

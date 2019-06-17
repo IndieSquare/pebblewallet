@@ -5,8 +5,7 @@ globals.dataDir = "";
 globals.lndMobileStarted = false;
 globals.alreadyUnlocked = false;
 globals.stopHyperloop = false; //needed as live view doesnt work when hyperloop libs are used so slows down dev
-globals.lnGRPC = require("/requires/lnrpc_controller");
-globals.lightning_manager = require("/requires/lightning_manager");
+globals.lnGRPC = require("/requires/lnrpc_controller"); 
 globals.currentPubkey = "";
 if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
   Alloy.Globals.network = Ti.App.Properties.getString("lndMobileNetwork", "mainnet");
@@ -20,34 +19,7 @@ globals.blockHeight = {
 if (Ti.App.Properties.getInt("autoPilot", 3) == 3) { //no record
   Ti.App.Properties.setInt("autoPilot", 1);
 }
-
-/*
-if (OS_IOS) {
-  Ti.Network.addEventListener('change', function(e) {
-
-    if (Ti.App.Properties.getString("mode", "") == "lndMobile" && globals.lndMobileStarted == true) {
-      if (e.type == "change") {
-
-        var loading = globals.util.showLoading(globals.screenView, {
-          "width": Ti.UI.FILL,
-          "height": Ti.UI.FILL,
-          "style": "dark",
-          "message": L("network_change")
-        });
-
-        globals.lnGRPC.stopLND(function(error, response) {
-
-          setTimeout(function() {
-            globals.startLNDMobile();
-            loading.removeSelf();
-          }, 5000);
-        });
-
-      }
-    }
-
-  });
-}*/
+ 
 
 globals.getRecommendedChannelAmount = function () {
   var fiatValue = globals.tiker.getFiatValue("USD");
@@ -57,19 +29,7 @@ globals.getRecommendedChannelAmount = function () {
   return valueAmt;
 
 }
-globals.getIndieSquareHub = function () {
-  if (Alloy.Globals.network == "testnet") {
-    return globals.hubURITestnet;
-  } else {
-    return globals.hubURIMainnet;
-  }
-}
-/*
-globals.lnGRPC.setUpEnv(function(error, response) {
-  globals.console.log("setup env", error);
-  globals.console.log("setup env", response);
-});*/
-
+ 
 globals.invoiceUpdateFunctions = {};
 var denomination = Ti.App.Properties.getString("denomination", "");
 if (denomination == "") {
@@ -339,10 +299,13 @@ globals.continueConnect = function (e, callback, error) {
     try {
       var config = JSON.parse(e);
 
-      callback(config);
     } catch (e) {
+      globals.console.error(e);
       error(L("error_parsing_config"));
+      return;
     }
+
+    callback(config);
   };
 
 }
@@ -373,14 +336,7 @@ globals.addAccounts = function (pubkey, details) {
 
 }
 
-//fix for ios animation stopping on resuming from background
-if (OS_IOS) {
-  Ti.App.addEventListener("resumed", function () {
-    if (globals.reAddSyncIcon != undefined) {
-      globals.reAddSyncIcon();
-    }
-  });
-}
+ 
 
 globals.checkConnection = function (configRaw, callback) {
 
@@ -423,40 +379,7 @@ if (OS_IOS) {
     }
   });
 }
-
-globals.getStartUpInfo = function (callback) {
-  globals.networkAPI.getStartUpInfo(function (error, res) {
-
-    if (error != null) {
-
-      var dialog = globals.util.createDialog({
-        title: L('error_api'),
-        message: L("error_api_description"),
-        buttonNames: [L("label_continue_noapi"), L("label_close")],
-        cancel: 1
-      });
-      dialog.addEventListener("click", function (e) {
-        if (e.index != e.source.cancel) {
-          callback();
-        }
-      });
-      dialog.show();
-
-    } else {
-      globals.blockHeight.testnet = res.testnetHeight;
-      globals.blockHeight.mainnet = res.mainnetHeight;
-      globals.hubURITestnet = res.hubUriTestnet;
-      globals.hubURIMainnet = res.hubUriMainnet;
-      globals.discoverEndpoint = res.discoverUrl;
-      globals.console.log("res", res.hubUriMainnet);
-      if (res.maintenanceMode == true) {
-        alert("maintenance");
-      } else {
-        callback();
-      }
-    }
-  });
-}
+ 
 
 
 globals.stopLND = function (callback) {

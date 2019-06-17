@@ -1,3 +1,26 @@
+
+"#win" : {
+  "orientationModes": [Ti.UI.PORTRAIT],
+  "navBarHidden": true
+}
+ 
+"#win[platform=android]" : {
+  "windowSoftInputMode": Ti.UI.Android.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+}
+".mainView" : {
+  width: "100%",
+  left: Alloy.Globals.display.width,
+  backgroundColor: "white"
+}
+".mainView[platform=android]" : {
+  width: "100%",
+  left: 0
+}
+".background" : {
+  backgroundColor: "#000000",
+  opacity: 0
+}
+
 ".receiveView" : {
 	width: Ti.UI.FILL,
 	height: Ti.UI.FILL
@@ -17,23 +40,94 @@
 "#description" : {
 	top: 10
 }
-"#withdraw" : {
-	top: 25,
-	width: 270,
-	height: 50,
-	borderRadius: 25,
-	borderWidth: 1,
-	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
-	color: Alloy.Globals.mainColorDarker,
-	borderColor: Alloy.Globals.mainColorDarker
-}
-"#generateDepositAddress" : {
-	top: 40,
+ 
+"#generateDepositAddress" : { 
 	width: 270,
 	height: 40,
 	borderRadius: 20,
 	borderWidth: 1,
 	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
-	color: Alloy.Globals.mainColorDarker,
-	borderColor: Alloy.Globals.mainColorDarker
+	color: Alloy.Globals.nayutaDark,
+	borderColor: Alloy.Globals.nayutaDark
+}
+
+"#generateDepositAddressDesc" : { 
+	width: "90%",
+	top:60,
+	color: Alloy.Globals.nayutaDark, 
+	font: {
+		fontFamily: Alloy.Globals.lightFont,
+		fontWeight: "light",
+		fontSize: 15
+	}
+}
+"#pattern":{
+	top:0,
+	width:"100%", 
+} 
+"#closeButton":{
+	top: 0,
+	height: Alloy.Globals.topBarHeight,
+	font:Alloy.Globals.buttonFont,
+	left:15,
+}
+
+"#walletButton":{
+	top: 0,
+	height: Alloy.Globals.topBarHeight,
+	font:Alloy.Globals.buttonFont,
+	right:15,
+}
+
+"#depositAddressView":{
+	visible:false,
+
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
+}
+
+"#description":{
+	color:Alloy.Globals.nayutaDark,
+}
+"#address" : {
+	top: 15,
+	color: Alloy.Globals.nayutaDark,
+	font: {
+		fontFamily: Alloy.Globals.lightFont,
+		fontWeight: "light",
+		fontSize: 12
+	}
+}
+".qrcodeImage" : {
+	top: 15,
+	width: 250,
+	height: 250,
+	margin: 15
+}
+
+"#spinner" : {
+  indicatorColor: Alloy.Globals.nayutaDark,
+  style: Ti.UI.ActivityIndicatorStyle.BIG
+}
+
+
+".generateView":{
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
+	layout:"vertical"
+}
+
+".seperator1":{
+	bottom:40,
+	width:"70%",
+	height:1,
+	opacity:0.7,
+	backgroundColor:"#454647"
+}
+
+".overlay":{
+	backgroundImage:"/images/gradientOverlay.png",
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL,
+	touchEnabled:false,
 }

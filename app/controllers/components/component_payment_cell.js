@@ -35,6 +35,11 @@ if (isInvoice(aPayment)) {
 
     $.type.image = "/images/clockIcon.png";
   }
+
+  if (aPayment.state == "CANCELED"){
+    $.type.image = "/images/dameSymbol.png";
+  }
+
   aPayment.value = aPayment.value;
   globals.invoiceUpdateFunctions[aPayment.r_hash] = updateInvoice;
 
@@ -104,7 +109,7 @@ function setAmount() {
       var fiatAmt = globals.tiker.to("BTC", valueAmtNoFormat, Ti.App.Properties.getString("currency", "USD"), 2) + "";
     }
 
-    var aPaymentValueText = valueAmt + " " + currency + " " + fiatAmt;
+    var aPaymentValueText = valueAmt + " " + currency;
 
     var symbol = "-";
     if (isInvoice(aPayment) || isTransaction(aPayment)) {
@@ -149,8 +154,16 @@ function setAmount() {
           fontWeight: 'light'
         },
         range: [aPaymentValueText.indexOf(symbol), symbol.length]
-      },
-      {
+      }]
+    });
+
+    $.value.attributedString = attr;
+/*
+
+
+    var attr = Titanium.UI.createAttributedString({
+      text: fiatAmt,
+      attributes: [{
         type: Ti.UI.ATTRIBUTE_FONT,
         value: {
           fontSize: 12,
@@ -162,7 +175,8 @@ function setAmount() {
       ]
     });
 
-    $.value.attributedString = attr;
+    $.value.attributedString = attr;*/
+    $.valueFiat.text = fiatAmt;
   } catch (e) {
     globals.console.error(e);
   }

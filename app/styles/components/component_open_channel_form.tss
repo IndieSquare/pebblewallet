@@ -1,5 +1,14 @@
 "#mainView" : {
-	top: 0
+	top: Alloy.Globals.display.height,
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL,
+	backgroundColor:"white",
+}
+
+".peerOuter":{
+	 width:"100%",
+	 top:60,
+	 height: Ti.UI.SIZE, 
 }
 "#backView" : {
 	width: Ti.UI.FILL,
@@ -12,24 +21,25 @@
 	height: Ti.UI.SIZE
 }
 "#boxView" : {
-	width: "90%",
+	width: "95%",
 	height: 360,
 	backgroundColor: Alloy.Globals.windowColor,
 	borderRadius: 10
 }
-"#peerFieldView" : {
+"#buttonsView" : {
 	top: 20,
 	height: Ti.UI.SIZE,
 	width: Ti.UI.SIZE
 }
 "#peerField" : {
-	width: "100%",
+	width: "80%",
 	height: 40,
 	top: 15,
 	left: 0,
 	focusable: true,
 	hintTextColor: "gray",
-	hintText: L('label_enter_nodeid')
+	hintText: L('label_enter_nodeid'),
+	backgroundColor:"transparent"
 }
 "#amountField" : {
 	width: "85%",
@@ -38,30 +48,35 @@
 	focusable: true,
 	hintTextColor: "gray",
 	hintText: L('label_enter_funding_hint'),
-	keyboardType: Ti.UI.KEYBOARD_TYPE_DECIMAL_PAD
+	keyboardType: Ti.UI.KEYBOARD_TYPE_DECIMAL_PAD,
+	backgroundColor:"transparent"
 }
 "#amountFieldFiat" : {
 	width: "85%",
 	height: 40,
 	left: 0,
 	hintTextColor: "gray",
-	keyboardType: Ti.UI.KEYBOARD_TYPE_DECIMAL_PAD
+	keyboardType: Ti.UI.KEYBOARD_TYPE_DECIMAL_PAD,
+	backgroundColor:"transparent"
 }
 "#qrButton" : {
 	color: Alloy.Globals.fontColor1,
 	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
-	width: 60,
-	height: 60,
-	backgroundImage: '/images/icon_qrcode.png'
+	width: 40,
+	height: 40,
+	right:0,
+	backgroundImage: '/images/qrCodeIcon.png'
 }
 "#closeButton" : {
-	right: 10,
-	top: 10,
-	width: 25,
-	height: 25,
-	backgroundImage: '/images/closeButtonMain.png'
+	bottom:30,
+	font: {
+		fontSize: 20,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	},
 }
 "#statusLabel" : {
+	visible:false,
 	color: Alloy.Globals.mainColor,
 	font: {
 		fontSize: 20,
@@ -83,9 +98,10 @@
 "#openChannelButton" : {
 	color: Alloy.Globals.mainColor,
 	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
-	width: Ti.UI.SIZE,
+	width: 120,
 	height: 40,
 	left: 10,
+	top:40,
 	borderRadius: 20,
 	borderWidth: 2,
 	borderColor: Alloy.Globals.mainColor,
@@ -95,6 +111,16 @@
 		fontWeight: 'regular'
 	},
 	backgroundImage: '/images/image_blank.png'
+}
+".seperator":{ 
+	width:"100%",
+	height:1,
+	opacity:0.7,
+	backgroundColor:"#454647"
+}
+"#form":{
+	width: "95%",
+	height: Ti.UI.SIZE
 }
 "#recButton" : {
 	color: Alloy.Globals.mainColor,

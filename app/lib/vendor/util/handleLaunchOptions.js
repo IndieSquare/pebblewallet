@@ -1,4 +1,6 @@
 module.exports = (function () {
+
+    var currentHOLDStatus = {};
     function urlToObject(url) {
 
         globals.console.log("url scheme", url);
@@ -96,7 +98,7 @@ module.exports = (function () {
                         console.log(response.payment_request);
                         var intent = Ti.Android.createIntent({
                             action: Ti.Android.ACTION_MAIN,
-                            packageName: currentHOLDStatus.callingApp,
+                            packageName: callingApp,
                             className: 'com.unity3d.player.UnityPlayerActivity'
                         });
                         //set input data
@@ -122,6 +124,7 @@ module.exports = (function () {
                 var expirySeconds = parseInt(getParameterValue(url, "expiry"));
                 var callingApp = getParameterValue(url, "package");
                 currentHOLDStatus.callingApp = callingApp;
+                currentHOLDStatus.hash = hash;
                 globals.console.log("hash" + hash + " " + amt + " " + memo + " " + expirySeconds + " " + callingApp);
 
                 globals.lnGRPC.addHoldInvoice(hash, amt, memo, expirySeconds, function (error, response) {
@@ -199,7 +202,7 @@ module.exports = (function () {
                 var preimage = getParameterValue(url, "preimage");
                 globals.console.log(" preimage " + preimage);
 
-
+                currentHOLDStatus.settledInvoice = true;
                 globals.lnGRPC.sendSettleInvoiceMsg(preimage, function (error, response) {
 
                     if (error == true) {
@@ -210,10 +213,10 @@ module.exports = (function () {
                     } else {
 
                         globals.console.log("settle response", response);
-                        globals.loadMainScreen();
+                        
                         alert("Hold invoice swept!");
-
-
+                        globals.loadMainScreen(); 
+                   
                     }
                 });
 
@@ -346,6 +349,7 @@ module.exports = (function () {
                     },
                     "onerror":function(error){
                        globals.console.error("pay hold error",error);
+                       if(currentHOLDStatus.settledInvoice == false){//when the other player cancels their invoice is causes a hash not found error here so only show error before we have settled
                         var intent = Ti.Android.createIntent({
                             action: Ti.Android.ACTION_MAIN,
                             packageName: currentHOLDStatus.callingApp,
@@ -355,6 +359,7 @@ module.exports = (function () {
                         intent.putExtra('error', error);
 
                         Ti.Android.currentActivity.startActivity(intent);
+                    }
                     },
                     "confirm": function () {
 

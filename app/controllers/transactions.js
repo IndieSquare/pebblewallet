@@ -1,28 +1,110 @@
 globals.transactions = [];
 globals.didGetTransactionsOnce = false;
-globals.showTransactionsLoader = function () {
-  $.initialLoading.show();
-}
+var parent = null;
 globals.hideNoTransactions = function () {
   $.noTransactions.hide();
 }
 
-globals.hideSyncingInfo = function () {
-  $.syncingInfo.hide();
-}
-globals.showSyncingInfo = function () {
-  $.syncingInfo.show();
-}
-$.noTransactions.hide();
-$.syncingInfo.hide();
+ 
+ 
+$.noTransactions.hide(); 
 globals.clearTransactionsTable = function () {
   $.paymentList.data = [];
 }
 
-function listPayments(dontShowSpinner) {
+
+var walletConfirmedBalance = 0;
+var channelConfirmedBalance = 0;
+
+function setBalances() {
+  var channelConfirmedValueBTC = globals.util.satToBtc(parseInt(channelConfirmedBalance), true);
+
+  var currentCurrency = globals.LNCurrencySat;
+
+  var channelConfirmedValueStr = "";
+  if (Ti.App.Properties.getString("denomination", "") == "BTC") {
+
+    channelConfirmedValueStr = channelConfirmedValueBTC;
+    currentCurrency = globals.LNCurrency;
+  } else {
+    channelConfirmedValueStr = parseInt(channelConfirmedBalance).toLocaleString();
+  }
+
+
+
+  globals.console.log("confirmed bal", channelConfirmedValueStr);
+  var totalText = channelConfirmedValueStr + " " + currentCurrency;
+
+  var channelConfirmedValueFiat = globals.util.satToBtc(parseInt(channelConfirmedBalance));
+
+  var currencyFiat = Ti.App.Properties.getString("currency", "USD");
+
+  var channelConfirmedValueFiat = globals.tiker.to("BTC", channelConfirmedValueFiat, currencyFiat, 2);
+
+  if (Alloy.Globals.network == "testnet") {
+    currencyFiat = "t" + currencyFiat;
+  }
+  var totalTextFiat = channelConfirmedValueFiat + " " + currencyFiat;
+
+  var attrTotal = Ti.UI.createAttributedString({
+    text: totalText,
+    attributes: [{
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 50,
+        fontFamily: Alloy.Globals.lightFont,
+        fontWeight: "light",
+      },
+      range: [totalText.indexOf(channelConfirmedValueStr), (channelConfirmedValueStr).length]
+    },
+    {
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 30,
+        fontFamily: Alloy.Globals.lightFont,
+        fontWeight: "light",
+      },
+      range: [totalText.indexOf(" " + currentCurrency), (" " + currentCurrency).length]
+    }
+    ]
+  });
+
+  $.totalBalance.attributedString = attrTotal;
+
+  attrTotal = Ti.UI.createAttributedString({
+    text: totalTextFiat,
+    attributes: [{
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 30,
+        fontFamily: Alloy.Globals.lightFont,
+        fontWeight: "light",
+      },
+      range: [totalTextFiat.indexOf(channelConfirmedValueFiat + ""), (channelConfirmedValueFiat + "").length]
+    },
+    {
+      type: Ti.UI.ATTRIBUTE_FONT,
+      value: {
+        fontSize: 30,
+        fontFamily: Alloy.Globals.lightFont,
+        fontWeight: "light",
+      },
+      range: [totalTextFiat.indexOf(" " + currencyFiat), (" " + currencyFiat).length]
+    }
+    ]
+  });
+
+  $.totalBalanceFiat.attributedString = attrTotal;
+
+}
+
+function listPayments(dontShowSpinner = false) {
+  parent.connecting.visible = false; 
   $.noTransactions.hide();
-  if (dontShowSpinner == undefined || dontShowSpinner == false) {
-    globals.showTransactionsLoader();
+  if (dontShowSpinner == true) {
+     $.listTopSpinner.hide(); 
+  }else{
+    $.listTopSpinner.show(); 
   }
   globals.lnGRPC.listInvoices(function (error, invoicesResponse) {
     globals.console.log("invoices", invoicesResponse);
@@ -65,59 +147,21 @@ function listPayments(dontShowSpinner) {
         delete paymentsResponse.payments;
       }
 
-      var paymentsAndInvoices = invoicesResponse.concat(paymentsResponse).sort(function (x, y) {
+      var transactions = invoicesResponse.concat(paymentsResponse).sort(function (x, y) {
         return y.creation_date - x.creation_date;
       });
-      globals.console.log("get transactions");
-      globals.lnGRPC.getTransactions(function (error, transactionsResponse) {
 
-        if (error == true) {
-          globals.console.error("get transactions error", error);
+      addPayments(transactions);
 
-          alert("error getting transactions");
-          return;
-        }
-        $.initialLoading.hide();
-        globals.console.log("get transactions", transactionsResponse);
+      globals.transactions = transactions;
+      globals.didGetTransactionsOnce = true;
+      if (globals.transactions.length == 0) {
 
-        if (OS_IOS) {
-          if (transactionsResponse.transactions == undefined) {
-            transactionsResponse.transactions = [];
-          }
+        $.noTransactions.show();
+      }
 
-          transactionsResponse = transactionsResponse.transactions;
-          delete transactionsResponse.transactions;
-        }
-
-        var fitleredTransactions = [];
-
-        var txids = JSON.parse(Ti.App.Properties.getString("txidsV1", "{}"));
-
-        var txidKeys = Object.keys(txids);
-
-        globals.console.log("txids", txids);
-
-        for (var i = 0; i < transactionsResponse.length; i++) {
-          var aTransaction = transactionsResponse[i];
-          aTransaction.creation_date = aTransaction.time_stamp;
-          aTransaction.isTransaction = true;
-          fitleredTransactions.push(aTransaction);
-
-        }
-        var transactions = paymentsAndInvoices.concat(fitleredTransactions).sort(function (x, y) {
-          return y.creation_date - x.creation_date;
-        });
-
-        globals.transactions = transactions;
-        globals.didGetTransactionsOnce = true;
-        if (globals.transactions.length == 0) {
-
-          $.noTransactions.show();
-        }
-
-        addPayments(transactions);
-
-      });
+      addPayments(transactions);
+      
 
     });
 
@@ -134,13 +178,17 @@ control.id = "refreshControl";
 
 control.addEventListener('refreshstart', function (e) {
 
-  globals.loadMainScreen(true);
+  
+  setBalances();
+  listPayments(true);  
+
 
 });
 
 $.paymentList.refreshControl = control;
 
 function addPayments(payments) {
+  globals.console.log("adding payments");
   globals.updateValuesFuncs = [];
   control.endRefreshing();
   var tableData = [];
@@ -167,6 +215,70 @@ function addPayments(payments) {
 
   }
 
+
   $.paymentList.data = tableData;
+
   globals.console.log("finished payments");
+
+  $.listTopSpinner.hide();
+}
+exports.API = {
+  totalBalanceFiat: $.totalBalanceFiat,
+  totalBalance:$.totalBalance,
+  setParentController:function(par){ 
+    parent = par
+  },
+  setBalances:setBalances
+};
+
+globals.loadMainScreen = function (dontShowSpinner) {
+  globals.console.log("loading main screen");
+  globals.lnGRPC.getChannelBalance(function (error, response) {
+     
+    
+    if (error == true) {
+      globals.console.log("error", error);
+    }
+
+    globals.console.log("get channel balance", response.balance);
+
+    channelConfirmedBalance = 0;
+    if (response.balance != undefined) {
+      channelConfirmedBalance = parseInt(response.balance);
+    }
+
+  
+    totalConfirmedBalance = channelConfirmedBalance;
+
+    setBalances(true);  
+
+    $.mainView.show();
+
+
+    listPayments();
+    startSubscribeInvoices();
+
+
+    globals.tryAndBackUpChannels();
+
+    globals.canProcessArgs = true;
+    if (didGetArguments == false) {
+      didGetArguments = true;
+      globals.console.log("processing args start");
+
+      globals.processArgs();
+
+    }
+
+
+  });
+
+}
+
+function showPay(){
+  parent.launchPayScan();
+}
+
+function showReceive(){
+  Alloy.createController("request").getView().open();
 }

@@ -12,8 +12,7 @@ $.paymentAmountFiat.hintText = L('enter_payment_amount_fiat').format({
 if (Alloy.Globals.isiPhoneX) {
   $.buttonsView.top = 0;
 }
-
-var didChangeGasLimit = false;
+ 
 var win = Ti.UI.createWindow({
   "orientationModes": [Ti.UI.PORTRAIT],
   "navBarHidden": true,
@@ -358,11 +357,13 @@ function confirm() {
         $.notpaid.visible = true;
         setTimeout(function () {
           
-          alert(response.payment_error);
+         
           close();
           if(args.onerror != undefined){
             args.onerror(response.payment_error);
             
+          }else{
+            alert(response.payment_error);
           }
         }, 1000);
         return;

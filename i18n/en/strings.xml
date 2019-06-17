@@ -2,7 +2,7 @@
 <resources>
 
   <string name="not_recognized">not recognized</string>
-  <string name="game_terms">{title}\n\nis wanting to connect with pebble\n\nand is requesting permission to charge up to {max_amount} satoshis without confirmation</string>
+  <string name="game_terms">{title}\n\nis wanting to connect with Nayuta\n\nand is requesting permission to charge up to {max_amount} satoshis without confirmation</string>
   <string name="game_start_button">connect</string>
   <string name="already_uploading">upload already in progress</string>
   <string name="label_send_all_check">are you sure you want to send all your funds to address {address}?</string>
@@ -26,7 +26,7 @@
   <string name="google_drive_linked">google drive linked! the app will now try and back up your channels for you in the background</string>
   <string name="google_drive_error">error uploading, please try to relink and check your google account settings</string>
   <string name="channels_backup_title_email">Channel backup</string>
-  <string name="channels_backup_description_email">In the event that you have lost your device or there is a device error you can use the attached file to restore lost funds during a new installation of the pebble app</string>
+  <string name="channels_backup_description_email">In the event that you have lost your device or there is a device error you can use the attached file to restore lost funds during a new installation of the Nayuta app</string>
   <string name="not_enough_space">Your device does not have enough disk space to use the wallet, please free some space up and reload the app to try again</string>
   <string name="error_api">Unable to connect to API</string>
   <string name="error_api_description">check your internet connection and reload the app to try again, or continue with limited functionality</string>
@@ -50,22 +50,22 @@
   <string name="label_logs">logs</string>
   <string name="label_share">share</string>
   <string name="got_it">got it</string>
-  <string name="no_transactions">you don't have any transactions yet\n\npress the menu button bottom right to deposit some bitcoin and get started!</string>
+  <string name="no_transactions">you don't have any transactions yet</string>
   <string name="syncing_info">your wallet is currently doing some necessary syncing to validate the network and ensure your privacy, this may take several minutes</string>
-  <string name="block_height_sync">[block:{height}]</string>
+  <string name="block_height_sync">block: {height}</string>
   <string name="label_recover_wallet">recover wallet</string>
   <string name="label_host">host</string>
   <string name="label_chain">chain</string>
   <string name="deposit">deposit</string>
   <string name="deposit_help">funds to the address below and the wallet will load them into the lightning network behind the scenes\n\nit may take some time to do this\nso check out the channels section to open your own channels</string>
-  <string name="channels_help">channels are used to connect your funds to the lightning network\n\nby default the wallet will manage this for you but you can also manually open channels\n\nthe easiest way to get started is to 'connect to pebble hub' which will link you to most of the lightning network </string>
+  <string name="channels_help">channels are used to connect your funds to the lightning network\n\nby default the wallet will manage this for you but you can also manually open channels\n\nthe easiest way to get started is to 'connect to Nayuta hub' which will link you to most of the lightning network </string>
   <string name="online">online</string>
   <string name="offline">offline</string>
   <string name="closing">closing</string>
   <string name="closed">closed</string>
   <string name="blocks_can_claim">blocks until can claim</string>
   <string name="link_info">not sure how to link your node?\nclick here to find out how</string>
-  <string name="still_synchronizing">doing busy stuff...</string>
+  <string name="still_synchronizing">syncing...</string>
   <string name="label_settings_logs">view logs</string>
 
   <string name="label_settings_logs_description">view the internal LNDs logs for errors</string>
@@ -75,7 +75,7 @@
   <string name="label_settings_autopilot_description">enable/disable auto pilot for automatic channel management</string>
 
   <string name="hops">hops</string>
-  <string name="connect_pebble_hub">connect to pebble hub</string>
+  <string name="connect_Nayuta_hub">connect to Nayuta hub</string>
   <string name="generate_deposit">generate deposit address</string>
   <string name="enter_payment_amount_sat">enter amount in sats</string>
 
@@ -140,13 +140,13 @@
   <string name="label_channel_opening">Channel opening!</string>
   <string name="label_details">details</string>
   <string name="label_deposit">deposit/withdraw</string>
-  <string name="label_open_channel">+ open channel</string>
+  <string name="label_open_channel">open new channel</string>
   <string name="label_channels">channels</string>
   <string name="label_settings_connect_btcpay_lnd">connect to BTCPay/LND</string>
   <string name="label_settings_connect_btcpay_lnd_description">connect to your remote BTCPay or LND instance</string>
   <string name="language">en</string>
   <string name="label_or">or</string>
-  <string name="appname">pebble</string>
+  <string name="appname">Nayuta</string>
 
 
   <string name="channels_funds_option">deposit/channels</string>
@@ -202,7 +202,7 @@
   <string name="label_ok">ok</string>
   <string name="label_password">Password</string>
   <string name="label_recoveryphrase">recovery phrase</string>
-  <string name="label_send">Send</string>
+  <string name="label_send">send</string>
   <string name="label_settings">settings</string>
   <string name="label_show">Show</string>
   <string name="label_unconfirmed">Unconfirmed</string>
@@ -270,11 +270,11 @@
   <string name="label_word_incorrect">Word incorrect, please input again.</string>
   <string name="label_receive_copy">tap to copy</string>
   <string name="label_copied">Copied to clipboard</string>
-  <string name="label_newwallet">create a new wallet (alpha)</string>
+  <string name="label_newwallet">create a new wallet</string>
   <string name="label_signin">Sign In</string>
 
   <string name="label_connectnode">click below to connect to your\nLND or BTCPay node</string>
-  <string name="label_loginasuser">recover wallet or link node</string>
+  <string name="label_loginasuser">recover or connect to existing wallet</string>
   <string name="label_privecypolicy">privacy policy &amp; terms of service</string>
   <string name="label_privecypolicy_description">by using this app I agree to the above.</string>
   <string name="label_createaccount_message">Are you sure you would like to create new account?</string>
@@ -291,5 +291,7 @@
   <string name="label_enter_destination">Please enter a destination address</string>
   <string name="label_send_destination">destination</string>
   <string name="label_send_confirmation">Send\n{amount} {token}\n{amount2} to {address}</string>
-
+  <string name="syncing_text_description">please wait whilst we sync your wallet to ensure its security and privacy, this may take a few minutes</string>
+  <string name="label_wallet">onchain wallet</string>
+  <string name="no_channels">you don't have any channels</string>
 </resources>

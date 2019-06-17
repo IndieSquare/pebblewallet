@@ -1,9 +1,8 @@
  
-"#details" : {
-	top: 5,
+"#details" : { 
 	left: 5,
 	width: "95%",
-	height: 20,
+	height: Ti.UI.SIZE,
 	color: Alloy.Globals.fontColor1, 
 	font: {
 		fontSize: 15,
@@ -12,17 +11,12 @@
 	}
 }
 
-"#status" : { 
-	right: 5,
-	width: Ti.UI.SIZE,
-	height: 20,
-	textAlign:"right",
-	color: Alloy.Globals.fontColor1, 
-	font: {
-		fontSize: 15,
-		fontFamily: 'GillSans-Light',
-		fontWeight: 'light'
-	}
+"#statusImage" : {
+	backgroundColor: "#56a840", 
+	 left:10,
+	 height:10,
+	 width:10,
+	 borderRadius:5
 }
  
 ".amounts" : {
@@ -61,14 +55,23 @@
 	color: Alloy.Globals.cancelColor,
 	font: {
 		fontSize: 14,
-		fontFamily: 'GillSans-Light',
+		fontFamcelily: 'GillSans-Light',
 		fontWeight: 'light'
 	}
 }
 ".cell" : {
-	height: "100%",
-	backgroundColor: "#0AFFFFFF",
-	layout:"vertical"
+	height:"100%",
+	width:"95%",
+	backgroundColor: "#d4d4d4",
+	layout:"vertical",
+	borderRadius:20
+}
+"#topLine":{
+	top:20,
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	layout:"horizontal",
+	backgroundColor:"red"
 }
 ".localAmountTitle" : { 
 	left:5,
@@ -94,10 +97,10 @@
 }
 
 "#amountsBarOuter":{
-	top:10,
+	top:15,
 	width:"98%",
 	height:20,
-	backgroundColor:Alloy.Globals.mainColor, 
+	backgroundColor:"#56a840", 
 }
 
 ".amountsLabel":{

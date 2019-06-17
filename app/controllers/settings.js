@@ -167,7 +167,7 @@ function showPassPhrase() {
 }
 
 
-var version = 'ver ' + Ti.App.version + ((Alloy.CFG.isDevelopment) ? ' dev' : '') + '\n\n' + '(c) 2019 IndieSquare Inc';
+var version = 'ver ' + Ti.App.version + ((Alloy.CFG.isDevelopment) ? ' dev' : '') + '\n\n' + '(c) 2019 Nayuta';
 
 $.version.text = version;
 

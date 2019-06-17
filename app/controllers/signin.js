@@ -1,6 +1,5 @@
 var args = arguments[0] || {};
-var didShowTestnetWarning = false;
-$.privacypolicy.top = globals.display.height - 60;
+var didShowTestnetWarning = false; 
 $.signinView.top = (globals.display.height - 400) / 2;
 
 $.wrapper.width = globals.display.width;
@@ -16,6 +15,11 @@ var prevField = null;
 var fieldcount = -2;
 var isMoving = false;
 var wordList = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+
+
+Alloy.Globals.network = "testnet";
+Ti.App.Properties.setString("lndMobileNetwork", Alloy.Globals.network);
+
 
 if (OS_IOS) {
   if (globals.display.height > 500) {
@@ -44,18 +48,81 @@ function createAccount(passphrase, fromPrevious) {
     return;
   }
   globals.console.log("creating account");
-  try {
-
+   
     globals.decryptedPassphrase = passphrase;
     globals.encryptedPassphrase = globals.decryptedPassphrase;
 
     if (fromPrevious == false) {
+  
+        globals.nativeCrypto.createUserKey(function (success, userKey) {
+          if (success) {
+            globals.userKey = userKey;
 
-      Alloy.createController("introscreens", {
-        fromPrevious: fromPrevious
-      })
-        .getView()
-        .open();
+
+        Alloy.createController("components/pincode_screen", {
+          "type": "set",
+          "callback": function (number) {
+
+            globals.passCodeHash = number;
+
+            var encryptedPasscodeHash = globals.cryptoJS.AES.encrypt(globals.passCodeHash, globals.userKey).toString();
+            globals.encryptedPassphrase = encryptedPasscodeHash;
+            Ti.App.Properties.setString("passcode", encryptedPasscodeHash);
+            globals.unlocked = true;
+
+            var encrypted = globals.cryptoJS.AES.encrypt(globals.decryptedPassphrase, globals.userKey).toString();
+            globals.console.log("encrypted passphrase", encrypted);
+            Ti.App.Properties.setString("passphrase", encrypted);
+
+
+            globals.console.log("decrypted passphrase", globals.decryptedPassphrase);
+            var seedArray = globals.decryptedPassphrase.split(",");
+
+
+
+            globals.lnGRPC.createWallet(globals.createPassword(globals.passCodeHash), seedArray, -1, "", function (error, response) {
+              globals.console.log("create wallet", error);
+              globals.console.log("create wallet", response);
+              if (error == true) {
+                alert(response);
+                return;
+              }
+        
+              if (globals.savePassphrase(globals.decryptedPassphrase, globals.userKey)) {
+                globals.console.log("setting lnd mobile");
+                Ti.App.Properties.setString("mode", "lndMobile");
+                globals.alreadyUnlocked = true; //because we created a new wallet so no need to unlock
+        
+                
+                globals.console.log("closing sign");
+                $.signin.close();
+                
+                globals.screenView = Alloy.createController("frame").getView();
+                globals.screenView.open();
+                
+       
+              }
+        
+            });
+            
+            
+
+          },
+          "cancel": function () { }
+        }).getView().open();
+
+
+      
+
+      } else {
+
+        alert("error creating user key");
+
+        return;
+      } 
+    });
+
+        
     } else {
       globals.nativeCrypto.createUserKey(function (success, userKey) {
         if (success) {
@@ -90,21 +157,7 @@ function createAccount(passphrase, fromPrevious) {
           return;
         }
       });
-    }
-    if (OS_IOS) {
-      setTimeout(function () {
-        $.signin.close();
-      }, 1000);
-    }
-
-  } catch (e) {
-    showLoading(false);
-    isCreatingAccount = false;
-    globals.util.createDialog({
-      "message": e,
-      "buttonNames": [L("label_close")]
-    }).show();
-  }
+    }  
 };
 
 var f = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, '/scripts/aezeedWordList.txt');
@@ -281,11 +334,7 @@ function showDisclaimer(callback) {
 }
 
 function createNewAccount() {
-
-  showDisclaimer(function () {
-
-
-
+ 
     showLoading(true);
     setTimeout(function () {
       blurTextFields();
@@ -300,7 +349,7 @@ function createNewAccount() {
           alert(response);
           return;
         }
-
+        
         globals.lnGRPC.startLNDMobile(function (error, response) {
 
           globals.console.log("lndMobile1", error);
@@ -332,8 +381,7 @@ function createNewAccount() {
       });
 
     }, 100);
-
-  });
+ 
 
 };
 
@@ -460,19 +508,19 @@ function showLoading(show) {
     $.loadingSpinner.top = 90;
     $.loadingSpinner.show();
     $.signin.touchEnabled = false;
-    $.buttons.visible = false;
-    $.privacypolicy.visible = false;
+    $.buttons.visible = false; 
   } else {
     $.loadingSpinner.height = 0;
     $.loadingSpinner.top = 0;
     $.loadingSpinner.hide();
     $.signin.touchEnabled = true;
-    $.buttons.visible = true;
-    $.privacypolicy.visible = true;
+    $.buttons.visible = true; 
   }
 }
 
 function signInFromExisting(passphrase) {
+alert("not yet implemented");
+  return;
 
   /*double check all the words are valid*/
 
@@ -496,7 +544,7 @@ function signInFromExisting(passphrase) {
       showLoading(true);
       setTimeout(function () {
         blurTextFields();
-        try {
+        
 
           globals.lnGRPC.deleteData(function (error, response) {
 
@@ -523,21 +571,14 @@ function signInFromExisting(passphrase) {
 
           });
 
-        } catch (e) {
-          globals.console.error(e);
-          throw e;
-        }
+        
       }, 100);
     }
 
   });
 
 }
-
-function goToPrivacy() {
-  Ti.Platform.openURL("https://indiesquare.me/terms");
-}
-
+ 
 $.signin.addEventListener("android:back", function () {
   return true;
 });
@@ -602,35 +643,12 @@ function startLink() {
     true);
 
 }
+ 
 
-function goToLinkInfo() {
-  Ti.Platform.openURL("https://pebble.indiesquare.me/remotenode");
-}
-
-showLoading(true);
-
-globals.networkAPI.getStartUpInfo(function (error, res) {
-  if (error != null) {
-    alert(L('error_api'));
-  } else {
-    globals.blockHeight.testnet = res.testnetHeight;
-    globals.blockHeight.mainnet = res.mainnetHeight;
-    globals.hubURITestnet = res.hubUriTestnet;
-    globals.hubURIMainnet = res.hubUriMainnet;
-    globals.discoverEndpoint = res.discoverUrl;
-    globals.console.log("res", res.hubUriMainnet);
-
-    if (res.maintenanceMode == true) {
-      alert("maintenance");
-    } else {
+ 
       showLoading(false);
-      //testLogin();
-
-    }
-  }
-
-});
-
+    
+  
 function testLogin() {
   showDisclaimer(function () {
 

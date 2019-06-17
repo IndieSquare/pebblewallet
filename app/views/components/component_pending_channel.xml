@@ -1,5 +1,5 @@
 <Alloy>
-  <View class="cell">
+  <View class="cell" onClick="viewDetails">
     <View class="details" layout="vertical">
       <Label id="status"/>
       <Label id="pubKey" class="pubKeyTitle"/>
@@ -8,6 +8,6 @@
       <Label id="localAmount" class="localAmountTitle"/>
       <Label id="remoteAmount" class="remoteAmountTitle"/>
     </View>
-    <Label id="detailsButton" onClick="viewDetails">L('label_details')</Label>
+    <!--<Label id="detailsButton" onClick="viewDetails">L('label_details')</Label>-->
   </View>
 </Alloy>

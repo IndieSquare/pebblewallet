@@ -3,9 +3,16 @@
 
     <View class="details" onClick="clickAction">
       <ImageView id="type"></ImageView>
-      <Label id="value"/>
-      <Label id="date"/>
-      <Label id="memo"/>
+      
+      <View id="values">
+        <Label id="value"/>
+        <Label id="valueFiat"/>
+      </View>
+      
+      <View id="leftSide">
+        <Label id="memo"/>
+        <Label id="date"/>
+      </View>
 
     </View>
 

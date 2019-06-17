@@ -19,9 +19,9 @@
 	height: 45
 }
 "#date" : {
+	left:0,
 	color: Alloy.Globals.fontColor1,
-	right: 5,
-	textAlign: "right",
+	textAlign: "left",
 	font: {
 		fontSize: 12,
 		fontFamily: 'GillSans-light',
@@ -29,32 +29,53 @@
 	}
 }
 "#memo" : {
+	left:0,
 	color: Alloy.Globals.fontColor1,
-	left: 35,
-	height: 10,
-	bottom: 4,
+	textAlign: "left",
 	font: {
 		fontSize: 13,
 		fontFamily: 'GillSans-italic',
 		fontWeight: 'light'
 	}
 }
-"#memo[platform=android]" : {
-	left: 35,
-	height: Ti.UI.SIZE,
-	bottom: 4
+"#memo[platform=android]" : { 
+	height: Ti.UI.SIZE, 
+	
 }
 "#type" : {
 	image: "/images/boltSymbol.png",
 	height: 24,
-	left: 5
+	left: 5,
+	visible:false
+}
+"#leftSide":{
+	layout:"vertical",
+	width:Ti.UI.SIZE,
+	height:Ti.UI.SIZE,
+	left: 10,
+}
+"#values":{
+	layout:"vertical",
+	width:Ti.UI.SIZE,
+	height:Ti.UI.SIZE,
+	right: 10,
 }
 "#value" : {
 	color: Alloy.Globals.fontColor1,
-	left: 35,
-	textAlign: "left",
+	 right:0,
+	textAlign: "right",
 	font: {
 		fontSize: 22,
+		fontFamily: 'GillSans-light',
+		fontWeight: 'light'
+	}
+}
+"#valueFiat" : {
+	color: Alloy.Globals.fontColor1,
+	right:0,
+	textAlign: "right",
+	font: {
+		fontSize: 15,
 		fontFamily: 'GillSans-light',
 		fontWeight: 'light'
 	}

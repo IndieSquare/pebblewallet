@@ -647,6 +647,9 @@ module.exports = (function () {
     return "LNDChannelBackups";
   }
   self.getPassphraseHash = function () {
+    if(globals.decryptedPassphrase == undefined){
+      globals.decryptedPassphrase = " ";
+    }
     var passcodeHash = Titanium.Utils.sha256(globals.decryptedPassphrase).substring(0, 10);
     globals.console.log("passcodeHash", passcodeHash);
     return passcodeHash;
@@ -677,9 +680,9 @@ module.exports = (function () {
 
         return;
       }
-
+      globals.console.log("back up res ",response+ " "+error)
       var fileName = self.getSCBFileName();
-
+      globals.console.log("filename ",fileName)
       var f = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, fileName);
       if (f.exists() === false) {
         f.createFile();
@@ -715,7 +718,7 @@ module.exports = (function () {
     //configString += "[Routing]\n\n"
     //configString += "routing.assumechanvalid=1\n"
 
-    configString += "\n[Bitcoin]\n"
+    configString += "\n[Bitcoin]\n\n"
     configString += "bitcoin.active=1\n" 
     globals.console.log("config network", network);
 
@@ -729,6 +732,9 @@ module.exports = (function () {
     configString += "bitcoin.defaultchanconfs=1\n"
 
     configString += "bitcoin.node=neutrino\n"
+
+    configString += "\n[Routing]\n\n"
+    configString += "routing.assumechanvalid=1"
 
     configString += "\n[Autopilot]\n\n"
 
@@ -776,7 +782,18 @@ module.exports = (function () {
     }
 
 
+    if(OS_ANDROID){
     globals.console.log("config string", configString);
+    }
+    else if(OS_IOS){
+      globals.console.log("config string");
+      var parts = configString.split("\n");
+      for(var i = 0; i< parts.length;i++){
+
+        globals.console.log(parts[i]);
+
+      }
+    }
     return configString;
 
   }

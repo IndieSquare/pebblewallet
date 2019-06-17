@@ -107,7 +107,7 @@ function setFavourited() {
 
 function loadWebScript() {
 
-  var f = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, '/scripts/webIndie.txt');
+  var f = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, '/scripts/webLN.txt');
 
   web3Script = f.read().text;
 
@@ -471,6 +471,11 @@ function handleWebViewData(evalResult, error) {
         lock = true;
 
         handleWebLN.handleGetPubKey(evalResult);
+      }
+      else if (evalResult.type == "lnurl") {
+        lock = true;
+
+        handleWebLN.handleWebLNURL(evalResult);
       }
     } else if (evalResult.chain == "utils") {
 

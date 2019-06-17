@@ -1,252 +1,83 @@
 var args = arguments[0] || {};
 var currencyFiat = Ti.App.Properties.getString("currency", "USD");
 $.blockingView.hide();
-$.qrcode.hide();
+var timer = null;
 
-var cryptoCurrency = globals.LNCurrencySat;
-var denomination = Ti.App.Properties.getString("denomination", "SAT");
-globals.console.log("denomination ", denomination);
-if (denomination == "BTC") {
+$.generateLabel.title = $.generateLabel.title.toUpperCase();
 
-  cryptoCurrency = globals.LNCurrency;
 
-}
-
-var qrcode = require("requires/qrcode");
-
-var inputverify = require("requires/inputverify");
 var isFiatMode = false;
 var FiatSymbol = globals.tiker.getFiatSymbol(currencyFiat);
+$.fiatSymbol.text = FiatSymbol;
+
 globals.console.log("fiat symbol", FiatSymbol);
 var timer = null;
 var fiat_conf = "";
-var fiatValue = globals.tiker.getFiatValue(currencyFiat, denomination);
+var fiatValue = globals.tiker.getFiatValue(currencyFiat, "BTC");
 
 globals.console.log("fiat value", fiatValue);
 
-var currentPaymentRequest = "";
-$.requestLabel.title = $.requestLabel.title.toUpperCase();
-var needsToRefreshInvoices = false;
 
-$.numberPadDot.hide();
-
-function switchAmount(e) {
-
-  if (!isFiatMode) {
-    $.numberPadDot.show();
-    isFiatMode = true;
-    inputValue = $.fiat.text.replace(FiatSymbol, "").replace(/[^\d.-]/g, "");
-
-    $.fiat.top = 0;
-    $.fiat.applyProperties($.createStyle({
-      classes: "size40 white",
-      apiName: "Label"
-    }));
-
-    $.amountView.top = 45;
-    $.amountSat.bottom = 0;
-    $.amount.applyProperties($.createStyle({
-      classes: "size20 white bold",
-      apiName: "Label"
-    }));
-    $.amountSat.applyProperties($.createStyle({
-      classes: "size12 white",
-      apiName: "Label"
-    }));
-  } else {
-    $.numberPadDot.hide();
-    isFiatMode = false;
-    inputValue = $.amount.text;
-
-    $.fiat.top = 45;
-    $.fiat.applyProperties($.createStyle({
-      classes: "size20 white fiat",
-      apiName: "Label"
-    }));
-
-    $.amountView.top = 0;
-    $.amountSat.bottom = 5;
-    $.amount.applyProperties($.createStyle({
-      classes: "size40 white bold",
-      apiName: "Label"
-    }));
-    $.amountSat.applyProperties($.createStyle({
-      classes: "size20 white amountSat",
-      apiName: "Label"
-    }));
-  }
-
+function selectedFiat(){
+  coolDown = false;
+  globals.console.log("selected fiat");
+  isFiatMode = true; 
 }
-
-function showHideLoading(hide) {
-  if (hide) {
-    $.blockingView.hide();
-    $.requestSpinner.hide();
-    $.requestLabel.show();
-    $.win.touchEnabled = true;
+function selectedCrypto(){
+  coolDown = false;
+  globals.console.log("selected crypto")
+  isFiatMode = false; 
+}
+var coolDown = false;
+function updateValues(){
+  if(coolDown){
     return;
   }
-  $.blockingView.show();
-  $.requestSpinner.show();
-  $.requestLabel.hide();
-  $.win.touchEnabled = false;
-}
-
-var inputValue = "";
-
-
-function isiPhoneX() {
-  return (Ti.Platform.displayCaps.platformWidth === 375 && Ti.Platform.displayCaps.platformHeight == 812) || // Portrait
-    (Ti.Platform.displayCaps.platformHeight === 812 && Ti.Platform.displayCaps.platformWidth == 375); // Landscape
-}
-if (isiPhoneX()) {
-  $.win.extendSafeArea = false;
-}
-
-function close(e) {
-
-  if (needsToRefreshInvoices) {
-    globals.listPayments();
-  }
-
-  if (OS_ANDROID) {
-    $.win.close();
-  }
-  $.background.animate({
-    "opacity": 0,
-    "duration": 200
-  });
-
-  $.mainView.animate({
-    "left": globals.display.width,
-    "duration": 200
-  });
-
-  setTimeout(function () {
-    $.win.width = 0;
-    $.win.close();
-  }, 200);
-}
-
-if (OS_ANDROID) {
-  $.win.addEventListener('android:back', function () {
-    close();
-    return true;
-  });
-}
-
-$.inputMemo.hintText = L("request_memo");
-$.inputMemo.hintTextColor = "gray";
-
-$.background.animate({
-  "opacity": 0.5,
-  "duration": 200
-});
-if (OS_IOS) {
-  $.mainView.animate({
-    "left": 0,
-    "duration": 200
-  });
-}
-
-$.amount.text = "0";
-$.amountSat.text = cryptoCurrency;
-
-$.keypad.height = globals.display.height - 225;
-
-function checkAndSetValue() {
-  globals.console.log("checkAndSetValue");
-  if (globals.tiker) {
-    clearInterval(timer);
-
-    updateFields({
-      source: {
-        id: "numberPad0"
-      }
-    });
-  }
-}
-timer = setInterval(checkAndSetValue, 500);
-
-function addCommas(nStr) {
-  nStr += "";
-  x = nStr.split(".");
-  x1 = x[0];
-  x2 = x.length > 1 ? "." + x[1] : "";
-  var rgx = /(\d+)(\d{3})/;
-  while (rgx.test(x1)) {
-    x1 = x1.replace(rgx, "$1" + "," + "$2");
-  }
-  return x1 + x2;
-}
-
-function updateFields(button, abstAmount) {
-
-  function updateTheField(button, abstAmount) {
-    if (abstAmount != null) {
-      inputValue = abstAmount;
-    } else if (button.source.id === "numberPadDel") {
-      if (inputValue.length > 0) inputValue = inputValue.slice(0, inputValue.length - 1);
-      if (inputValue.length <= 0) inputValue = "0";
-      if (inputValue.length == undefined) inputValue = "0";
-    } else if (button.source.id === "numberPadDot") {
-      if (inputValue.indexOf(".") <= -1) inputValue = "" + inputValue + ".";
-    } else {
-      var intValue = button.source.id.replace("numberPad", "");
-
-      if (inputValue === "0") inputValue = intValue;
-      else inputValue = inputValue + intValue;
-    }
-
-    return inputValue;
-  }
-
-  if (button != null) {
-    updateTheField(button, abstAmount);
-  } else {
-    inputValue = abstAmount;
-  }
-  globals.console.log(fiatValue);
-
   if (!isFiatMode) {
-    $.amount.text = inputValue;
+    var inputValue = $.amount.value;
+
+    if(inputValue.startsWith("0") && !inputValue.startsWith("0.")){
+coolDown = true;
+$.amount.value = $.amount.value.substr(1,$.amount.value.length);
+inputValue = $.amount.value;
+coolDown = false;
+    }
 
     var val = (inputValue * fiatValue).toFixed2(4);
+    if(isNaN(val)){
+      val = 0;
+    }
     if (fiatValue == 0) val = 0;
-    $.fiat.text = FiatSymbol + addCommas(val);
+    $.fiat.value = addCommas(val);
 
   } else {
-    $.fiat.text = FiatSymbol + addCommas(inputValue);
-    $.amount.text = parseInt((inputValue / fiatValue) + "");
-  }
 
-}
+    if($.fiat.value.startsWith("0") && !$.fiat.value.startsWith("0.")){
+      coolDown = true;
+      $.fiat.value = $.amount.value.substr(1,$.fiat.value.length);
+      coolDown = false;
+          }
 
-function setValues(vals) {
-  vals.asset = globals.LNCurrencySat;
+          
 
-  if (vals.currency != null) vals.extras = {
-    "currency": vals.currency
-  };
-  if (vals.address != null) {
-    $.inputMemo.value = vals.address.toString();
-
-    if (vals.amount != null) {
-      updateFields(null, vals.amount);
+    var inputValue = parseFloat($.fiat.value) / fiatValue;
+    globals.console.log("inputvalue",inputValue);
+    coolDown = true;
+    val = inputValue.toFixed2(4);
+    if(isNaN(val)){
+      val = 0;
     }
+    $.amount.value = val;
+    coolDown = false;
   }
-
+    
 }
 
-function closeQR() {
-  $.qrCodeInner.removeAllChildren();
-  $.qrcode.hide();
-}
 
 function pressedRequest() {
 
-  $.inputMemo.blur();
-  var amountString = $.amount.text.toString();
+  $.memo.blur();
+  var amountString = $.amount.value.toString();
   globals.console.log("amount is ", amountString);
   var quantity = amountString.replace(/[^\d.-]/g, "");
 
@@ -258,7 +89,7 @@ function pressedRequest() {
   }
   showHideLoading(false);
 
-  var memo = $.inputMemo.value;
+  var memo = $.memo.value;
   if (memo.length == 0) {
     memu = null;
   }
@@ -274,7 +105,7 @@ function pressedRequest() {
       return;
 
     }
-
+    currentRhash = response.r_hash;
     currentPaymentRequest = response.payment_request;
     globals.console.log("add invoice", response);
 
@@ -320,6 +151,99 @@ function pressedRequest() {
   });
 
 }
+
+function showHideLoading(hide) {
+  if (hide) {
+    $.blockingView.hide();
+    $.sendSpinner.hide();
+    $.generateLabel.show();
+    $.win.touchEnabled = true;
+    return;
+  }
+  $.blockingView.show();
+  $.sendSpinner.show();
+  $.generateLabel.hide();
+  $.win.touchEnabled = false;
+}
+
+var inputValue = "";
+
+function isiPhoneX() {
+  return (Ti.Platform.displayCaps.platformWidth === 375 && Ti.Platform.displayCaps.platformHeight == 812) || // Portrait
+    (Ti.Platform.displayCaps.platformHeight === 812 && Ti.Platform.displayCaps.platformWidth == 375); // Landscape
+}
+if (isiPhoneX()) {
+  $.win.extendSafeArea = false;
+}
+
+function close(e) {
+
+  if (OS_ANDROID) {
+    $.win.close();
+    return;
+  }
+  $.background.animate({
+    "opacity": 0,
+    "duration": 200
+  });
+
+  $.mainView.animate({
+    "left": globals.display.width,
+    "duration": 200
+  });
+
+  setTimeout(function () {
+    $.win.width = 0;
+    $.win.close();
+  }, 200);
+}
+
+if (OS_ANDROID) {
+  $.win.addEventListener('android:back', function () {
+    close();
+    return true;
+  });
+}
+
+$.memo.hintText = L("label_memo");
+$.memo.hintTextColor = "gray";
+
+$.background.animate({
+  "opacity": 0.5,
+  "duration": 200
+});
+if (OS_IOS) {
+  $.mainView.animate({
+    "left": 0,
+    "duration": 200
+  });
+}
+
+$.amount.value = "0";
+$.amountBTC.text = globals.LNCurrency;
+ 
+ 
+
+ 
+function hideKeyboard(e) {
+  $.fiat.blur();
+  $.amount.blur();
+}
+
+ 
+function addCommas(nStr) {
+  nStr += "";
+  x = nStr.split(".");
+  x1 = x[0];
+  x2 = x.length > 1 ? "." + x[1] : "";
+  var rgx = /(\d+)(\d{3})/;
+  while (rgx.test(x1)) {
+    x1 = x1.replace(rgx, "$1" + "," + "$2");
+  }
+  return x1 + x2;
+}
+
+ 
 var expiry = globals.defaultExpiry;
 $.time.text = L('expiry_time').format({
   "time": expiry
@@ -341,19 +265,4 @@ function minusExpiry() {
       "time": expiry
     });
   }
-}
-
-function copyClipboard() {
-  Ti.UI.Clipboard.setText(currentPaymentRequest);
-  globals.util.createDialog({
-    "message": L("label_copied"),
-    "buttonNames": [L("label_close")]
-  }).show();
-}
-
-if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
-  setTimeout(function () {
-    alert(L("confirm_request"));
-  }, 2000);
-
 }

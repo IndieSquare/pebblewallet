@@ -2,6 +2,99 @@ module.exports = (function () {
   var self = {};
 
   var network = require("requires/network");
+  globals.tikerType = {
+    "BTC": {},
+    "ETH": {}
+  };
+  globals.tikerType["BTC"] = {
+    "USD": {
+    "last": 7998.75,
+    "symbol": "$"
+    },
+    "AUD": {
+    "last": 11491.9,
+    "symbol": "$"
+    },
+    "BRL": {
+    "last": 31011.25,
+    "symbol": "R$"
+    },
+    "CAD": {
+    "last": 10617.14,
+    "symbol": "$"
+    },
+    "CHF": {
+    "last": 7932.39,
+    "symbol": "CHF"
+    },
+    "CLP": {
+    "last": 5548733.55,
+    "symbol": "$"
+    },
+    "CNY": {
+    "last": 55446.54,
+    "symbol": "¥"
+    },
+    "DKK": {
+    "last": 52874.19,
+    "symbol": "kr"
+    },
+    "EUR": {
+    "last": 7082.37,
+    "symbol": "€"
+    },
+    "GBP": {
+    "last": 6320.5,
+    "symbol": "£"
+    },
+    "HKD": {
+    "last": 62733.6,
+    "symbol": "$"
+    },
+    "INR": {
+    "last": 556727.9
+    },
+    "ISK": {
+    "last": 991925.91,
+    "symbol": "kr"
+    },
+    "JPY": {
+    "last": 869271.09,
+    "symbol": "¥"
+    },
+    "KRW": {
+    "last": 9477720.03,
+    "symbol": "₩"
+    },
+    "NZD": {
+    "last": 12093.67,
+    "symbol": "$"
+    },
+    "PLN": {
+    "last": 30179.74,
+    "symbol": "zł"
+    },
+    "RUB": {
+    "last": 517947.12,
+    "symbol": "RUB"
+    },
+    "SEK": {
+    "last": 75427.18,
+    "symbol": "kr"
+    },
+    "SGD": {
+    "last": 10938.3,
+    "symbol": "$"
+    },
+    "THB": {
+    "last": 250748.84,
+    "symbol": "฿"
+    },
+    "TWD": {
+    "last": 251399.39,
+    "symbol": "NT$"
+    }
+    };
 
   self.getTiker = function (callback) {
     globals.tikerType = {

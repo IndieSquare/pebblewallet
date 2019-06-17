@@ -1,5 +1,5 @@
 var aChannel = arguments[0] || {};
-
+globals.console.log("adding open channel1");
 var channelPoint = aChannel.channel_point;
 
 var activeText = L("offline");
@@ -7,8 +7,7 @@ var force = false;
 if (aChannel["active"] == "1") {
   activeText = L("online");
 }
-
-$.status.text = activeText;
+ 
 
 var pubkeyShort = aChannel.remote_pubkey.substr(0, 30) + "...";
 $.details.text = pubkeyShort;
@@ -28,7 +27,7 @@ if (OS_IOS) {
   $.closeChannelButton.text = $.closeChannelButton.text + "  ";
 
 }
-
+globals.console.log("adding open channel1.5");
 var totalBalance = parseInt(aChannel.local_balance) + parseInt(aChannel.remote_balance);
 var localPercentage = ((parseInt(aChannel.local_balance) / totalBalance) * 100);
 var remotePercentage = ((parseInt(aChannel.remote_balance) / totalBalance) * 100);
@@ -75,7 +74,7 @@ if (aChannel.local_balance != undefined) {
     ]
   });
 }
-
+globals.console.log("adding open channel1.7");
 $.localAmount.attributedString = attr;
 
 var remoteBalanceStr = aChannel.remote_balance;
@@ -310,3 +309,5 @@ function setAlias(alias) {
 
 
 }
+
+globals.console.log("adding open channel2");

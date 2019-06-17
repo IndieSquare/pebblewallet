@@ -1,30 +1,24 @@
 <Alloy>
-
-  <View class="cell">
-    <Label id="details" class="details"/>
-    
-    <View id="amountsBarOuter">
-    <View id="amountsBarLocal"/>
-       <View id="amountsBarRemote"/>
-     <View id="amountsLabel">
-      <Label id="localAmount" class="localAmountTitle"/>
-      <Label id="remoteAmount" class="remoteAmountTitle"/>
-  </View>
-       
-     </View>
-
- 
-      <View id="bottomView">
-    <View id="buttonView">
-      <ActivityIndicator id="loadingSpinner"></ActivityIndicator>
-      <View id="closeChannelButton" onClick="closeChannel">
-        <Label id="closeChannelLabel" >L('label_close')</Label>
+   <View class="cell">
+     <View id="topLine">
+      <ImageView id="statusImage"/>
+      <Label id="details" class="details" />
       </View>
-    </View>
-
-
-  <Label id="status"/>
- </View>
-
-  </View>
+      <View id="amountsBarOuter">
+         <View id="amountsBarLocal" />
+         <View id="amountsBarRemote" />
+         <View id="amountsLabel">
+            <Label id="localAmount" class="localAmountTitle" />
+            <Label id="remoteAmount" class="remoteAmountTitle" />
+         </View>
+      </View>
+      <View id="bottomView">
+         <View id="buttonView">
+            <ActivityIndicator id="loadingSpinner" />
+            <View id="closeChannelButton" onClick="closeChannel">
+               <Label id="closeChannelLabel">L('label_close')</Label>
+            </View>
+         </View>
+      </View>
+   </View>
 </Alloy>

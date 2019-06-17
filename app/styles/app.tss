@@ -64,13 +64,13 @@
 	width: Ti.UI.FILL,
 	height: Alloy.Globals.topBarHeight,
 	top: 0,
-	backgroundColor: Alloy.Globals.mainColor
+	backgroundColor: "white"
 }
 ".topbar" : {
 	width: Ti.UI.FILL,
 	height: Alloy.Globals.topBarHeight,
 	top: 0,
-	backgroundColor: Alloy.Globals.mainColor
+	backgroundColor:"white"
 }
 ".separator" : {
 	width: Ti.UI.FILL,

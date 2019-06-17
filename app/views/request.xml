@@ -3,84 +3,65 @@
 		<View class="transparent">
 			<View class="tifill background" id="background"></View>
 			<View class="tifill mainView" id="mainView">
-				<ScrollView class="tifill" scrollType="vertical" layout="vertical">
-					<View class="topSection" id="top">
-						<Label class="size15 white pull-left pull-bottom" id="gobackButton" onClick="close">L("label_goback")</Label>
-
-						<Label class="title white">L("request_title")</Label>
-
+			<ImageView id="pattern" image="/images/pattern.png"/>
+			 <ImageView class="overlay"/>
+			 <View class="outer">
+					<View class="amounts">
+						   
 						<View class="tisize pull-bottom" layout="vertical">
 							<View class="tisize">
 								<View class="tisize amountView" id="amountView" layout="horizontal">
-									<Label class="size40 white bold" id="amount"></Label>
-									<Label class="size20 white amountSat" id="amountSat"></Label>
+									<TextField class="amount" id="amount"  onFocus="selectedCrypto" onChange="updateValues"><KeyboardToolbar platform="ios">
+								<Toolbar>
+									<Items>
+										<Button title="Done" onClick="hideKeyboard"/>
+									</Items>
+								</Toolbar>
+							</KeyboardToolbar></TextField>
+									<Label class="amountBTC" id="amountBTC"></Label>
 								</View>
-								<Label class="size20 white fiat" id="fiat"></Label>
+
+								<View class="tisize fiatView" id="fiatView" layout="horizontal">
+
+							<Label class="fiatSymbol" id="fiatSymbol"/> 
+								<TextField class="fiat" id="fiat" onFocus="selectedFiat" onChange="updateValues"><KeyboardToolbar platform="ios">
+								<Toolbar>
+									<Items>
+										<Button title="Done" onClick="hideKeyboard"/>
+									</Items>
+								</Toolbar>
+							</KeyboardToolbar></TextField>
+
 							</View>
-							<Label class="size15 white balance" id="balance"></Label>
-
+							</View>
 						</View>
-
-						<ImageView class="switchIcon" id="switchIcon" image="/images/icon_switch.png" onClick="switchAmount"/>
+						 
 					</View>
-					<TextField class="inputMemo" id="inputMemo"/>
-					<View class="keypad" id="keypad" layout="vertical">
-						<View class="padrow" id="padrowtop" layout="horizontal">
-							<View class="numberPad" id="expiry">
-								<View id="expiryInner">
+					 <TextField class="memo" id="memo"/> 
+					<View class="seperator1"/>
+
+
+					 		<View class="expiryOuter">
 									<Label id="expiryDescription">L('expiry_description')</Label>
 									<View id="expiryControls">
-
 										<Label class="plusminus" onTouchstart="minusExpiry">-</Label>
 										<Label id="time"></Label>
 										<Label class="plusminus" onTouchstart="addExpiry">+</Label>
 									</View>
-								</View>
-							</View>
-							<View class="numberPad" id="numberPadRequest">
-								<ActivityIndicator id="requestSpinner"/>
-								<Button id="requestLabel" onClick="pressedRequest"></Button>
-							</View>
-						</View>
-						<View class="padrow" layout="horizontal">
-							<Button class="numberPad" id="numberPad1" onTouchstart="updateFields">1</Button>
-							<Button class="numberPad" id="numberPad2" onTouchstart="updateFields">2</Button>
-							<Button class="numberPad" id="numberPad3" onTouchstart="updateFields">3</Button>
-						</View>
-						<View class="padrow" layout="horizontal">
-							<Button class="numberPad" id="numberPad4" onTouchstart="updateFields">4</Button>
-							<Button class="numberPad" id="numberPad5" onTouchstart="updateFields">5</Button>
-							<Button class="numberPad" id="numberPad6" onTouchstart="updateFields">6</Button>
-						</View>
-						<View class="padrow" layout="horizontal">
-							<Button class="numberPad" id="numberPad7" onTouchstart="updateFields">7</Button>
-							<Button class="numberPad" id="numberPad8" onTouchstart="updateFields">8</Button>
-							<Button class="numberPad" id="numberPad9" onTouchstart="updateFields">9</Button>
-						</View>
-						<View class="padrow" layout="horizontal">
-							<Button class="numberPad" id="numberPadDot" onTouchstart="updateFields">.</Button>
-							<Button class="numberPad" id="numberPad0" onTouchstart="updateFields">0</Button>
-							<Button class="numberPad" id="numberPadDel" onTouchstart="updateFields"></Button>
-						</View>
-					</View>
-				</ScrollView>
 
+									</View>
+								 
+
+
+ 
+								<Button id="generateLabel" onClick="pressedRequest"></Button>
+						 
+					 
+				 </View>
+				 <Label class="size15 black pull-left pull-bottom" id="gobackButton" onClick="close">L("label_goback")</Label>
+						
 			</View>
 			<View id="blockingView"/>
-
-			<View id="qrcode">
-				<View class="qrCodeBackground"/>
-
-				<View class="qrCodeOuter">
-					<View id="qrCodeInner" onClick="copyClipboard"/>
-					<View class="statusView">
-						<ActivityIndicator id="statusSpinner"/>
-						<Label id="statusText"></Label>
-					</View>
-				</View>
-				<Label class="size15 white pull-left pull-bottom" id="closeButton" onClick="closeQR">L("label_close")</Label>
-
-			</View>
 		</View>
 	</Window>
 </Alloy>

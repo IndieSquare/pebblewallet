@@ -1,23 +1,40 @@
+
+"#win[platform=android]" : {
+  "windowSoftInputMode": Ti.UI.Android.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+}
 ".mainView" : {
-  width: Ti.UI.FILL,
-  height: Ti.UI.FILL,
-  top: 0
+  width: "100%", 
+  height:Ti.UI.FILL, 
+  backgroundColor:"white",
+}
+".mainView[platform=android]" : {
+  width: "100%",
+  left: 0
+}
+".background" : {
+  backgroundColor: "#000000",
+  opacity: 0
+}
+
+"#closeButton":{
+	top: 0,
+	height: Alloy.Globals.topBarHeight,
+	right:15,
+  color: "black",
+  font: {
+    fontSize: 18,
+    fontFamily: 'GillSans',
+    fontWeight: 'bold'
+  }
 }
 "#bottom" : {
   bottom: 0,
   height: Ti.UI.SIZE
 }
-"#backButton" : {
-  right: 5,
-  color: 'white',
-  font: {
-    fontSize: 20,
-    fontFamily: 'GillSans',
-    fontWeight: 'bold'
-  }
-}
+ 
 "#table" : {
-  top: 0,
+  top: 40,
+	separatorStyle: Titanium.UI.TABLE_VIEW_SEPARATOR_STYLE_NONE,
   backgroundColor: "transparent",
   width: Ti.UI.FILL,
 }
@@ -37,23 +54,30 @@
   left: 5
 }
 "#addChannelButton" : {
-  color: 'white',
+  color: "black",
   font: {
     fontSize: 18,
     fontFamily: 'GillSans',
     fontWeight: 'bold'
   },
-  right: 5
+  top:20,
+  left: 5
 }
-"#connectToPebbleHUB" : {
-  color: Alloy.Globals.mainColor,
-  font: {
-    fontSize: 18,
-    fontFamily: 'GillSans',
-    fontWeight: 'bold'
-  }
-}
+ 
 "#firstLoader" : {
   indicatorColor: Alloy.Globals.mainColor,
   style: Ti.UI.ActivityIndicatorStyle.BIG
+}
+
+"#noChannels":{
+  top:100,
+  textAlign:"center",
+  visible:false
+}
+
+".overlay":{
+	backgroundImage:"/images/gradientOverlay.png",
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL,
+	touchEnabled:false,
 }
