@@ -6,9 +6,9 @@
 }
 
 ".peerOuter":{
-	 width:"100%",
-	 top:60,
-	 height: Ti.UI.SIZE, 
+	width:"100%",
+	top:60,
+	height: Ti.UI.SIZE, 
 }
 "#backView" : {
 	width: Ti.UI.FILL,
@@ -86,12 +86,11 @@
 	backgroundImage: '/images/image_blank.png'
 }
 "#titleLabel" : {
-	top: 20,
+	top: 0,
 	color: Alloy.Globals.fontColor1,
 	font: {
-		fontSize: 20,
-		fontFamily: 'GillSans-Light',
-		fontWeight: 'light'
+		fontSize: 25,
+		fontFamily: 'GillSans', 
 	},
 	backgroundImage: '/images/image_blank.png'
 }

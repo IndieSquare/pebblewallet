@@ -127,8 +127,6 @@ function loadLogs() {
 
       $.logs_text.text += "\n" + nextLog;
     }
-
-    //  $.scrollView.scrollToBottom();
     updateLogs();
   } catch (e) {
     globals.console.error(e);

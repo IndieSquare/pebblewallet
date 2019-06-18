@@ -2,12 +2,14 @@ var aChannel = arguments[0] || {};
 globals.console.log("adding open channel1");
 var channelPoint = aChannel.channel_point;
 
-var activeText = L("offline");
 var force = false;
 if (aChannel["active"] == "1") {
-  activeText = L("online");
+  $.statusImage.backgroundColor = Alloy.Globals.greenColor;
+} else {
+  $.statusImage.backgroundColor = "#a84040";
 }
- 
+
+
 
 var pubkeyShort = aChannel.remote_pubkey.substr(0, 30) + "...";
 $.details.text = pubkeyShort;
@@ -27,7 +29,7 @@ if (OS_IOS) {
   $.closeChannelButton.text = $.closeChannelButton.text + "  ";
 
 }
-globals.console.log("adding open channel1.5");
+
 var totalBalance = parseInt(aChannel.local_balance) + parseInt(aChannel.remote_balance);
 var localPercentage = ((parseInt(aChannel.local_balance) / totalBalance) * 100);
 var remotePercentage = ((parseInt(aChannel.remote_balance) / totalBalance) * 100);
@@ -74,8 +76,17 @@ if (aChannel.local_balance != undefined) {
     ]
   });
 }
-globals.console.log("adding open channel1.7");
+
 $.localAmount.attributedString = attr;
+
+
+
+var valueAmtNoFormat = globals.util.satToBtc(parseInt(aChannel.local_balance + ""));
+var fiatAmt = globals.tiker.to("BTC", valueAmtNoFormat, Ti.App.Properties.getString("currency", "USD"), 2) + "";
+
+
+
+$.localAmountFiat.text = fiatAmt;
 
 var remoteBalanceStr = aChannel.remote_balance;
 var remoteBalanceText = remoteBalanceStr + " SAT";
@@ -106,6 +117,15 @@ var attr2 = Titanium.UI.createAttributedString({
 });
 
 $.remoteAmount.attributedString = attr2;
+
+
+
+var valueAmtNoFormat = globals.util.satToBtc(parseInt(aChannel.remote_balance + ""));
+var fiatAmt = globals.tiker.to("BTC", valueAmtNoFormat, Ti.App.Properties.getString("currency", "USD"), 2) + "";
+
+
+
+$.remoteAmountFiat.text = fiatAmt;
 
 function continueCloseChannel() {
 
@@ -160,36 +180,37 @@ function continueCloseChannel() {
       }
       globals.console.log("close channel", res);
       try {
-        console.log(res)
+        globals.console.log(res)
         try {
-          console.log(res.close_pending)
+          globals.console.log(res.close_pending)
         } catch (e) {
 
         }
+        if (res != undefined) {
+          if (res.channel_close_update != undefined) {
+            if (res.channel_close_update.txid != undefined) {
 
-        if (res.channel_close_update != undefined) {
-          if (res.channel_close_update.txid != undefined) {
-
-            Alloy.Globals.getChannels();
-            return
+              Alloy.Globals.getChannels();
+              return
+            }
           }
-        }
-        if (res.pending_update != undefined) {
-          if (res.pending_update.txid != undefined) {
-            alert("channel closing");
-            Alloy.Globals.getChannels();
-            return
-          }
-        }
-
-        //for ios grpc
-        if (res.close_pending != undefined) {
-
-          if (res.close_pending.txid != undefined) {
-            Alloy.Globals.getChannels();
-            return
+          if (res.pending_update != undefined) {
+            if (res.pending_update.txid != undefined) {
+              alert("channel closing");
+              Alloy.Globals.getChannels();
+              return
+            }
           }
 
+          //for ios grpc
+          if (res.close_pending != undefined) {
+
+            if (res.close_pending.txid != undefined) {
+              Alloy.Globals.getChannels();
+              return
+            }
+
+          }
         }
 
       } catch (e) {
@@ -200,7 +221,7 @@ function continueCloseChannel() {
   } catch (e) {
     $.closeChannelButton.show();
     $.loadingSpinner.hide();
-    console.error(e);
+    globals.console.error(e);
   }
 
 }
@@ -309,5 +330,4 @@ function setAlias(alias) {
 
 
 }
-
-globals.console.log("adding open channel2");
+ 

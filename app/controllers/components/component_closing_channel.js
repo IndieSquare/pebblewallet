@@ -7,43 +7,68 @@ if (aChannel.channel.local_balance == undefined) {
 if (aChannel.channel.remote_balance == undefined) {
   aChannel.channel.remote_balance = 0;
 }
-$.pubKey.text = aChannel.channel.remote_node_pub;
+$.pubKey.text = aChannel.channel.remote_node_pub.substring(0, 50) + "...";
 
-$.detailsButton.text = " " + $.detailsButton.text + " ";
+var totalBalance = parseInt(aChannel.channel.local_balance) + parseInt(aChannel.channel.remote_balance);
+var localPercentage = ((parseInt(aChannel.channel.local_balance) / totalBalance) * 100);
+var remotePercentage = ((parseInt(aChannel.channel.remote_balance) / totalBalance) * 100);
+
+if (localPercentage < 1) {
+  localPercentage = 1;
+  remotePercentage = 99;
+}
+
+if (remotePercentage < 1) {
+  remotePercentage = 1;
+  localPercentage = 99
+}
+
+$.amountsBarLocal.width = localPercentage + "%"
+$.amountsBarRemote.width = remotePercentage + "%"
 
 var localBalanceStr = aChannel.channel.local_balance + "";
+var localBalanceText = localBalanceStr + " SAT";
 
-var localBalanceText = aChannel.channel.local_balance + " SAT";
-var attr = Titanium.UI.createAttributedString({
-  text: localBalanceText,
-  attributes: [
+if (aChannel.channel.local_balance != undefined) {
+  var attr = Titanium.UI.createAttributedString({
+    text: localBalanceText,
+    attributes: [
 
-    {
-      type: Ti.UI.ATTRIBUTE_FONT,
-      value: {
-        fontSize: 13,
-        fontFamily: 'GillSans-Light',
-        fontWeight: 'light'
+      {
+        type: Ti.UI.ATTRIBUTE_FONT,
+        value: {
+          fontSize: 13,
+          fontFamily: 'GillSans-Light',
+          fontWeight: 'light'
+        },
+        range: [localBalanceText.indexOf(localBalanceStr + ""), (localBalanceStr + "").length]
       },
-      range: [localBalanceText.indexOf(localBalanceStr), localBalanceStr.length]
-    },
-    {
-      type: Ti.UI.ATTRIBUTE_FONT,
-      value: {
-        fontSize: 8,
-        fontFamily: 'GillSans-Light',
-        fontWeight: 'light'
-      },
-      range: [localBalanceText.indexOf(" SAT"), (" SAT").length]
-    }
-  ]
-});
+      {
+        type: Ti.UI.ATTRIBUTE_FONT,
+        value: {
+          fontSize: 8,
+          fontFamily: 'GillSans-Light',
+          fontWeight: 'light'
+        },
+        range: [localBalanceText.indexOf(" SAT"), (" SAT").length]
+      }
+    ]
+  });
+}
 
 $.localAmount.attributedString = attr;
 
-var remote_balance_str = aChannel.channel.remote_balance + "";
-var remoteBalanceText = remote_balance_str + " SAT";
-var attr = Titanium.UI.createAttributedString({
+
+
+var valueAmtNoFormat = globals.util.satToBtc(parseInt(aChannel.channel.local_balance + ""));
+var fiatAmt = globals.tiker.to("BTC", valueAmtNoFormat, Ti.App.Properties.getString("currency", "USD"), 2) + "";
+
+$.localAmountFiat.text = fiatAmt;
+
+var remoteBalanceStr = aChannel.channel.remote_balance;
+var remoteBalanceText = remoteBalanceStr + " SAT";
+
+var attr2 = Titanium.UI.createAttributedString({
   text: remoteBalanceText,
   attributes: [
 
@@ -54,7 +79,7 @@ var attr = Titanium.UI.createAttributedString({
         fontFamily: 'GillSans-Light',
         fontWeight: 'light'
       },
-      range: [remoteBalanceText.indexOf(remote_balance_str), remote_balance_str.length]
+      range: [remoteBalanceText.indexOf(remoteBalanceStr + ""), (remoteBalanceStr + "").length]
     },
     {
       type: Ti.UI.ATTRIBUTE_FONT,
@@ -68,9 +93,17 @@ var attr = Titanium.UI.createAttributedString({
   ]
 });
 
-$.remoteAmount.attributedString = attr;
+$.remoteAmount.attributedString = attr2;
 
-$.status.text = L("closing");
+
+
+var valueAmtNoFormat = globals.util.satToBtc(parseInt(aChannel.channel.remote_balance + ""));
+var fiatAmt = globals.tiker.to("BTC", valueAmtNoFormat, Ti.App.Properties.getString("currency", "USD"), 2) + "";
+
+
+
+$.remoteAmountFiat.text = fiatAmt;
+
 
 function viewDetails() {
   if (Alloy.Globals.network == "testnet") {

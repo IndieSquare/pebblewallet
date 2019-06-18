@@ -32,8 +32,8 @@ if (args.isLNDMobile == true) {
     globals.closeSettings();
 
     Ti.App.Properties.setString("mode", "lndMobile");
-    if(globals.lndMobileStarted == true){
-      globals.stopLND(function () {});
+    if (globals.lndMobileStarted == true) {
+      globals.stopLND(function () { });
     }
     alert(L("restart_app"));
 
@@ -43,7 +43,7 @@ if (args.isLNDMobile == true) {
 
 } else {
 
-  
+
 
   $.pubKey.text = args.identity_pubkey.substring(0, 40) + "...";
 
@@ -53,7 +53,7 @@ if (args.isLNDMobile == true) {
   $.alias.text = args.alias;
 
   connect = function () {
-   
+
     var config = globals.decryptConfig(args.config, globals.userKey);
     if (config != undefined) {
       globals.closeAccounts();

@@ -1,86 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Alloy>
 	<Window id="win">
 		<View class="transparent" id="settingsView">
-			<View class="tifill background" id="background"></View>
+			<View class="tifill background" id="background" />
 			<View class="tifill mainView" id="mainView" layout="vertical">
 				<View class="topbar" id="topbar">
 					<Label class="size15 white pull-left pull-bottom" id="gobackButton" onClick="close">L("label_goback")</Label>
 					<Label class="title">L("label_settings")</Label>
 				</View>
 				<ScrollView id="scrollView" class="tifill scrollView" scrollType="vertical" layout="vertical">
-
 					<View class="box" layout="vertical">
 						<View class="mainBox" id="connectButton" onClick="showAccounts">
-							<ImageView class="pull-left icon" image="/images/icon_settings_server.png"/>
-							<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png"/>
+							<ImageView class="pull-left icon" image="/images/icon_settings_server.png" />
+							<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png" />
 							<Label class="size12 settingLabel">L("label_accounts")</Label>
 						</View>
 						<Label class="size10 gray description">L("label_settings_connect_btcpay_lnd_description")</Label>
 					</View>
-
 					<View class="box" layout="vertical">
-					<View class="mainBox" id="currencyButton" onClick="showCurrency">
-						<ImageView class="pull-left icon" image="/images/icon_settings_currency.png" />
-						<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png" />
-						<Label class="size12 settingLabel" id="currencyLabel"></Label>
+						<View class="mainBox" id="currencyButton" onClick="showCurrency">
+							<ImageView class="pull-left icon" image="/images/icon_settings_currency.png" />
+							<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png" />
+							<Label class="size12 settingLabel" id="currencyLabel" />
+						</View>
+						<Label class="size10 gray description">L("label_settings_currency_description")</Label>
 					</View>
-					<Label class="size10 gray description">L("label_settings_currency_description")</Label>
-					</View>
-
 					<View id="passphraseView" class="box" layout="vertical" onClick="showPassPhrase">
 						<View class="mainBox" id="recoveryPhraseButton">
-							<ImageView class="pull-left icon" image="/images/icon_settings_passphrase.png"/>
-							<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png"/>
+							<ImageView class="pull-left icon" image="/images/icon_settings_passphrase.png" />
+							<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png" />
 							<Label class="size12 settingLabel">L("label_settings_recoveryphrase")</Label>
 						</View>
 						<Label class="size10 gray description">L("label_settings_recoveryphrase_description")</Label>
 					</View>
-
 					<View id="logsView" class="box" layout="vertical" onClick="goToLogs">
 						<View class="mainBox" id="logsButton">
-							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png"/>
+							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png" />
 							<Label class="size12 settingLabel">L("label_settings_logs")</Label>
 						</View>
 						<Label class="size10 gray description">L("label_settings_logs_description")</Label>
 					</View>
-
 					<View id="autoPilot" class="box" layout="vertical" onClick="autoPilot">
 						<View class="mainBox" id="autoPilotButton">
-							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png"/>
-							<ImageView id="autoPilotImage" image="/images/checkSymbol.png"/>
+							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png" />
+							<ImageView id="autoPilotImage" image="/images/checkSymbol.png" />
 							<Label class="size12 settingLabel">L("label_settings_autopilot")</Label>
 						</View>
 						<Label class="size10 gray description">L("label_settings_autopilot_description")</Label>
 					</View>
-
 					<View id="neutrinoPeer" class="box" layout="vertical" onClick="changeNeutrinoPeer">
 						<View class="mainBox" id="neutrinoPeerButton">
-							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png"/>
-							<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png"/>
+							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png" />
+							<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png" />
 							<Label class="size12 settingLabel">L("label_settings_neutrino_peer")</Label>
 						</View>
 						<Label class="size10 gray description">L("label_settings_neutrino_peer_description")</Label>
 					</View>
-
 					<View id="exportChannels" class="box" layout="vertical" onClick="exportChannels">
 						<View class="mainBox" id="exportChannelsButton">
-							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png"/>
-							<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png"/>
+							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png" />
+							<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png" />
 							<Label class="size12 settingLabel">L("channels_backup_title")</Label>
 						</View>
 						<Label class="size10 gray description">L("channels_backup_description")</Label>
 					</View>
-
 					<View id="describeGraph" class="box" layout="vertical" onClick="describeGraph">
 						<View class="mainBox" id="describeGraphButton">
-							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png"/>
-							<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png"/>
+							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png" />
+							<ImageView class="pull-right arrow" image="/images/icon_arrow_right.png" />
 							<Label class="size12 settingLabel">L("describe_graph")</Label>
-						</View> 
+						</View>
 					</View>
-
-					<Label id="version" class="size10 gray description"></Label>
-
+					<Label id="version" class="size10 gray description" />
 				</ScrollView>
 			</View>
 		</View>

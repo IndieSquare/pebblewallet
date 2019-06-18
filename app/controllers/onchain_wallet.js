@@ -199,8 +199,7 @@ $.paymentList.refreshControl = control;
 
         globals.console.log("get transactions");
         if(didLoadOnce == false){
-          didLoadOnce = true;
-        //$.initialLoading.show();
+          didLoadOnce = true; 
         }
         globals.lnGRPC.getTransactions(function (error, transactionsResponse) {
 
@@ -209,8 +208,7 @@ $.paymentList.refreshControl = control;
   
             alert("error getting transactions");
             return;
-          }
-          //$.initialLoading.hide();
+          } 
           globals.console.log("get transactions", transactionsResponse);
   
           if (OS_IOS) {

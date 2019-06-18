@@ -28,7 +28,7 @@ function updateInvoice(argsNew) {
 }
 
 if (isInvoice(aPayment)) {
- 
+
   if (aPayment.settled == true || aPayment.settled == 1) {
     $.type.image = "/images/checkSymbol.png";
   } else {
@@ -36,7 +36,7 @@ if (isInvoice(aPayment)) {
     $.type.image = "/images/clockIcon.png";
   }
 
-  if (aPayment.state == "CANCELED"){
+  if (aPayment.state == "CANCELED") {
     $.type.image = "/images/dameSymbol.png";
   }
 
@@ -100,7 +100,7 @@ function setAmount() {
       var fiatAmt = globals.tiker.to("BTC", valueAmtNoFormat, Ti.App.Properties.getString("currency", "USD"), 2) + "";
 
       var aPaymentValueText = valueAmt + " " + currency + " " + fiatAmt;
-       
+
 
     } else {
       var currency = globals.LNCurrencySat;
@@ -158,24 +158,6 @@ function setAmount() {
     });
 
     $.value.attributedString = attr;
-/*
-
-
-    var attr = Titanium.UI.createAttributedString({
-      text: fiatAmt,
-      attributes: [{
-        type: Ti.UI.ATTRIBUTE_FONT,
-        value: {
-          fontSize: 12,
-          fontFamily: 'GillSans-Light',
-          fontWeight: 'light'
-        },
-        range: [aPaymentValueText.indexOf(fiatAmt), fiatAmt.length]
-      }
-      ]
-    });
-
-    $.value.attributedString = attr;*/
     $.valueFiat.text = fiatAmt;
   } catch (e) {
     globals.console.error(e);

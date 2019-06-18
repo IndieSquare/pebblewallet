@@ -223,6 +223,7 @@ module.exports = (function () {
       Barcode.capture({
         animate: true,
         overlay: overlay,
+        fullscreen:true,
         showCancel: false,
         showRectangle: false,
         keepOpen: false,
@@ -715,9 +716,6 @@ module.exports = (function () {
     configString += "no-macaroons=1\n"
     configString += "maxpendingchannels=2\n"
 
-    //configString += "[Routing]\n\n"
-    //configString += "routing.assumechanvalid=1\n"
-
     configString += "\n[Bitcoin]\n\n"
     configString += "bitcoin.active=1\n" 
     globals.console.log("config network", network);
@@ -734,7 +732,7 @@ module.exports = (function () {
     configString += "bitcoin.node=neutrino\n"
 
     configString += "\n[Routing]\n\n"
-    configString += "routing.assumechanvalid=1"
+    configString += "routing.assumechanvalid=1\n"
 
     configString += "\n[Autopilot]\n\n"
 

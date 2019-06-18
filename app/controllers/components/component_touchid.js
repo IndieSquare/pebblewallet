@@ -16,8 +16,7 @@ $.main.animate({
 });
 
 if (OS_ANDROID) {
-  $.win.addEventListener('android:back', function () {
-    globals.console.log("pressed back")
+  $.win.addEventListener('android:back', function () { 
     return true;
   });
 }

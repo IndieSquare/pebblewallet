@@ -13,7 +13,7 @@
 }
 
 "#gobackButton[if=Alloy.Globals.isiPhoneX]" : {
-top: 30,
+	top: 30,
 }
 
 ".mainView":{
@@ -67,13 +67,10 @@ top: 30,
     bottom:60,
 }
 
-
 "#restoreButtons":{
     bottom:40,
 	visible:false,
 }
-
-
 
 "#restoreButtons[if=Alloy.Globals.isiPhoneX]":{
     bottom:60,
@@ -99,8 +96,8 @@ top: 30,
 }
 
 "#backUpEmail":{
-    top:15,
-   title:L("back_up_email")
+	top:15,
+    title:L("back_up_email")
 }
 
 "#restoreButton":{
@@ -108,12 +105,12 @@ top: 30,
 }
 "#skipButton":{
     top:15,
-   title:L("skip")
+    title:L("skip")
 }
 
 "#laterButton":{
-    top:15,
-   title:L("later_button")
+	top:15,
+    title:L("later_button")
 }
 
 
@@ -126,17 +123,17 @@ top: 30,
 
 "#backUpGoogleDriveOuter":{
     layout:"vertical",
-      height: Ti.UI.SIZE,
+    height: Ti.UI.SIZE,
 	width: Ti.UI.FILL,
 }
 "#backUpGoogleDriveInner":{ 
-      height: Ti.UI.SIZE,
+    height: Ti.UI.SIZE,
 	width: Ti.UI.FILL,
 }
 
 "#lastBackUp":{ 
     top:5,
-     color:"white",
+    color:"white",
     font: {
       fontSize: 14
     }

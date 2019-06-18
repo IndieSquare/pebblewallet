@@ -214,5 +214,4 @@ if (OS_ANDROID) {
     globals.console.log("pressed back")
     return true;
   });
-}
-globals.console.log("showing pincode screen")
+} 

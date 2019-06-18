@@ -19,7 +19,7 @@
 }
 ".iconLabel":{
   left:10,
-  	width:100,
+  width:100,
 	color:"#95a4ad",
 	font:{
 		fontSize:10,

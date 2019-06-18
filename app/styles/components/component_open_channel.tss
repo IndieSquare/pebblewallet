@@ -1,7 +1,6 @@
- 
 "#details" : { 
 	left: 5,
-	width: "95%",
+	width: "80%",
 	height: Ti.UI.SIZE,
 	color: Alloy.Globals.fontColor1, 
 	font: {
@@ -12,11 +11,11 @@
 }
 
 "#statusImage" : {
-	backgroundColor: "#56a840", 
-	 left:10,
-	 height:10,
-	 width:10,
-	 borderRadius:5
+	backgroundColor: Alloy.Globals.greenColor, 
+	left:10,
+	height:10,
+	width:10,
+	borderRadius:5
 }
  
 ".amounts" : {
@@ -26,13 +25,9 @@
 	width: "20%",
 	color: Alloy.Globals.fontColor1
 }
-"#bottomView" : {
-	top: 10,
-	height: Ti.UI.SIZE,
-	width: "100%"
-}
+ 
 "#buttonView" : {
-	left: 5,
+	right: 5,
 	height: Ti.UI.SIZE,
 	width: Ti.UI.SIZE
 }
@@ -59,22 +54,37 @@
 		fontWeight: 'light'
 	}
 }
-".cell" : {
-	height:"100%",
-	width:"95%",
-	backgroundColor: "#d4d4d4",
+".cellInner" : {
+	height:"95%",
+	width:"100%",
+	backgroundColor: "#eeeeee",
 	layout:"vertical",
 	borderRadius:20
+}
+".cell" : {
+	height:"100%",
+	width:"95%", 
 }
 "#topLine":{
 	top:20,
 	height: Ti.UI.SIZE,
-	width: Ti.UI.SIZE,
-	layout:"horizontal",
-	backgroundColor:"red"
+	width: Ti.UI.FILL,
+	layout:"horizontal", 
 }
-".localAmountTitle" : { 
-	left:5,
+
+".localAmounts":{
+	height:Ti.UI.SIZE,
+	width:Ti.UI.SIZE, 
+	layout:"vertical",
+	left:5
+}
+".remoteAmounts":{
+	height:Ti.UI.SIZE,
+	width:Ti.UI.SIZE, 
+	layout:"vertical",
+	right:5
+}
+".localAmountTitle" : {  
 	textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT,
 	textAlign: "left",
 	color: Alloy.Globals.fontColor1,
@@ -84,8 +94,8 @@
 		fontWeight: 'light'
 	}
 }
+
 ".remoteAmountTitle" : { 
-	right:5,
 	textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT,
 	textAlign: "right",
 	color: Alloy.Globals.fontColor1,
@@ -96,28 +106,50 @@
 	}
 }
 
+".localAmountTitleFiat" : {  
+	textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT,
+	textAlign: "left",
+	color: Alloy.Globals.fontColor1,
+	font: {
+		fontSize: 13,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	}
+}
+
+".remoteAmountTitleFiat" : { 
+	textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT,
+	textAlign: "right",
+	color: Alloy.Globals.fontColor1,
+	font: {
+		fontSize: 13,
+		fontFamily: 'GillSans-Light',
+		fontWeight: 'light'
+	}
+}
+
 "#amountsBarOuter":{
-	top:15,
+	top:20,
 	width:"98%",
-	height:20,
-	backgroundColor:"#56a840", 
+	height:40,
+	backgroundColor:Alloy.Globals.mainColor, 
 }
 
 ".amountsLabel":{
-height:Ti.UI.SIZE,
-width:Ti.UI.SIZE, 
+	height:Ti.UI.SIZE,
+	width:Ti.UI.SIZE, 
 }
 
 "#amountsBarLocal":{
 	left:0,
 	width:"30%",
-	height:20,
+	height:40,
 	backgroundColor:Alloy.Globals.mainColor,
 }
 
 "#amountsBarRemote":{
 	right:0,
 	width:"70%",
-	height:20,
-	backgroundColor:Alloy.Globals.mainColorLighter,
+	height:40,
+	backgroundColor:"#7ba1e7",
 }

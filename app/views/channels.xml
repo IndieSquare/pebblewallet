@@ -1,27 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Alloy>
-<Window id="win">
-		<View class="tifill background" id="background"></View>
-		<View class="mainView" id="mainView">
-
-	<ImageView class="overlay"/>
-   <Label id="closeButton" onClick="close">L("label_goback")</Label>
-	<Label id="addChannelButton" onClick="openChannelForm">L('label_open_channel')</Label>
-				
-		<ActivityIndicator id="firstLoader"/>
-		<TableView id="table">
-
-			 
-
-			<FooterView>
-				 
-			</FooterView>
-		</TableView>
-
-		<Label id="noChannels">L("no_channels")</Label>
-	
-
-	</View>
-	</View>
-</Window> 
-
+   <Window id="win">
+      <View class="tifill background" id="background" />
+      <View class="mainView" id="mainView">
+         <ImageView class="overlay" />
+         <Label id="closeButton" onClick="close">L("label_goback")</Label>
+         <ActivityIndicator id="firstLoader" />
+         <TableView id="table">
+            <FooterView>
+               <View class="addChannel">
+                  <View id="addChannelButtonOuter" onClick="openChannelForm">
+                     <Label id="addChannelButton">L('label_open_channel')</Label>
+                  </View>
+               </View>
+            </FooterView>
+         </TableView>
+         <Label id="noChannels">L("no_channels")</Label>
+      </View>
+   </Window>
 </Alloy>

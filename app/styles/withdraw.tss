@@ -1,7 +1,8 @@
 "#win" : {
 	"orientationModes": [Ti.UI.PORTRAIT],
 	"navBarHidden": true,
-	"backgroundColor": "transparent"
+	"backgroundColor": "transparent",
+	fullscreen: true,
 }
 "#win[platform=android]" : {
 	"windowSoftInputMode": Ti.UI.Android.SOFT_INPUT_STATE_ALWAYS_HIDDEN
@@ -203,6 +204,7 @@
 }
 "#gobackButton" : {
 	top: 0,
+	font:Alloy.Globals.buttonFont,
 	height: Alloy.Globals.topBarHeight,
 	left: 10
 }

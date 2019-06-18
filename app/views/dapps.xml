@@ -1,9 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Alloy>
-
 	<View id="main">
-		<View class="topBarTop" id="topBarTop"/>
-		<Require src="components/component_dapps_bar"/>
-		<View id="web"></View>
+		<View class="topBarTop" id="topBarTop" />
+		<Require src="components/component_dapps_bar" />
+		<View id="web" />
 	</View>
-
 </Alloy>

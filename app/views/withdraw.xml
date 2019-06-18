@@ -1,56 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Alloy>
 	<Window id="win">
 		<View class="transparent">
-			<View class="tifill background" id="background"></View>
+			<View class="tifill background" id="background" />
 			<View class="tifill mainView" id="mainView">
-			<ImageView id="pattern" image="/images/pattern.png"/>
-			 <ImageView class="overlay"/>
-			 <View class="outer">
+				<ImageView id="pattern" image="/images/pattern.png" />
+				<ImageView class="overlay" />
+				<View class="outer">
 					<View class="amounts">
-						   
 						<View class="tisize pull-bottom" layout="vertical">
 							<View class="tisize">
 								<View class="tisize amountView" id="amountView" layout="horizontal">
-									<TextField class="amount" id="amount"  onFocus="selectedCrypto" onChange="updateValues"><KeyboardToolbar platform="ios">
-								<Toolbar>
-									<Items>
-										<Button title="Done" onClick="hideKeyboard"/>
-									</Items>
-								</Toolbar>
-							</KeyboardToolbar></TextField>
-									<Label class="amountBTC" id="amountBTC"></Label>
+									<TextField class="amount" id="amount" onFocus="selectedCrypto" onChange="updateValues">
+										<KeyboardToolbar platform="ios">
+											<Toolbar>
+												<Items>
+													<Button title="Done" onClick="hideKeyboard" />
+												</Items>
+											</Toolbar>
+										</KeyboardToolbar>
+									</TextField>
+									<Label class="amountBTC" id="amountBTC" />
 								</View>
-
 								<View class="tisize fiatView" id="fiatView" layout="horizontal">
-
-							<Label class="fiatSymbol" id="fiatSymbol"/> 
-								<TextField class="fiat" id="fiat" onFocus="selectedFiat" onChange="updateValues"><KeyboardToolbar platform="ios">
-								<Toolbar>
-									<Items>
-										<Button title="Done" onClick="hideKeyboard"/>
-									</Items>
-								</Toolbar>
-							</KeyboardToolbar></TextField>
-
+									<Label class="fiatSymbol" id="fiatSymbol" />
+									<TextField class="fiat" id="fiat" onFocus="selectedFiat" onChange="updateValues">
+										<KeyboardToolbar platform="ios">
+											<Toolbar>
+												<Items>
+													<Button title="Done" onClick="hideKeyboard" />
+												</Items>
+											</Toolbar>
+										</KeyboardToolbar>
+									</TextField>
+								</View>
 							</View>
-							</View>
-							<Label class="size15  balance" id="balance"></Label>
+							<Label class="size15  balance" id="balance" />
 							<!--<Label class="size15 white priority" id="priorityLabel" onClick="prioritySet"></Label>-->
 						</View>
-						 
 					</View>
-					<View class="destinationView"><TextField class="inputDestination" id="inputDestination"/><ImageView class="qrcode" onClick="scanQRCode"/></View>
-					<View class="seperator1"/>
+					<View class="destinationView">
+						<TextField class="inputDestination" id="inputDestination" />
+						<ImageView class="qrcode" onClick="scanQRCode" />
+					</View>
+					<View class="seperator1" />
 					<View class="sendOuter">
-								<ActivityIndicator id="sendSpinner"/>
-								<Button id="sendLabel" onClick="pressedSend"></Button>
-							</View>
-					 
-				 </View>
-				 <Label class="size15 black pull-left pull-bottom" id="gobackButton" onClick="close">L("label_goback")</Label>
-						
+						<ActivityIndicator id="sendSpinner" />
+						<Button id="sendLabel" onClick="pressedSend" />
+					</View>
+				</View>
+				<Label class="pull-left pull-bottom" id="gobackButton" onClick="close">L("label_goback")</Label>
 			</View>
-			<View id="blockingView"/>
+			<View id="blockingView" />
 		</View>
 	</Window>
 </Alloy>

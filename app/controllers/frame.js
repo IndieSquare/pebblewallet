@@ -46,22 +46,22 @@ function setMainnet() {
 }
 
 globals.connectLNDGRPC = function (config) {
- 
+
 
   globals.synced = true;
   globals.didGetTransactionsOnce = false;
   globals.hideNoTransactions();
   stopSyncUI();
   clearTimeout(continueSyncTimeout);
-   
+
   globals.console.log("connectLNDGRPC")
-  globals.clearTransactionsTable(); 
+  globals.clearTransactionsTable();
 
   $.statusText.text = "";
   $.connecting.visible = true;
   $.syncStatus.visible = false;
-  
-  
+
+
   $.transactions.totalBalanceFiat.text = "";
   $.transactions.totalBalance.text = "";
 
@@ -91,11 +91,11 @@ globals.connectLNDGRPC = function (config) {
     $.walletName.text = "";
     globals.nodeInfo = null;
     globals.console.log("connecting...");
-     
+
 
     if (error == true) {
 
-    $.connecting.visible = false;
+      $.connecting.visible = false;
       globals.console.log("error", error);
       alert(error);
       return;
@@ -163,101 +163,31 @@ globals.connectLNDGRPC = function (config) {
 
 };
 
- 
-
-function startSubscribeInvoices() {
-  globals.console.log("starting subscribe invoice");
-  setTimeout(function () {
-    globals.lnGRPC.subscribeInvoices(function (error, response) {
-
-
-      globals.console.log("invoice subscription res", error, response);
-
-      if (error == false) {
-        console.log("invoice res", response);
-
-        if (response.settled != undefined && response.settled == true) {
-
-          if (globals.updateCurrentInvoice != undefined) {
-            globals.updateCurrentInvoice(response);
-
-          }
-
-          var cellUpdateFunction = globals.invoiceUpdateFunctions[response.r_hash];
-          if (cellUpdateFunction != undefined) {
-            cellUpdateFunction(response);
-          }
-
-        }
-      } else {
-        if (response.indexOf("io.grpc.StatusRuntimeException:") != -1) { //some bug in grpc or btcpay if this error shows need to restart subscription invoice
-          globals.console.log("restart invoice subscription");
-          startSubscribeInvoices();
-        }
-
-
-      }
-
-    });
-  }, 1000);
-}
 
 
 
 
-function startSubscribeTransactions() {
-  globals.console.log("starting subscribe transactions");
-  setTimeout(function () {
-    globals.lnGRPC.subscribeTransactions(function (error, response) {
 
-      if (error == false) {
-
-        console.log("subscription res", response);
-
-      } else {
-
-        startSubscribeTransactions();
-
-      }
-
-    });
-  }, 1000);
-}
-
-function switchFiatBTC() {
-
-  if (globals.fiatMode == false) {
-    globals.fiatMode = true;
-  } else {
-    globals.fiatMode = false;
-  }
-  $.transactions.API.setBalances();
-
-  for (var i = 0; i < globals.updateValuesFuncs.length; i++) {
-    globals.updateValuesFuncs[i]();
-  }
-}
- 
 function didLoad() {
 
 }
 $.globeIcon.opacity = 0;
 
-  $.scanIcon.opacity = 0;
+$.scanIcon.opacity = 0;
 
-  $.networkIcon.opacity = 0;
+$.networkIcon.opacity = 0;
 
-  $.depositButton.opacity = 0;
+$.depositButton.opacity = 0;
 
-  
 
-self.fadeInUI = function(){
 
-  var a = Ti.UI.createAnimation({ 
+self.fadeInUI = function () {
+
+  var a = Ti.UI.createAnimation({
     duration: 1000,
-    opacity: 1, 
+    opacity: 1,
   });
-   
+
   $.globeIcon.animate(a);
 
   $.scanIcon.animate(a);
@@ -309,24 +239,24 @@ globals.continuePay = function (req) {
         "message": "",
         "cancel": function () {
         },
-        "first": function (controller,errorCallback) {
+        "first": function (controller, errorCallback) {
 
 
           var xhr = Ti.Network.createHTTPClient({
             onload: function (e) {
 
               globals.console.log("response data", this.responseText);
-              requestResult = JSON.parse(this.responseText); 
+              requestResult = JSON.parse(this.responseText);
 
-               callbackUrl = requestResult.callback + "?k1=" + requestResult.k1 + "&remoteid=" + globals.currentPubkey + "&private=0";
+              callbackUrl = requestResult.callback + "?k1=" + requestResult.k1 + "&remoteid=" + globals.currentPubkey + "&private=0";
 
               globals.console.log("callback url", callbackUrl);
 
               if (requestResult.tag == "channelRequest") {
 
-                var message = L("channel_request").format({ "uri": requestResult.callback, "capacity": requestResult.capacity, "push":requestResult.push })
+                var message = L("channel_request").format({ "uri": requestResult.callback, "capacity": requestResult.capacity, "push": requestResult.push })
 
-                  controller.setMessage(message);
+                controller.setMessage(message);
 
               }
 
@@ -368,8 +298,8 @@ globals.continuePay = function (req) {
                 errorCallback();
                 return;
               }
-              
-              globals.console.log("requesting channel",callbackUrl);
+
+              globals.console.log("requesting channel", callbackUrl);
 
               var xhr = Ti.Network.createHTTPClient({
                 onload: function (e) {
@@ -390,7 +320,7 @@ globals.continuePay = function (req) {
               xhr.open('GET', callbackUrl);
               xhr.send();
 
- 
+
             });
         }
         ,
@@ -541,25 +471,25 @@ globals.continuePay = function (req) {
 }
 
 $.connecting.visible = true;
- 
-  if (globals.unlocked == true) {
-    continueLoad();
-  } else {
-    globals.auth.check({
-      "title": "",
-      "callback": function (e) {
-        if (e.success) {
-          continueLoad();
 
-        }
+if (globals.unlocked == true) {
+  continueLoad();
+} else {
+  globals.auth.check({
+    "title": "",
+    "callback": function (e) {
+      if (e.success) {
+        continueLoad();
+
       }
-    });
-  }
- 
+    }
+  });
+}
+
 function continueLoad() {
- 
-        startLoadFromCache()
-       
+
+  startLoadFromCache()
+
 }
 
 globals.startLNDMobile = function () {
@@ -570,7 +500,7 @@ globals.startLNDMobile = function () {
   $.statusText.text = "";
   $.totalBalanceFiat.text = "";
   $.totalBalance.text = "";
-  globals.clearTransactionsTable(); 
+  globals.clearTransactionsTable();
 
   Ti.App.Properties.setString("mode", "lndMobile")
   startLoadFromCache()
@@ -587,7 +517,7 @@ function startLoadFromCache() {
 
   if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
 
-  globals.console.log("lndmobile");
+    globals.console.log("lndmobile");
 
     if (Alloy.Globals.network == "testnet") {
 
@@ -601,7 +531,7 @@ function startLoadFromCache() {
 
     $.connecting.visible = true;
     $.syncStatus.visible = false;
-   // $.statusText.text = L("initializing_wallet");
+    // $.statusText.text = L("initializing_wallet");
 
 
     if (globals.alreadyUnlocked == false) {
@@ -631,7 +561,7 @@ function startLoadFromCache() {
 
 
           setTimeout(function () {
-         
+
             andTimeSince100 = 0;
             checkSyncStatus()
 
@@ -642,9 +572,9 @@ function startLoadFromCache() {
       });
 
     } else {
-      
+
       checkSyncStatus();
-      
+
     }
 
   } else {
@@ -686,28 +616,25 @@ function stopSyncUI() {
 }
 
 function setSyncingUI() {
-try{
-  
-  console.log("setting ui");
-  $.syncStatus.visible = true;
+  try {
 
-  console.log("setting ui2");
-  $.statusText.text = "";
+    $.syncStatus.visible = true;
 
-  console.log("setting ui3");
+    $.statusText.text = "";
 
-  walletConfirmedBalance = Ti.App.Properties.getInt("last_wallet_balance", 0);
-  channelConfirmedBalance = Ti.App.Properties.getInt("last_channel_balance", 0);
-  $.transactions.API.setBalances(true);
 
-   
-}
-catch(e){
-  globals.console.error(e);
-}
+    walletConfirmedBalance = Ti.App.Properties.getInt("last_wallet_balance", 0);
+    channelConfirmedBalance = Ti.App.Properties.getInt("last_channel_balance", 0);
+    $.transactions.API.setBalances(true);
+
+
+  }
+  catch (e) {
+    globals.console.error(e);
+  }
 
 }
- 
+
 function checkSyncStatus() {
 
   var nextCheckTime = 6000;
@@ -728,11 +655,9 @@ function checkSyncStatus() {
     if (response.block_height == undefined) {
       response.block_height = 0;
     }
-    globals.console.log("here 1");
- 
-     
+
     if (response.synced_to_chain == undefined || response.synced_to_chain == false) {
-      
+
       $.syncPercentage.animate({});
       $.syncPercentage.animate(Ti.UI.createAnimation({
         opacity: 0.1,
@@ -742,12 +667,10 @@ function checkSyncStatus() {
       }));
 
       $.connecting.visible = false;
-      globals.console.log("here 2");
       globals.synced = false;
       setSyncingUI();
-      globals.console.log("here 3");
       var currentNetworkBlockHeight = globals.util.getCurrentNetworkBlockHeight(Alloy.Globals.network);
-      globals.console.log("here 4");
+
       var percentage = Math.floor(((response.block_height / currentNetworkBlockHeight) * 100));
       if (percentage > 100) {
         percentage = 100;
@@ -755,26 +678,25 @@ function checkSyncStatus() {
       if (percentage == 100) {
         andTimeSince100++;
       }
-      globals.console.log("here 5");
-      
+
       if (percentage < 100 && andTimeSince100 < 20) {
-        $.syncText.text =  L("synchronizing") + " " + L("block_height_sync").format({
+        $.syncText.text = L("synchronizing") + " " + L("block_height_sync").format({
           height: response.block_height
         });
 
-       
+
 
 
       } else {
         $.syncText.text = L("still_synchronizing");
-        nextCheckTime = 2000;
+        nextCheckTime = 6000;
       }
 
 
 
-      var percentageText =  percentage + "%";
+      var percentageText = percentage + "%";
       var attrTotal = Ti.UI.createAttributedString({
-        text:  percentageText,
+        text: percentageText,
         attributes: [{
           type: Ti.UI.ATTRIBUTE_FONT,
           value: {
@@ -782,7 +704,7 @@ function checkSyncStatus() {
             fontFamily: Alloy.Globals.lightFont,
             fontWeight: "light",
           },
-          range: [percentageText.indexOf(percentage + ""), percentage+"".length]
+          range: [percentageText.indexOf(percentage + ""), percentage + "".length]
         },
         {
           type: Ti.UI.ATTRIBUTE_FONT,
@@ -795,7 +717,7 @@ function checkSyncStatus() {
         },
         ]
       });
-    
+
       $.syncPercentage.attributedString = attrTotal;
 
 
@@ -818,7 +740,7 @@ function checkSyncStatus() {
       if (response.synced_to_chain == 1) {
         globals.synced = true;
         Ti.App.Properties.setBool("didLoadFirstTime", true);
-         
+
         try {
 
           Ti.App.Properties.setInt("latest_block_height_" + Alloy.Globals.network, response.block_height);
@@ -826,15 +748,11 @@ function checkSyncStatus() {
           Ti.App.Properties.setInt("latest_time_stamp_" + Alloy.Globals.network, currentTimeStamp);
 
           $.syncStatus.visible = false;
-          //globals.nodeInfo = response;
-          //globals.setNodeInfo(globals.nodeInfo);
-          
+
           globals.lndMobileStarted = true;
- 
+
           self.fadeInUI();
           globals.loadMainScreen();
-
-          //globals.tryAndBackUpChannels();
 
         } catch (e) {
           globals.console.error(e);
@@ -899,7 +817,7 @@ globals.hideShowNodeInfo = function (show) {
     $.nodeInfo.animate(a);
   }
 }
- 
+
 
 $.pattern.animate(Ti.UI.createAnimation({
   opacity: 0.2,
@@ -909,28 +827,28 @@ $.pattern.animate(Ti.UI.createAnimation({
 }));
 
 
-function goToChannels(){
+function goToChannels() {
   Alloy.createController("channels").getView().open();
 }
-function goToDeposit(){
+function goToDeposit() {
   Alloy.createController("receive").getView().open();
 }
 
-globals.closeDiscover = function () { 
+globals.closeDiscover = function () {
   globals.discover.visible = false;
 }
 
 function loadDiscover() {
   if (globals.discover.visible) {
     globals.closeDiscover();
-  } else { 
+  } else {
 
     globals.discover.visible = true;
 
     globals.loadWebView();
-  } 
+  }
 }
-function scanNormal(){
+function scanNormal() {
   globals.util.readQRcodeNormal({
     "callback": function (e) {
       try {
@@ -951,4 +869,3 @@ function scanNormal(){
 $.transactions.API.setParentController(self);
 
 
- 

@@ -1,6 +1,7 @@
 "#win" : {
   "orientationModes": [Ti.UI.PORTRAIT],
   "navBarHidden": true,
+  fullscreen: true,
 }
 ".header":{
   height:400,

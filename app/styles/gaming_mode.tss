@@ -59,8 +59,8 @@ top:100
 
 "#gameButtonsView":{
   bottom:20,
-height:Ti.UI.SIZE,
-width:Ti.UI.SIZE
+  height:Ti.UI.SIZE,
+  width:Ti.UI.SIZE
 }
 
 "#gameTitle":{

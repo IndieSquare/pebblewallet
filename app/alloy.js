@@ -84,7 +84,8 @@ Alloy.Globals.boldFont = 'GillSans-bold';
 Alloy.Globals.normalFont = 'GillSans';
 
 Alloy.Globals.lightFontItalic = 'GillSans-Light Italic';
-
+Alloy.Globals.greenColor = "#56a840";
+Alloy.Globals.confirmColor = "#7ab992";
 Alloy.Globals.dappBarTop = 0;
 Alloy.Globals.infoTop = 0;
 Alloy.Globals.dappBarHeight = 42;

@@ -34,7 +34,7 @@ module.exports = (function () {
       freeSpace = lndMobileWrapper.checkStorage()
     }
     globals.console.log("freeSpace", freeSpace);
-    
+
     if (freeSpace < 500000000) {
       return false;
     }
@@ -74,23 +74,23 @@ module.exports = (function () {
         response = error + "";
         error = true;
       } else {
-        if(IsJsonString(response)){
+        if (IsJsonString(response)) {
           response = JSON.parse(response); //if json convert to object
-        }  
+        }
       }
     }
     globals.console.log("formatting response err 2 ", error)
     globals.console.log("formatting response 2 ", response)
 
-    if(response.split != undefined){
-    try { //format to remove rpc prefix message i.e. rpc error: code = etc
-      response = response.split("=");
-      response = response[response.length - 1];
-    } catch (e) {
-      globals.console.log(response);
-      globals.console.error(e);
+    if (response.split != undefined) {
+      try { //format to remove rpc prefix message i.e. rpc error: code = etc
+        response = response.split("=");
+        response = response[response.length - 1];
+      } catch (e) {
+        globals.console.log(response);
+        globals.console.error(e);
+      }
     }
-  }
     return [error, response];
   }
 
@@ -113,19 +113,19 @@ module.exports = (function () {
 
 
   } else if (OS_IOS) {
- 
+
     var websocket = require("lnGRPCWrapper/websocket");
     websocket = new websocket();
-    
+
     var grpcAPI = require("lnGRPCWrapper/grpcAPI");
-    lngrpc = new grpcAPI(); 
-  
+    lngrpc = new grpcAPI();
+
     var lndMobile = require("lnGRPCWrapper/lndMobileAPI");
     lndMobileObj = new lndMobile();
 
     var LNUtils = require("lnGRPCWrapper/utils");
     LNUtils = new LNUtils();
- 
+
     LNUtils.setLogWithCallback(function (log) {
       log = log + "";
       globals.console.log("utils log", log);
@@ -169,7 +169,7 @@ module.exports = (function () {
     if (OS_IOS) {
 
       try {
-        
+
         LNUtils.linkGoogleDriveWithVcClientIDCallback(Ti.getController(), Alloy.Globals.googleClientID, function (response, error) {
 
           globals.console.log("google drive link callback", response);
@@ -236,7 +236,7 @@ module.exports = (function () {
 
         var fileName = globals.util.getSCBFileName();
         isUploading = true;
-         
+
         LNUtils.uploadFileWithVcClientIDFolderNameFileNamePassphraseHashCallback(Ti.getController(), Alloy.Globals.googleClientID, folderName, fileName, " ", function (response, error) {
           isUploading = false;
           globals.console.log("google drive callback", response, error);
@@ -414,7 +414,7 @@ module.exports = (function () {
         }
       }));
 
-    } else if (OS_IOS) { 
+    } else if (OS_IOS) {
 
       lndMobileObj.createWalletWithWalletPasswordRecoveryWindowCipherSeedMnemonicChannelBackupCallback(password, scanBlocksForRecovery, seed, channelBackup, function (response, error) {
         globals.console.log("create wallet ", error);
@@ -452,7 +452,7 @@ module.exports = (function () {
       }));
     } else if (OS_IOS) {
 
-      globals.console.log("unlocking wallet ios", channelBackUp); 
+      globals.console.log("unlocking wallet ios", channelBackUp);
 
       lndMobileObj.unlockWalletWithWalletPasswordRecoveryWindowChannelBackupCallback(password, recoveryWindow, channelBackUp, function (response, error) {
         globals.console.log("unlock wallet ", error);
@@ -481,14 +481,14 @@ module.exports = (function () {
       lndMobileWrapper.startLnd(contextValue, globals.util.getConfig(Alloy.Globals.network), globals.bootstrap, new CallbackInterfaceLND({
         eventFired: function (event) {
           globals.console.log("callback fired", event);
-          var response = JSON.parse(event); 
+          var response = JSON.parse(event);
           callback(response.error, response.response);
 
         }
       }));
 
-    } else if (OS_IOS) { 
-    
+    } else if (OS_IOS) {
+
       lndMobileObj.startSetUpEnvironmentWithChainBootstrapCallback(Alloy.Globals.network, globals.bootstrap, function (response, error) {
 
         if (error != null) {
@@ -500,7 +500,7 @@ module.exports = (function () {
 
         globals.util.saveLNDConf(Alloy.Globals.network);
 
-        lndMobileObj.startLNDWithCallback(function (response,error) {
+        lndMobileObj.startLNDWithCallback(function (response, error) {
           globals.console.log("start lnd error", error);
           globals.console.log("start lnd", response);
           var _res = formatResponse(error, response)
@@ -635,15 +635,15 @@ module.exports = (function () {
       }));
 
     } else if (OS_IOS) {
-        var res = lngrpc.setUpWithUrlCertificateMacaroon(host + ":" + port, cert, macaroon);
-        
-        if(res != null){
+      var res = lngrpc.setUpWithUrlCertificateMacaroon(host + ":" + port, cert, macaroon);
 
-          callback(true, "error");
-        }else{
+      if (res != null) {
 
-          callback(false, "initialized");
-        } 
+        callback(true, "error");
+      } else {
+
+        callback(false, "initialized");
+      }
     }
   };
 
@@ -727,7 +727,7 @@ module.exports = (function () {
 
   self.describeGraph = function (callback) {
     var lndController = getController();
-     
+
     if (OS_ANDROID) {
 
       if (lndController == lndMobileWrapper) {
@@ -759,9 +759,9 @@ module.exports = (function () {
           }
         }));
       }
-    }  
+    }
 
-     
+
   };
 
 
@@ -859,7 +859,7 @@ module.exports = (function () {
 
     } else if (OS_IOS) {
 
-      lndController.getWalletBalanceWithCallback(function (response,error) {
+      lndController.getWalletBalanceWithCallback(function (response, error) {
         error = formatResponse(error, response);
         response = JSON.parse(response);
         callback(error, response);
@@ -928,7 +928,7 @@ module.exports = (function () {
         }));
       }
 
-    } else if (OS_IOS) { 
+    } else if (OS_IOS) {
       lndController.getChannelBalanceWithCallback(function (response, error) {
         globals.console.log("getting channel balance res", error, response)
         var _res = formatResponse(error, response)
@@ -1459,7 +1459,7 @@ module.exports = (function () {
       }
 
     } else if (OS_IOS) {
-        
+
       lndController.sendPaymentWithPaymentRequestAmountCallback(payReq, amount, function (response, error) {
 
         var _res = formatResponse(error, response)
@@ -1527,7 +1527,7 @@ module.exports = (function () {
 
       var components = nodeURI.split("@");
       globals.console.log(components[0] + " " + components[1]);
- 
+
       lndController.connectPeerWithHostPubkeyCallback(components[1], components[0], function (response, error) {
 
         globals.console.log("connect peer res", response);
@@ -1602,7 +1602,7 @@ module.exports = (function () {
       }
 
     } else if (OS_IOS) {
-       
+
       lndController.sendCoinsWithAmountAddressFeeCallback(amount, destination, fee, function (response, error) {
 
         globals.console.log("send coins res", response);
@@ -1705,7 +1705,7 @@ module.exports = (function () {
         })
       })
 
-      
+
       lndController.openChannelWithLocalFundingAmountPubkeyCallback(amount, pub_key, function (response, error) {
         globals.console.log("open channel", response);
         globals.console.error("open channel", error);
@@ -1808,7 +1808,7 @@ module.exports = (function () {
       globals.console.log("output is", output)
       output = parseInt(output);
       globals.console.log("output is", output)
-      
+
       lndController.closeChannelWithTxidOutputForceCallback(txid, output, force, function (response, error) {
 
         globals.console.log("close channel", "error:" + error + " res:" + response);
@@ -1847,7 +1847,7 @@ module.exports = (function () {
 
     } else if (OS_IOS) {
       globals.console.log("subscribe transaction");
-      
+
       lndController.subscribeTransactionsWithCallback(function (response, error) {
 
         globals.console.log("subscribe transaction res", "error:" + error + " res:" + response);
@@ -1894,7 +1894,7 @@ module.exports = (function () {
 
           }
         }));
-      } else { 
+      } else {
 
         lndController.SubscribeSingleInvoice(rhash, new CallbackInterface({
           eventFired: function (res) {
@@ -1919,7 +1919,7 @@ module.exports = (function () {
 
       }
 
-    } else if (OS_IOS) { 
+    } else if (OS_IOS) {
 
     }
   }
@@ -2052,7 +2052,7 @@ module.exports = (function () {
 
       }
 
-    } else if (OS_IOS) { 
+    } else if (OS_IOS) {
 
       lndController.addInvoiceWithAmountExpiryMemoCallback(amount, expiry, memo, function (response, error) {
 
@@ -2067,60 +2067,60 @@ module.exports = (function () {
 
 
   self.lookUpInvoice = function (rhash, callback) {
-    globals.console.log("rhash ", rhash); 
-      var lndController = getController();
-      if (OS_ANDROID) {
-  
-        if (lndController == lndMobileWrapper) {
-          var bytes = lngrpc.makeLookupInvoiceRequest(rhash);
-  
-          globals.console.log("start look up invoice");
-          lndController.lookupInvoice(bytes, new CallbackInterfaceLND({
-            eventFired: function (res) {
-  
-              globals.console.log("callback look up invoice", res);
-  
-              res = JSON.parse(res);
-              if (res.error != true) {
-                res = lngrpc.parseLookupInvoiceResponse(res.response);
-                res = JSON.parse(res)
-              }
-  
-  
-              globals.console.log("callback look up invoice", res);
-  
-              if (res.error == true) {
-                console.error("look up invoice error");
-              }
-  
-              globals.console.log(res.response);
-  
-              callback(res.error, res.response);
-  
-  
-            }
-          }));
-        } else {
-          lndController.LookupInvoice(rhash, new CallbackInterface({
-            eventFired: function (res) {
-              globals.console.log(res);
-              res = JSON.parse(res);
-  
-              if (res.error == true) {
-                console.error("lookup invoice error");
-              }
-  
-              globals.console.log("lookup invoice red", res.response);
-  
-              if (ignoreResponse(res.response) == false) {
-                callback(res.error, res.response);
-              }
-  
-            }
-          }));
-        }
+    globals.console.log("rhash ", rhash);
+    var lndController = getController();
+    if (OS_ANDROID) {
 
-    } else if (OS_IOS) { 
+      if (lndController == lndMobileWrapper) {
+        var bytes = lngrpc.makeLookupInvoiceRequest(rhash);
+
+        globals.console.log("start look up invoice");
+        lndController.lookupInvoice(bytes, new CallbackInterfaceLND({
+          eventFired: function (res) {
+
+            globals.console.log("callback look up invoice", res);
+
+            res = JSON.parse(res);
+            if (res.error != true) {
+              res = lngrpc.parseLookupInvoiceResponse(res.response);
+              res = JSON.parse(res)
+            }
+
+
+            globals.console.log("callback look up invoice", res);
+
+            if (res.error == true) {
+              console.error("look up invoice error");
+            }
+
+            globals.console.log(res.response);
+
+            callback(res.error, res.response);
+
+
+          }
+        }));
+      } else {
+        lndController.LookupInvoice(rhash, new CallbackInterface({
+          eventFired: function (res) {
+            globals.console.log(res);
+            res = JSON.parse(res);
+
+            if (res.error == true) {
+              console.error("lookup invoice error");
+            }
+
+            globals.console.log("lookup invoice red", res.response);
+
+            if (ignoreResponse(res.response) == false) {
+              callback(res.error, res.response);
+            }
+
+          }
+        }));
+      }
+
+    } else if (OS_IOS) {
       lndController.lookUpInvoiceWithRhashCallback(rhash, function (response, error) {
 
         globals.console.log("lookup invoice", "error:" + error, " res:" + response);
@@ -2190,13 +2190,13 @@ module.exports = (function () {
 
     } else if (OS_IOS) {
 
-       
+
     }
   }
 
   self.sendSettleInvoiceMsg = function (preimage, callback) {
     var lndController = getController();
-    if (OS_ANDROID) { 
+    if (OS_ANDROID) {
       if (lndController == lndMobileWrapper) {
         var bytes = lngrpc.makeSettleInvoiceMsg(preimage);
 
@@ -2225,7 +2225,7 @@ module.exports = (function () {
 
           }
         }));
-      }  else{
+      } else {
 
         lndController.SettleInvoice(preimage, new CallbackInterface({
           eventFired: function (res) {
@@ -2248,14 +2248,14 @@ module.exports = (function () {
 
     } else if (OS_IOS) {
 
-       
+
     }
   }
 
   self.sendCancelInvoiceMsg = function (hash, callback) {
-    globals.console.log("cancel hash",hash);
+    globals.console.log("cancel hash", hash);
     var lndController = getController();
-    if (OS_ANDROID) { 
+    if (OS_ANDROID) {
       if (lndController == lndMobileWrapper) {
         var bytes = lngrpc.makeCancelInvoiceMsg(hash);
 
@@ -2284,7 +2284,7 @@ module.exports = (function () {
 
           }
         }));
-      }  else {
+      } else {
 
         lndController.CancelInvoice(hash, new CallbackInterface({
           eventFired: function (res) {
@@ -2308,7 +2308,7 @@ module.exports = (function () {
 
     } else if (OS_IOS) {
 
-       
+
     }
   }
 

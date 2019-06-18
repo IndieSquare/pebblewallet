@@ -140,8 +140,6 @@
 "#loadingSpinnerConnect" : {
 	visible: false
 }
-
-
  
 ".overlay":{
 	backgroundImage:"/images/gradientOverlay.png",

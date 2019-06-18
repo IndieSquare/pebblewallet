@@ -115,6 +115,27 @@ function updateChannelsList() {
 
   var openChannelsSection = Ti.UI.createTableViewSection();
 
+  var sectionHeaderView = Titanium.UI.createView({
+    backgroundColor: '#33FFFFFF',
+    width: "100%",
+    height: 30
+  });
+  var headertitle = Ti.UI.createLabel({
+    color: Alloy.Globals.fontColor1,
+    font: {
+      fontSize: 16
+    },
+    left: 5,
+    text: 'open',
+    textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT,
+    width: Ti.UI.SIZE,
+    height: Ti.UI.SIZE
+  });
+  sectionHeaderView.add(headertitle);
+  openChannelsSection.setHeaderView(sectionHeaderView);
+
+
+
   var openChannels = Alloy.Globals.openChannels;
 
   for (var i = 0; i < openChannels.length; i++) {
@@ -123,7 +144,7 @@ function updateChannelsList() {
       className: 'openChannel',
       backgroundSelectedColor: 'transparent',
       rowIndex: i,
-      height: 100
+      height: 130
     });
 
     if (OS_IOS) {
@@ -204,7 +225,7 @@ function updateChannelsList() {
 
   var closingChannels = Alloy.Globals.pendingChannels.waiting_close_channels;
   if (closingChannels == undefined) {
-    closingChannels = [];
+    closingChannels = []
   }
 
   for (var i = 0; i < closingChannels.length; i++) {

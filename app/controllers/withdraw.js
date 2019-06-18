@@ -18,33 +18,33 @@ var fiatValue = globals.tiker.getFiatValue(currencyFiat, "BTC");
 globals.console.log("fiat value", fiatValue);
 
 
-function selectedFiat(){
+function selectedFiat() {
   coolDown = false;
   globals.console.log("selected fiat");
-  isFiatMode = true; 
+  isFiatMode = true;
 }
-function selectedCrypto(){
+function selectedCrypto() {
   coolDown = false;
   globals.console.log("selected crypto")
-  isFiatMode = false; 
+  isFiatMode = false;
 }
 var coolDown = false;
-function updateValues(){
-  if(coolDown){
+function updateValues() {
+  if (coolDown) {
     return;
   }
   if (!isFiatMode) {
     var inputValue = $.amount.value;
 
-    if(inputValue.startsWith("0") && !inputValue.startsWith("0.")){
-coolDown = true;
-$.amount.value = $.amount.value.substr(1,$.amount.value.length);
-inputValue = $.amount.value;
-coolDown = false;
+    if (inputValue.startsWith("0") && !inputValue.startsWith("0.")) {
+      coolDown = true;
+      $.amount.value = $.amount.value.substr(1, $.amount.value.length);
+      inputValue = $.amount.value;
+      coolDown = false;
     }
 
     var val = (inputValue * fiatValue).toFixed2(4);
-    if(isNaN(val)){
+    if (isNaN(val)) {
       val = 0;
     }
     if (fiatValue == 0) val = 0;
@@ -52,25 +52,25 @@ coolDown = false;
 
   } else {
 
-    if($.fiat.value.startsWith("0") && !$.fiat.value.startsWith("0.")){
+    if ($.fiat.value.startsWith("0") && !$.fiat.value.startsWith("0.")) {
       coolDown = true;
-      $.fiat.value = $.amount.value.substr(1,$.fiat.value.length);
+      $.fiat.value = $.amount.value.substr(1, $.fiat.value.length);
       coolDown = false;
-          }
+    }
 
-          
+
 
     var inputValue = parseFloat($.fiat.value) / fiatValue;
-    globals.console.log("inputvalue",inputValue);
+    globals.console.log("inputvalue", inputValue);
     coolDown = true;
     val = inputValue.toFixed2(4);
-    if(isNaN(val)){
+    if (isNaN(val)) {
       val = 0;
     }
     $.amount.value = val;
     coolDown = false;
   }
-    
+
 }
 function showHideLoading(hide) {
   if (hide) {
@@ -141,11 +141,11 @@ if (OS_IOS) {
 
 $.amount.value = "0";
 $.amountBTC.text = globals.LNCurrency;
- 
+
 
 function switchAmount(e) {
 
-  if (!isFiatMode) { 
+  if (!isFiatMode) {
     isFiatMode = true;
     inputValue = $.fiat.value.replace(FiatSymbol, "").replace(/[^\d.-]/g, "");
 
@@ -165,7 +165,7 @@ function switchAmount(e) {
       classes: "size12 white",
       apiName: "Label"
     }));
-  } else { 
+  } else {
     isFiatMode = false;
     inputValue = $.amount.value;
 
@@ -266,10 +266,10 @@ function updateFields(button, abstAmount) {
 
     var val = (inputValue * fiatValue).toFixed2(4);
     if (fiatValue == 0) val = 0;
-    $.fiat.value =   addCommas(val);
+    $.fiat.value = addCommas(val);
 
   } else {
-    $.fiat.value =  addCommas(inputValue);
+    $.fiat.value = addCommas(inputValue);
     $.amount.value = (inputValue / fiatValue).toFixed2(4) + "";
   }
 
@@ -284,7 +284,7 @@ function setValues(vals) {
     $.inputDestination.value = vals.address.toString();
 
     if (vals.amount != null) {
-      $.amount.value =  vals.amount;
+      $.amount.value = vals.amount;
     }
   }
 
@@ -407,8 +407,6 @@ function continueSend(quantity, fee) {
   });
 }
 
-//var currentFee = Ti.App.Properties.getString("currentFee", "half_hour_fee");
-//setFeeLabel(currentFee);
 
 if (args.destination != undefined) {
   $.inputDestination.value = args.destination;
@@ -417,7 +415,7 @@ if (args.destination != undefined) {
 if (args.amount != undefined) {
   updateFields(null, args.amount);
 }
- 
+
 
 $.balance.text = L("loading");
 
@@ -427,14 +425,14 @@ setTimeout(function () {
     if (response.confirmed_balance == undefined) {
 
       response.confirmed_balance = 0;
-      
-    }
-      globals.console.log("blance ", response.confirmed_balance)
 
-      globals.console.log("blance ", parseInt(response.confirmed_balance))
-      globals.currentOnchainBalance = parseInt(response.confirmed_balance);
-      $.balance.text = globals.util.satToBtc(globals.currentOnchainBalance) + " " + globals.LNCurrency;
-   
+    }
+    globals.console.log("blance ", response.confirmed_balance)
+
+    globals.console.log("blance ", parseInt(response.confirmed_balance))
+    globals.currentOnchainBalance = parseInt(response.confirmed_balance);
+    $.balance.text = globals.util.satToBtc(globals.currentOnchainBalance) + " " + globals.LNCurrency;
+
 
   });
 

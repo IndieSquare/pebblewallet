@@ -1,57 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Alloy>
 	<Window class="transparent" id="win">
-	<View class="tifill background" id="background"></View>
-	<View id="mainView" focusable="true">
-	 
+		<View class="tifill background" id="background" />
+		<View id="mainView" focusable="true">
 			<View id="form" layout="vertical" focusable="true">
-
 				<Label id="titleLabel">L('open_channel_title')</Label>
 				<View id="items" layout="vertical">
-					<View class="peerOuter"><TextField id="peerField"/>	<Button id="qrButton" onClick="startScan"/></View>
-					<View class="seperator"/>
-
+					<View class="peerOuter">
+						<TextField id="peerField" />
+						<Button id="qrButton" onClick="startScan" />
+					</View>
+					<View class="seperator" />
 					<View class="fieldView" top="40" focusable="true">
 						<TextField id="amountField" onKeypressed="updateAmount" onChange="androidChangeValue" focusable="true">
 							<KeyboardToolbar platform="ios">
 								<Toolbar>
 									<Items>
-										<Button title="Done" onClick="hideKeyboard"/>
+										<Button title="Done" onClick="hideKeyboard" />
 									</Items>
 								</Toolbar>
 							</KeyboardToolbar>
 						</TextField>
-						<Label id="cryptoSymbol"></Label>
+						<Label id="cryptoSymbol" />
 					</View>
-
-					<View class="seperator"/>
-
+					<View class="seperator" />
 					<View class="fieldView" top="20">
 						<TextField id="amountFieldFiat" onKeypressed="updateAmountFiat" onChange="androidChangeValueFiat" focusable="true">
 							<KeyboardToolbar platform="ios">
 								<Toolbar>
 									<Items>
-										<Button title="Done" onClick="hideKeyboard"/>
+										<Button title="Done" onClick="hideKeyboard" />
 									</Items>
 								</Toolbar>
 							</KeyboardToolbar>
 						</TextField>
-						<Label id="fiatSymbol"></Label>
+						<Label id="fiatSymbol" />
 					</View>
-					<View class="seperator"/>
-					
+					<View class="seperator" />
 					<!--<Button id="recButton" class="buttonStyle" onClick="setRec"/>-->
-
 				</View>
-
 				<View id="buttonsView">
-				<Label id="statusLabel">L('label_loading')</Label>
-					<Button id="openChannelButton" class="buttonStyle" onClick="startOpenChannel"/>
+					<Label id="statusLabel">L('label_loading')</Label>
+					<Button id="openChannelButton" class="buttonStyle" onClick="startOpenChannel" />
 				</View>
-
 			</View>
-			 
 			<Label id="closeButton" onClick="close">L('label_close')</Label>
-		
-	</View>
-</Window>
+		</View>
+	</Window>
 </Alloy>

@@ -1,8 +1,15 @@
 var args = arguments[0] || {};
 var currencyFiat = Ti.App.Properties.getString("currency", "USD");
 $.blockingView.hide();
-var timer = null;
+$.qrcode.hide();
 
+var cryptoCurrency = globals.LNCurrencySat;
+var denomination = Ti.App.Properties.getString("denomination", "SAT");
+
+
+var qrcode = require("requires/qrcode");
+
+ 
 $.generateLabel.title = $.generateLabel.title.toUpperCase();
 
 
@@ -11,40 +18,40 @@ var FiatSymbol = globals.tiker.getFiatSymbol(currencyFiat);
 $.fiatSymbol.text = FiatSymbol;
 
 globals.console.log("fiat symbol", FiatSymbol);
-var timer = null;
+ 
 var fiat_conf = "";
-var fiatValue = globals.tiker.getFiatValue(currencyFiat, "BTC");
+var fiatValue = globals.tiker.getFiatValue(currencyFiat, denomination);
 
 globals.console.log("fiat value", fiatValue);
 
 
-function selectedFiat(){
+function selectedFiat() {
   coolDown = false;
   globals.console.log("selected fiat");
-  isFiatMode = true; 
+  isFiatMode = true;
 }
-function selectedCrypto(){
+function selectedCrypto() {
   coolDown = false;
   globals.console.log("selected crypto")
-  isFiatMode = false; 
+  isFiatMode = false;
 }
 var coolDown = false;
-function updateValues(){
-  if(coolDown){
+function updateValues() {
+  if (coolDown) {
     return;
   }
   if (!isFiatMode) {
     var inputValue = $.amount.value;
 
-    if(inputValue.startsWith("0") && !inputValue.startsWith("0.")){
-coolDown = true;
-$.amount.value = $.amount.value.substr(1,$.amount.value.length);
-inputValue = $.amount.value;
-coolDown = false;
+    if (inputValue.startsWith("0") && !inputValue.startsWith("0.")) {
+      coolDown = true;
+      $.amount.value = $.amount.value.substr(1, $.amount.value.length);
+      inputValue = $.amount.value;
+      coolDown = false;
     }
 
     var val = (inputValue * fiatValue).toFixed2(4);
-    if(isNaN(val)){
+    if (isNaN(val)) {
       val = 0;
     }
     if (fiatValue == 0) val = 0;
@@ -52,27 +59,31 @@ coolDown = false;
 
   } else {
 
-    if($.fiat.value.startsWith("0") && !$.fiat.value.startsWith("0.")){
+    if ($.fiat.value.startsWith("0") && !$.fiat.value.startsWith("0.")) {
       coolDown = true;
-      $.fiat.value = $.amount.value.substr(1,$.fiat.value.length);
+      $.fiat.value = $.amount.value.substr(1, $.fiat.value.length);
       coolDown = false;
-          }
+    }
 
-          
+
 
     var inputValue = parseFloat($.fiat.value) / fiatValue;
-    globals.console.log("inputvalue",inputValue);
+    globals.console.log("inputvalue", inputValue);
     coolDown = true;
-    val = inputValue.toFixed2(4);
-    if(isNaN(val)){
+    val = parseInt(inputValue + "");
+    if (isNaN(val)) {
       val = 0;
     }
     $.amount.value = val;
     coolDown = false;
   }
-    
+
 }
 
+coolDown = true;
+$.amount.value = "0";
+$.fiat.value = "0";
+coolDown = false;
 
 function pressedRequest() {
 
@@ -152,16 +163,55 @@ function pressedRequest() {
 
 }
 
+
+function checkPayment() {
+
+  if (OS_IOS) {
+    var rhash = globals.bitcoin.base64toHEX(currentRhash);
+  }
+  else {
+    var rhash = currentRhash;
+  }
+
+  globals.lnGRPC.lookUpInvoice(rhash, function (error, res) {
+
+    if (error == true) {
+
+      alert(res);
+
+      return;
+    }
+
+    globals.console.log(res);
+
+    if (res.settled == true) {
+      globals.updateCurrentInvoice(res);
+    } else {
+      alert(L("not_yet_paid"));
+    }
+
+
+
+  });
+
+
+}
+
+function closeQR() {
+  $.qrCodeInner.removeAllChildren();
+  $.qrcode.hide();
+}
+
 function showHideLoading(hide) {
   if (hide) {
     $.blockingView.hide();
-    $.sendSpinner.hide();
+    $.requestSpinner.hide();
     $.generateLabel.show();
     $.win.touchEnabled = true;
     return;
   }
   $.blockingView.show();
-  $.sendSpinner.show();
+  $.requestSpinner.show();
   $.generateLabel.hide();
   $.win.touchEnabled = false;
 }
@@ -205,7 +255,7 @@ if (OS_ANDROID) {
   });
 }
 
-$.memo.hintText = L("label_memo");
+$.memo.hintText = L("request_memo");
 $.memo.hintTextColor = "gray";
 
 $.background.animate({
@@ -220,17 +270,17 @@ if (OS_IOS) {
 }
 
 $.amount.value = "0";
-$.amountBTC.text = globals.LNCurrency;
- 
- 
+$.amountBTC.text = globals.LNCurrencySat;
 
- 
+
+
+
 function hideKeyboard(e) {
   $.fiat.blur();
   $.amount.blur();
 }
 
- 
+
 function addCommas(nStr) {
   nStr += "";
   x = nStr.split(".");
@@ -243,7 +293,7 @@ function addCommas(nStr) {
   return x1 + x2;
 }
 
- 
+
 var expiry = globals.defaultExpiry;
 $.time.text = L('expiry_time').format({
   "time": expiry
@@ -265,4 +315,12 @@ function minusExpiry() {
       "time": expiry
     });
   }
+}
+
+function copyClipboard() {
+  Ti.UI.Clipboard.setText(currentPaymentRequest);
+  globals.util.createDialog({
+    "message": L("label_copied"),
+    "buttonNames": [L("label_close")]
+  }).show();
 }

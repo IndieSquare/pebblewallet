@@ -16,6 +16,7 @@ if (Alloy.Globals.isiPhoneX) {
 var win = Ti.UI.createWindow({
   "orientationModes": [Ti.UI.PORTRAIT],
   "navBarHidden": true,
+  "fullscreen":true,
   "backgroundColor": "transparent",
   "theme": (OS_ANDROID) ? "Theme.AppCompat.Translucent.NoTitleBar" : null,
   "windowSoftInputMode": (OS_ANDROID) ? Ti.UI.Android.SOFT_INPUT_STATE_ALWAYS_HIDDEN : null

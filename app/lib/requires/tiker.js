@@ -8,7 +8,7 @@ module.exports = (function () {
   };
   globals.tikerType["BTC"] = {
     "USD": {
-    "last": 7998.75,
+    "last": 9140.01,
     "symbol": "$"
     },
     "AUD": {
@@ -59,7 +59,7 @@ module.exports = (function () {
     "symbol": "kr"
     },
     "JPY": {
-    "last": 869271.09,
+    "last": 989614.31,
     "symbol": "¥"
     },
     "KRW": {

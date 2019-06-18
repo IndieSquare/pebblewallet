@@ -1,5 +1,6 @@
 "#win" : {
-	backgroundColor: Alloy.Globals.windowColor
+	backgroundColor: Alloy.Globals.windowColor,
+	fullscreen: true,
 }
 "#walletName" : {
 	width: Ti.UI.SIZE,
@@ -117,19 +118,19 @@
 "#globeIcon":{
 	bottom:10,
 	left:10,
-width:40, 
+	width:40, 
 }  
 
 "#scanIcon":{
-		bottom:10,
+	bottom:10,
 	right:10,
-width:40, 
+	width:40, 
 }   
 
 "#networkIcon":{
-		top:20,
+	top:20,
 	left:10,
-width:30, 
+	width:30, 
 }  
 
 "#pattern":{

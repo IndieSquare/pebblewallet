@@ -62,7 +62,7 @@
 }
 "#value" : {
 	color: Alloy.Globals.fontColor1,
-	 right:0,
+	right:0,
 	textAlign: "right",
 	font: {
 		fontSize: 22,

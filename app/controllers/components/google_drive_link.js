@@ -1,13 +1,13 @@
 var args = arguments[0] || {};
 
 function startBackUp() {
-globals.console.log("starting backup");
+  globals.console.log("starting backup");
   $.backUpGoogleDrive.hide();
   $.backUpGoogleDriveSpinner.show();
 
   globals.util.backUpChannels(function (error, response) {
 
-    globals.console.log("backup res",response + " "+ error);
+    globals.console.log("backup res", response + " " + error);
     $.backUpGoogleDrive.show();
     $.backUpGoogleDriveSpinner.hide();
     if (error == true) {
@@ -175,12 +175,12 @@ function skip() {
       .getView()
       .open();
     close();
-  } else { 
-   
+  } else {
+
     globals.screenView = Alloy.createController("frame").getView();
     globals.screenView.open();
     $.win.close();
-   
+
   }
 }
 
@@ -231,8 +231,8 @@ function continueCreateAccount(channelBackUp) {
   var seedArray = globals.decryptedPassphrase.split(","); //convert to string array
   var password = globals.createPassword(globals.passCodeHash);
   globals.lnGRPC.createWallet(password, seedArray, globals.recoveryWindow, channelBackUp, function (error, response) {
-    console.log("create wallet", error);
-    console.log("create wallet", response);
+    globals.console.log("create wallet", error);
+    globals.console.log("create wallet", response);
     if (error == true) {
       alert(response);
       return;

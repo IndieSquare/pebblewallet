@@ -6,14 +6,12 @@ globals.hideNoTransactions = function () {
 }
 
  
- 
 $.noTransactions.hide(); 
 globals.clearTransactionsTable = function () {
   $.paymentList.data = [];
 }
 
-
-var walletConfirmedBalance = 0;
+ 
 var channelConfirmedBalance = 0;
 
 function setBalances() {
@@ -215,6 +213,9 @@ function addPayments(payments) {
 
   }
 
+  tableData.push(Ti.UI.createTableViewRow({ 
+    height: 200
+  }));
 
   $.paymentList.data = tableData;
 
@@ -273,6 +274,42 @@ globals.loadMainScreen = function (dontShowSpinner) {
 
   });
 
+}
+function startSubscribeInvoices() {
+  globals.console.log("starting subscribe invoice");
+  setTimeout(function () {
+    globals.lnGRPC.subscribeInvoices(function (error, response) {
+
+
+      globals.console.log("invoice subscription res", error, response);
+
+      if (error == false) {
+        globals.console.log("invoice res", response);
+
+        if (response.settled != undefined && response.settled == true) {
+
+          if (globals.updateCurrentInvoice != undefined) {
+            globals.updateCurrentInvoice(response);
+
+          }
+
+          var cellUpdateFunction = globals.invoiceUpdateFunctions[response.r_hash];
+          if (cellUpdateFunction != undefined) {
+            cellUpdateFunction(response);
+          }
+
+        }
+      } else {
+        if (response.indexOf("io.grpc.StatusRuntimeException:") != -1) { //some bug in grpc or btcpay if this error shows need to restart subscription invoice
+          globals.console.log("restart invoice subscription");
+          startSubscribeInvoices();
+        }
+
+
+      }
+
+    });
+  }, 1000);
 }
 
 function showPay(){

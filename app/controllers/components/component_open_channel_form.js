@@ -25,13 +25,13 @@ function setUp() {
 
   });
   currencyFiat = Ti.App.Properties.getString("currency", "USD");
-  $.amountFieldFiat.hintText = L('label_enter_funding_hint').format({
+  $.amountFieldFiat.hintText = L('label_enter_funding_hint_fiat').format({
     "currency": currencyFiat
   });
-  $.statusLabel.hide(); 
+  $.statusLabel.hide();
   $.openChannelButton.show()
   $.openChannelButton.title = "  " + L('open_channel_text') + "  ";
-   
+
   $.cryptoSymbol.text = globals.LNCurrencySat;
 
   $.fiatSymbol.text = currencyFiat
@@ -69,7 +69,6 @@ function updateAmountFiat() {
     }
 
     var amountString = $.amountFieldFiat.value;
-    console.log("fv", fiatValue);
 
     var FiatSymbol = globals.tiker.getFiatSymbol(currencyFiat);
 
@@ -120,7 +119,7 @@ function startOpenChannel() {
   globals.console.log(pubKey);
   globals.console.log(host);
   $.statusLabel.text = L("label_loading")
-  $.statusLabel.show(); 
+  $.statusLabel.show();
   $.openChannelButton.hide();
   $.amountField.blur();
   $.peerField.blur();
@@ -139,17 +138,15 @@ function startOpenChannel() {
 
       if (error == true && peerAlreadyAdded == false) {
 
-        var confView = Alloy.createController('components/conf_screen', {
+        Alloy.createController('components/conf_screen', {
           parent: $.getView(),
           errorMessage: res,
           type: "fail",
-          callback: function () { 
-            globals.listPayments();
-            close();
+          callback: function () {
           }
         }).getView();
 
-        $.statusLabel.hide() 
+        $.statusLabel.hide()
         $.openChannelButton.show()
 
       } else {
@@ -164,16 +161,14 @@ function startOpenChannel() {
             globals.console.log("error", error);
             if (error == true) {
               globals.console.log("is error", error);
-              var confView = Alloy.createController('components/conf_screen', {
+              Alloy.createController('components/conf_screen', {
                 parent: $.getView(),
                 errorMessage: res,
                 type: "fail",
-                callback: function () { 
-                  globals.listPayments();
-                  close();
+                callback: function () {
                 }
               }).getView();
-              $.statusLabel.hide() 
+              $.statusLabel.hide()
               $.openChannelButton.show()
             } else {
 
@@ -190,7 +185,7 @@ function startOpenChannel() {
                   Alloy.Globals.getChannels();
 
                 }
-              }, 2000)
+              }, 4000)
 
             }
 
@@ -222,7 +217,7 @@ var startScan = function () {
   });
 };
 
- 
+
 
 setUp();
 
@@ -263,4 +258,3 @@ if (OS_IOS) {
     "duration": 200
   });
 }
- 

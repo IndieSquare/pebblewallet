@@ -11,7 +11,7 @@ module.exports = (function () {
       try {
         globals.console.error(error);
         message = JSON.parse(error);
-      } catch (e) {  globals.console.error(e);}
+      } catch (e) { globals.console.error(e); }
     }
     globals.console.error("Error: " + e.error + ":" + e.code + ": " + JSON.stringify(message));
 
@@ -68,7 +68,7 @@ module.exports = (function () {
     return xhr;
   };
 
- 
+
 
   self.connectGET = function (params) {
 

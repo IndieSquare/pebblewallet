@@ -137,7 +137,7 @@
   <string name="label_enter_funding_hint">funding amount in satoshis</string>
   <string name="label_enter_funding_amt">Please enter a funding amount in satoshis</string>
   <string name="label_onchain_description">on chain funds</string>
-  <string name="label_channel_opening">Channel opening!</string>
+  <string name="label_channel_opening">channel opening!</string>
   <string name="label_details">details</string>
   <string name="label_deposit">deposit/withdraw</string>
   <string name="label_open_channel">open new channel</string>
@@ -294,4 +294,6 @@
   <string name="syncing_text_description">please wait whilst we sync your wallet to ensure its security and privacy, this may take a few minutes</string>
   <string name="label_wallet">onchain wallet</string>
   <string name="no_channels">you don't have any channels</string>
+  <string name="check_payment">check payment</string>
+  <string name="not_yet_paid">not yet paid</string>
 </resources>

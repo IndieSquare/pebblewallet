@@ -1,7 +1,8 @@
 
 "#win" : {
   "orientationModes": [Ti.UI.PORTRAIT],
-  "navBarHidden": true
+  "navBarHidden": true,
+  fullscreen: true,
 }
  
 "#win[platform=android]" : {

@@ -48,9 +48,16 @@
 	height: '100%',
 	width: '100%'
 }
+
+".topLine" : {
+	backgroundColor: "black", 
+	top: 0,
+	width: "100%",
+	height: 1
+}
+
 ".confBox" : {
-	backgroundColor: "transparent",
-	borderRadius: 10,
+	backgroundColor: "transparent", 
 	bottom: 0,
 	width: "100%",
 	height: 360
@@ -74,8 +81,8 @@
 	borderRadius: 20
 }
 "#confirmButton" : {
-	borderColor: Alloy.Globals.mainColor,
-	color: Alloy.Globals.mainColor,
+	borderColor: Alloy.Globals.confirmColor,
+	color: Alloy.Globals.confirmColor,
 	backgroundImage: "/images/image_blank.png"
 }
 "#cancelButton" : {

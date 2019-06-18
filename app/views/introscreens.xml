@@ -1,26 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Alloy>
 	<Window class="transparent" id="win">
 		<ScrollableView class="tifill" id="scrollableView" showPagingControl="false" scrollingEnabled="false">
 			<View class="tifill passphrase" id="passphrase">
 				<View class="groupings">
-					<ImageView class="icon" id="passphraseIcon" image="/images/icon_intro_passphrase.png"/>
+					<ImageView class="icon" id="passphraseIcon" image="/images/icon_intro_passphrase.png" />
 					<Label class="size18 white bold title">L("label_intro_passphrase_title")</Label>
 				</View>
 				<View class="tisize" layout="vertical">
 					<Label class="size15 white">L("label_intro_passphrase_text1")</Label>
 					<View class="passphraseBack">
 						<View class="passphraseBackIn">
-							<Label id="passphraseLabel"></Label>
+							<Label id="passphraseLabel" />
 						</View>
 					</View>
 					<Label class="size10 white textMargin">L("label_intro_passphrase_text2")</Label>
 					<Label class="size20 white bold center textMargin">L("label_intro_passphrase_text3")</Label>
 					<Label class="size10 white textMargin">L("label_intro_passphrase_text4")</Label>
 				</View>
-				<Button class="buttonStyle nextButton" id="nextButtonPassphrase" onClick="continueFromPassphrase"></Button>
-
+				<Button class="buttonStyle nextButton" id="nextButtonPassphrase" onClick="continueFromPassphrase" />
 			</View>
-
 		</ScrollableView>
 	</Window>
 </Alloy>
