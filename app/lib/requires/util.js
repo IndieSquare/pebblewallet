@@ -72,6 +72,7 @@ module.exports = (function () {
 
   self.makeAnimation = makeAnimation;
 
+  var scannerIsOpen = false;
   var overlay = Ti.UI.createView({
     backgroundColor: 'transparent',
     top: 0,
@@ -191,6 +192,9 @@ module.exports = (function () {
   var scannedBarcodes = {},
     scannedBarcodesCount = 0;
   Barcode.addEventListener("error", function (e) {
+    setTimeout(function(){
+      scannerIsOpen = false;
+    },1000);
     Ti.API.info("error received");
     if (currentV.error != undefined) {
       currentV.error({
@@ -199,6 +203,9 @@ module.exports = (function () {
     }
   });
   Barcode.addEventListener("cancel", function (e) {
+    setTimeout(function(){
+      scannerIsOpen = false;
+    },1000);
     if (currentV.cancel != undefined) {
       currentV.cancel({
         "cancel": e
@@ -206,6 +213,9 @@ module.exports = (function () {
     }
   });
   Barcode.addEventListener("success", function (e) {
+    setTimeout(function(){
+      scannerIsOpen = false;
+    },1000);
     globals.console.log("Success called with barcode: " + e.result);
 
     currentV.callback({
@@ -213,8 +223,12 @@ module.exports = (function () {
     });
 
   });
-
   self.openScanner = function (v) {
+    if(scannerIsOpen == true){
+      globals.console.log("already open");
+      return;
+    }
+    scannerIsOpen = true;
     currentV = v;
 
     function open() {
@@ -705,6 +719,8 @@ module.exports = (function () {
   self.getConfig = function (network) {
 
     var configString = "[Application Options]\n\n";
+
+    configString += "maxbackoff=2s\n"
     configString += "debuglevel=info\n"
     configString += "nolisten=1\n"
 
@@ -713,9 +729,6 @@ module.exports = (function () {
 
     configString += "no-macaroons=1\n"
     configString += "maxpendingchannels=2\n"
-
-    //configString += "[Routing]\n\n"
-    //configString += "routing.assumechanvalid=1\n"
 
     configString += "\n[Bitcoin]\n"
     configString += "bitcoin.active=1\n"
@@ -732,6 +745,9 @@ module.exports = (function () {
 
     configString += "bitcoin.node=neutrino\n"
 
+    configString += "\n[Routing]\n\n"
+    configString += "routing.assumechanvalid=1"
+
     configString += "\n[Autopilot]\n\n"
 
     if (Ti.App.Properties.getInt("autoPilot", 1) == 0) {
@@ -745,6 +761,7 @@ module.exports = (function () {
 
     configString += "autopilot.allocation=0.95\n"
     configString += "autopilot.minconfs=1\n"
+    configString += "autopilot.private=1\n"
     configString += "autopilot.allocation=0.95\n"
     configString += "autopilot.minchansize=20000\n"
     configString += "autopilot.maxchansize=16000000\n"
@@ -766,9 +783,8 @@ module.exports = (function () {
     if (customPeer != "") {
       neutrinoPeer = customPeer;
     }
-    configString += "neutrino.connect=" + neutrinoPeer + "\n";
-
-
+    configString += "neutrino.connect=" + neutrinoPeer + "\n"; 
+ 
     if (network == "testnet") {
       configString += "neutrino.addpeer=btcd-testnet.lightning.computer\n"
     } else {

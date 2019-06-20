@@ -36,6 +36,25 @@
 						<Label class="size10 gray description">L("label_settings_recoveryphrase_description")</Label>
 					</View>
 
+					<View id="passwordView" class="box" layout="vertical" onClick="viewPassword">
+						<View class="mainBox" id="passwordButton">
+							<ImageView class="pull-left icon" image="/images/icon_settings_passphrase.png"/> 
+							<Label class="size12 settingLabel">L("label_settings_password")</Label>
+						</View>
+						<Label class="size10 gray description">L("label_settings_password_description")</Label>
+					</View>
+
+
+
+					<View id="addressTypeView" class="box" layout="vertical" onClick="setAddressType">
+						<View class="mainBox" id="addressTypeButton">
+							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png"/>
+							<Label id="addressType"></Label>
+							<Label class="size12 settingLabel">L("label_settings_addresstype")</Label>
+						</View>
+						<Label class="size10 gray description">L("label_settings_addresstype_description")</Label>
+					</View>
+
 					<View id="logsView" class="box" layout="vertical" onClick="goToLogs">
 						<View class="mainBox" id="logsButton">
 							<ImageView class="pull-left icon" image="/images/icon_settings_signout.png"/>

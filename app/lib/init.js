@@ -5,7 +5,7 @@ globals.allwaysShowGuides = false;
 globals.callbackApp = null;
 globals.canProcessArgs = false;
 
-var logOff = false;
+var logOff = true;
 
 if (Alloy.CFG.isDevelopment != true) {
   logOff = true;

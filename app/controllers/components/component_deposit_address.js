@@ -1,6 +1,6 @@
 var qrcode = require("requires/qrcode");
 
-globals.lnGRPC.newAddress("np2wkh", function (error, response) {
+globals.lnGRPC.newAddress(Ti.App.Properties.getString("address_type","p2wkh"), function (error, response) {
 
   if (error == true) {
     globals.console.error("new add error", response);

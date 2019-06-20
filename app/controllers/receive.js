@@ -57,8 +57,8 @@ $.paymentList.refreshControl = control;
             var aTransaction = transactionsResponse[i];
             aTransaction.creation_date = aTransaction.time_stamp;
             aTransaction.isTransaction = true;
-            if(aTransaction.amount != undefined){
-              fitleredTransactions.push(aTransaction);
+            if(aTransaction.amount != undefined && aTransaction.amount != 0){
+              fitleredTransactions.push(aTransaction); 
             }
   
           }
@@ -103,6 +103,10 @@ $.paymentList.refreshControl = control;
           tableData.push(row);
       
         }
+
+
+        tableData.push(Ti.UI.createTableViewRow({
+          height: 1000})); 
       
         $.paymentList.data = tableData;
         globals.console.log("finished payments");

@@ -18,10 +18,7 @@ https://github.com/IndieSquare/android_lngrpc
 
 Lndmobile.framework
 https://github.com/IndieSquare/lnd/tree/mobile_support
-
-ISWLNGRPC.framework
-https://github.com/IndieSquare/ISWLNGRPC
-
+ 
 lnGRPCWrapper.framework
 https://github.com/IndieSquare/lnGRPCWrapper
 

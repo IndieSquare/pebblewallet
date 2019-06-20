@@ -298,4 +298,12 @@
   <string name="game_amount_exceeded">Authorized charge amount exceeded</string>
   <string name="not_yet_paid">not yet paid</string>
   <string name="check_payment">check payment</string>
+  <string name="label_settings_addresstype">deposit address type</string>
+  <string name="label_settings_addresstype_description">set the default deposit address format</string>
+  <string name="label_address_type">address format</string>
+  <string name="legacy_address">legacy address (np2wkh)</string>
+  <string name="bech32">recommended address (p2wkh bech32)</string>
+  <string name="label_settings_password">password</string>
+  <string name="label_settings_password_description">the password used to encrypt your passphrase (based on your pin)</string>
+  <string name="channel_request">{uri} is requesting to give you a channel\n\ncapacity {capacity} sat, push amount {push} sat</string>
 </resources>

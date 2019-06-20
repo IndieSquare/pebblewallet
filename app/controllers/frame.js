@@ -204,7 +204,7 @@ globals.loadMainScreen = function (dontShowSpinner) {
 }
 
 function startSubscribeInvoices() {
-  
+
   globals.console.log("starting subscribe invoice");
   setTimeout(function () {
     globals.lnGRPC.subscribeInvoices(function (error, response) {
@@ -377,36 +377,129 @@ globals.launchPayScan = function () {
 
 globals.continuePay = function (req) {
 
- 
+
   globals.console.log("req", req);
-  
-  if (req.toLowerCase().startsWith("lnurl")) {
-     
-    try { 
+
+  if (req.toLowerCase().startsWith("lnurl") || req.toLowerCase().startsWith("lightning:lnurl")) {
+
+    req = req.replace("lightning:", "");
+    req = req.replace("LIGHTNING:", "");
+
+    globals.console.log("lnurl", req);
+
+    try {
       var bech32 = require('vendor/util/bech32')
-      
+
       var dec = bech32.decode(req, 30000)
-       
+
       let bytes = globals.bitcoin.bitcoin.buffer.from(bech32.fromWords(dec.words))
-      
+
       var url = bytes.toString('utf8');
-   
-      xhr.open("GET", url);
-   
-      xhr.onload = function () {
-   
-        try {
-          var result = JSON.parse(this.responseText);
-        } catch (e) { 
-          alert(e);
+
+      globals.console.log("url", url);
+      var requestResult = null;
+      var callbackUrl = "";
+      Alloy.createController("confirmation_screen", {
+        "showLoading": true,
+        "message": "",
+        "cancel": function () {
+        },
+        "first": function (controller,errorCallback) {
+
+
+          var xhr = Ti.Network.createHTTPClient({
+            onload: function (e) {
+
+              globals.console.log("response data", this.responseText);
+              requestResult = JSON.parse(this.responseText); 
+
+               callbackUrl = requestResult.callback + "?k1=" + requestResult.k1 + "&remoteid=" + globals.currentPubkey + "&private=0";
+
+              globals.console.log("callback url", callbackUrl);
+
+              if (requestResult.tag == "channelRequest") {
+
+                var message = L("channel_request").format({ "uri": requestResult.callback, "capacity": requestResult.capacity, "push":requestResult.push })
+
+                  controller.setMessage(message);
+
+              }
+
+
+
+            },
+            onerror: function (e) {
+              Ti.API.debug(e.error);
+              alert(e.error);
+              errorCallback();
+            },
+            timeout: 5000 // milliseconds
+          });
+
+          xhr.open('GET', url);
+          xhr.send();
+        },
+        "task": function (callback, errorCallback) {
+
+          globals.lnGRPC.connectPeer(requestResult.uri,
+
+            function (error, res) {
+
+              globals.console.log("res", res);
+              globals.console.log("error", error);
+              var peerAlreadyAdded = false;
+
+              if ((res + "").indexOf("already connected") != -1) {
+
+                peerAlreadyAdded = true;
+
+              }
+
+              if (error == 1) {
+                error = true;
+              }
+
+              if (error == true && peerAlreadyAdded == false) {
+                errorCallback();
+                return;
+              }
+              
+              globals.console.log("requesting channel",callbackUrl);
+
+              var xhr = Ti.Network.createHTTPClient({
+                onload: function (e) {
+                  globals.console.log("response data", this.responseText);
+
+                  callback();
+
+                },
+                onerror: function (e) {
+                  Ti.API.debug(e.error);
+                  errorCallback();
+                  alert(e.error);
+
+                },
+                timeout: 8000 // milliseconds
+              });
+
+              xhr.open('GET', callbackUrl);
+              xhr.send();
+
+ 
+            });
         }
-         
-      },
-        xhr.onerror = function (e) {
-  alert(e);
-        };
-      xhr.send();
-  
+        ,
+        "confirm": function () {
+
+
+
+
+        },
+
+      });
+
+
+
 
 
     }

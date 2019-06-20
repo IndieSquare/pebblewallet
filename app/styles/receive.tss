@@ -43,6 +43,9 @@
 	color: Alloy.Globals.mainColorDarker,
 	borderColor: Alloy.Globals.mainColorDarker
 }
+"#generateDepositAddress[platform=android]" : {
+	top:10,
+}
 "#transactions":{
 	top:35,
 	left:10,
@@ -71,11 +74,12 @@
 	width: Ti.UI.SIZE,
 	height: Ti.UI.SIZE,
 	style: Ti.UI.ActivityIndicatorStyle.PLAIN,
-	top: 250
+	top: 270
 }
 
 "#noTransactions":{
 	top: 20,
+	color:"#afafaf",
 	font: {
 		fontSize: 18,
 		fontFamily: 'GillSans-light',
@@ -83,3 +87,8 @@
 	},
 	textAlign:"center"
 }
+
+".tableViewFooter[platform=android]":{
+	height:200,
+}
+ 

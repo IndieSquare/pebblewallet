@@ -1,6 +1,13 @@
 module.exports = (function() {
   var self = {};
 
+
+  self.handleWebLNURL = function(evalResult){
+    globals.lockBrowser(false);
+    globals.clearTask();
+    globals.continuePay(evalResult.data);
+  }
+
   self.handlePayLNRequest = function(evalResult) {
 
     var payReq = evalResult.data;

@@ -6,7 +6,7 @@ module.exports = (function () {
   var bip21lib = bitcoin.bip21;
 
   self.base64toHEX = function (base64) {
-
+    
     return bitcoin.buffer(base64, 'base64').toString('hex');
 
   };

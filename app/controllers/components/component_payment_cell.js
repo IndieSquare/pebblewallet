@@ -207,6 +207,7 @@ if (hops != "") {
 }
 
 function clickAction() {
+  globals.console.log(aPayment);
   if (isTransaction(aPayment)) {
     if (Alloy.Globals.network == "testnet") {
       Ti.Platform.openURL("https://www.blockstream.info/testnet/tx/" + aPayment.tx_hash);

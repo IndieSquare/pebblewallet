@@ -144,6 +144,52 @@ function autoPilot() {
 
 }
 
+
+
+
+
+$.addressType.text = Ti.App.Properties.getString("address_type","p2wkh")
+ 
+
+
+function setAddressType(){
+  var dialog = globals.util.createDialog({
+    title: L("label_address_type"),
+    message: L("label_settings_addresstype_description"),
+    buttonNames: [L("legacy_address"), L("label_close"), L("bech32")]
+  });
+  dialog.addEventListener("click", function (e) {
+    if (e.index != e.source.cancel) {
+
+      if(e.index == 0){
+        Ti.App.Properties.setString("address_type","np2wkh")
+      }
+      else if(e.index == 2){
+        Ti.App.Properties.setString("address_type","p2wkh")
+      }
+       
+      $.addressType.text = Ti.App.Properties.getString("address_type","p2wkh")
+
+    }
+  });
+  dialog.show();
+}
+
+function viewPassword(){
+  globals.auth.check({
+    title: "",
+    callback: function (e) {
+      if (e.success) {
+        setTimeout(function(){
+          alert(globals.userKey);
+        },1000);
+         
+      } 
+    }
+  });
+}
+ 
+
 function showPassPhrase() {
 
   globals.decryptedPassphrase = globals.decryptPassphrase(Ti.App.Properties.getString("passphrase", undefined), globals.userKey);

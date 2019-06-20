@@ -77,56 +77,6 @@ function listPayments(dontShowSpinner) {
         }
 
         addPayments(globals.transactions);
-     /* globals.console.log("get transactions");
-      globals.lnGRPC.getTransactions(function (error, transactionsResponse) {
-
-        if (error == true) {
-          globals.console.error("get transactions error", error);
-
-          alert("error getting transactions");
-          return;
-        }
-        $.initialLoading.hide();
-        globals.console.log("get transactions", transactionsResponse);
-
-        if (OS_IOS) {
-          if (transactionsResponse.transactions == undefined) {
-            transactionsResponse.transactions = [];
-          }
-
-          transactionsResponse = transactionsResponse.transactions;
-          delete transactionsResponse.transactions;
-        }
-
-        var fitleredTransactions = [];
-
-        var txids = JSON.parse(Ti.App.Properties.getString("txidsV1", "{}"));
-
-        var txidKeys = Object.keys(txids);
-
-        globals.console.log("txids", txids);
-
-        for (var i = 0; i < transactionsResponse.length; i++) {
-          var aTransaction = transactionsResponse[i];
-          aTransaction.creation_date = aTransaction.time_stamp;
-          aTransaction.isTransaction = true;
-          fitleredTransactions.push(aTransaction);
-
-        }
-        var transactions = paymentsAndInvoices.concat(fitleredTransactions).sort(function (x, y) {
-          return y.creation_date - x.creation_date;
-        });
-
-        globals.transactions = transactions;
-        globals.didGetTransactionsOnce = true;
-        if (globals.transactions.length == 0) {
-
-          $.noTransactions.show();
-        }
-
-        addPayments(transactions);
-
-      });*/
 
     });
 

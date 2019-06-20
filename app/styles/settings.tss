@@ -65,3 +65,13 @@
 	top: 5,
 	left: 10
 }
+
+"#addressType":{
+	right:10,
+	textAlign:"right",
+	font: {
+		fontSize: 14,
+		fontFamily: 'Gill Sans',
+		fontWeight: 'light'
+	}
+}

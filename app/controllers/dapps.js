@@ -472,6 +472,11 @@ function handleWebViewData(evalResult, error) {
 
         handleWebLN.handleGetPubKey(evalResult);
       }
+      else if (evalResult.type == "lnurl") {
+        lock = true;
+
+        handleWebLN.handleWebLNURL(evalResult);
+      }
     } else if (evalResult.chain == "utils") {
 
       if (evalResult.type == "useCamera") {
