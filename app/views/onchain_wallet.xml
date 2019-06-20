@@ -4,7 +4,8 @@
 		<View class="tifill background" id="background" />
 		<View class="mainView" id="mainView">
 			<ImageView id="pattern" image="/images/pattern.png" />
-			<ImageView class="overlay" />
+		<View platform="android" class="overlay" /> 
+		<ImageView platform="ios" class="overlay" />
 			<TableView class="paymentList" id="paymentList">
 				<HeaderView class="header">
 					<View class="topBarTop">

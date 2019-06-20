@@ -1638,24 +1638,30 @@ module.exports = (function () {
       globals.console.error(e);
     }
   }
-  self.openChannel = function (pub_key, amount, callback) {
+  
+  self.openChannel = function(pub_key, amount, callback) {
+
+    var isPrivate = false;
     var lndController = getController();
     if (OS_ANDROID) {
       amount = parseInt(amount + "");
 
       if (lndController == lndMobileWrapper) {
+
+        isPrivate = true;
+
         //lndmobile doesnt return response for some reason so check manually
         clearTimeout(currentPendingOpenChannelChecker);
-        checkIfChannelIsOpening(pub_key, function (opened) {
+        checkIfChannelIsOpening(pub_key, function(opened) {
           callback(false, {
             funding_txid_str: "na"
           })
         })
-        var bytes = lngrpc.makeOpenChannelRequest(pub_key, amount);
+        var bytes = lngrpc.makeOpenChannelRequest(pub_key, amount, isPrivate);
 
         globals.console.log("start oc");
         lndController.openChannel(bytes, new CallbackInterfaceLND({
-          eventFired: function (res) {
+          eventFired: function(res) {
 
             globals.console.log("callback oc", res);
             res = JSON.parse(res);
@@ -1677,8 +1683,8 @@ module.exports = (function () {
           }
         }));
       } else {
-        lndController.OpenChannel(pub_key, amount, new CallbackInterface({
-          eventFired: function (res) {
+        lndController.OpenChannel(pub_key, amount, isPrivate, new CallbackInterface({
+          eventFired: function(res) {
 
             globals.console.log(res);
             res = JSON.parse(res);
@@ -1697,16 +1703,21 @@ module.exports = (function () {
         }));
       }
     } else if (OS_IOS) {
+
+      if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
+        isPrivate = true;
+      }
+
       //lndmobile doesnt return response for some reason so check manually
       clearTimeout(currentPendingOpenChannelChecker);
-      checkIfChannelIsOpening(pub_key, function (opened) {
+      checkIfChannelIsOpening(pub_key, function(opened) {
         callback(false, {
           funding_txid_str: "na"
         })
       })
 
 
-      lndController.openChannelWithLocalFundingAmountPubkeyCallback(amount, pub_key, function (response, error) {
+      lndController.openChannelWithLocalFundingAmountPubkeyIsPrivateCallback(amount, pub_key, isPrivate, function(response, error) {
         globals.console.log("open channel", response);
         globals.console.error("open channel", error);
         var _res = formatResponse(error, response)

@@ -3,7 +3,8 @@
    <Window id="win">
       <View class="tifill background" id="background" />
       <View class="mainView" id="mainView">
-         <ImageView class="overlay" />
+		<View platform="android" class="overlay" /> 
+		<ImageView platform="ios" class="overlay" /> 
          <Label id="closeButton" onClick="close">L("label_goback")</Label>
          <ActivityIndicator id="firstLoader" />
          <TableView id="table">

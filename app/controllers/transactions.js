@@ -1,17 +1,18 @@
 globals.transactions = [];
+var didGetArguments = false;
 globals.didGetTransactionsOnce = false;
 var parent = null;
 globals.hideNoTransactions = function () {
   $.noTransactions.hide();
 }
 
- 
-$.noTransactions.hide(); 
+
+$.noTransactions.hide();
 globals.clearTransactionsTable = function () {
   $.paymentList.data = [];
 }
 
- 
+
 var channelConfirmedBalance = 0;
 
 function setBalances() {
@@ -97,12 +98,12 @@ function setBalances() {
 }
 
 function listPayments(dontShowSpinner = false) {
-  parent.connecting.visible = false; 
+  parent.connecting.visible = false;
   $.noTransactions.hide();
   if (dontShowSpinner == true) {
-     $.listTopSpinner.hide(); 
-  }else{
-    $.listTopSpinner.show(); 
+    $.listTopSpinner.hide();
+  } else {
+    $.listTopSpinner.show();
   }
   globals.lnGRPC.listInvoices(function (error, invoicesResponse) {
     globals.console.log("invoices", invoicesResponse);
@@ -159,7 +160,7 @@ function listPayments(dontShowSpinner = false) {
       }
 
       addPayments(transactions);
-      
+
 
     });
 
@@ -176,9 +177,9 @@ control.id = "refreshControl";
 
 control.addEventListener('refreshstart', function (e) {
 
-  
+
   setBalances();
-  listPayments(true);  
+  listPayments(true);
 
 
 });
@@ -213,7 +214,7 @@ function addPayments(payments) {
 
   }
 
-  tableData.push(Ti.UI.createTableViewRow({ 
+  tableData.push(Ti.UI.createTableViewRow({
     height: 200
   }));
 
@@ -225,18 +226,18 @@ function addPayments(payments) {
 }
 exports.API = {
   totalBalanceFiat: $.totalBalanceFiat,
-  totalBalance:$.totalBalance,
-  setParentController:function(par){ 
+  totalBalance: $.totalBalance,
+  setParentController: function (par) {
     parent = par
   },
-  setBalances:setBalances
+  setBalances: setBalances
 };
 
 globals.loadMainScreen = function (dontShowSpinner) {
   globals.console.log("loading main screen");
   globals.lnGRPC.getChannelBalance(function (error, response) {
-     
-    
+
+
     if (error == true) {
       globals.console.log("error", error);
     }
@@ -248,10 +249,10 @@ globals.loadMainScreen = function (dontShowSpinner) {
       channelConfirmedBalance = parseInt(response.balance);
     }
 
-  
+
     totalConfirmedBalance = channelConfirmedBalance;
 
-    setBalances(true);  
+    setBalances(true);
 
     $.mainView.show();
 
@@ -312,10 +313,10 @@ function startSubscribeInvoices() {
   }, 1000);
 }
 
-function showPay(){
+function showPay() {
   parent.launchPayScan();
 }
 
-function showReceive(){
+function showReceive() {
   Alloy.createController("request").getView().open();
 }

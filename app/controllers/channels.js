@@ -1,10 +1,13 @@
 $.firstLoader.show();
 
-$.mainView.left = globals.util.getDisplayWidth() * -1;
+
+if(OS_IOS){
+  $.mainView.left = globals.util.getDisplayWidth() * -1;
+}
 
 $.firstLoader.top = Alloy.Globals.btclnTopHeight - 30;
 
-$.table.height = globals.util.getDisplayHeight() - Alloy.Globals.btclnTopBarHeight - globals.switchTabHeight;
+//$.table.height = globals.util.getDisplayHeight() - Alloy.Globals.btclnTopBarHeightt;
 
 Alloy.Globals.openChannels = [];
 Alloy.Globals.pendingChannels = [];
@@ -106,9 +109,6 @@ function openChannelForm() {
 }
 
 function updateChannelsList() {
-
-  $.table.height = globals.util.getDisplayHeight() - Alloy.Globals.btclnTopBarHeight - globals.switchTabHeight;
-
 
   var tableData = [];
   var sections = [];

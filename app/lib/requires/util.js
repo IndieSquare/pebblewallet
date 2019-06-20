@@ -707,6 +707,7 @@ module.exports = (function () {
   self.getConfig = function (network) {
 
     var configString = "[Application Options]\n\n";
+    configString += "maxbackoff=2s\n"
     configString += "debuglevel=info\n"
     configString += "nolisten=1\n"
 
@@ -748,6 +749,7 @@ module.exports = (function () {
 
     configString += "autopilot.allocation=0.95\n" 
     configString += "autopilot.minconfs=1\n"
+    configString += "autopilot.private=1\n"
     configString += "autopilot.allocation=0.95\n"
     configString += "autopilot.minchansize=20000\n"
     configString += "autopilot.maxchansize=16000000\n"
@@ -769,6 +771,7 @@ module.exports = (function () {
     if (customPeer != "") {
       neutrinoPeer = customPeer;
     } 
+    
     configString += "neutrino.connect=" + neutrinoPeer + "\n";
 
 

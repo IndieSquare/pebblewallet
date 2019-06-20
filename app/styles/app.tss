@@ -181,3 +181,24 @@
 		fontSize: 40
 	}
 }
+".overlay[platform=android]":{
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL,
+	bottom:-600,
+	touchEnabled:false,
+	backgroundGradient: {
+        type: 'linear',
+        startPoint: { x: '0%', y: '100%' },
+        endPoint: { x: '0%', y: '0%' },
+        colors: [ { color: Alloy.Globals.mainColor, offset: 0.0}, { color: 'transparent', offset: 0.7 } ],
+    } 
+ 
+}
+
+".overlay[platform=ios]":{
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL, 
+	touchEnabled:false,
+	image:"/images/gradientOverlay.png"
+ 
+}

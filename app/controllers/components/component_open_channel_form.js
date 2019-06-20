@@ -224,12 +224,6 @@ setUp();
 
 
 function close(e) {
-  globals.console.log("closed");
-
-  if (OS_ANDROID) {
-    $.win.close();
-    return;
-  }
 
   $.background.animate({
     "opacity": 0,
@@ -251,10 +245,9 @@ $.background.animate({
   "opacity": 0.5,
   "duration": 200
 });
-
-if (OS_IOS) {
+ 
   $.mainView.animate({
     "top": 0,
     "duration": 200
   });
-}
+ 

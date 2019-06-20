@@ -117,3 +117,19 @@
   width: 60,
   backgroundImage: "/images/image_blank.png"
 }
+
+"#c[platform=android]" : {
+  borderWidth: 0,
+  font: {
+    fontSize: 12
+  },
+  width: 60
+}
+"#e[platform=android]" : {
+  borderWidth: 0,
+  font: {
+    fontSize: 12
+  },
+  width: 60,
+  backgroundImage: "/images/image_blank.png"
+}

@@ -145,13 +145,7 @@
 ".paymentList[platform=android]" : {
 	selectionStyle: 'none'
 }
-
-".overlay":{
-	backgroundImage:"/images/gradientOverlay.png",
-	width: Ti.UI.FILL,
-	height: Ti.UI.FILL,
-	touchEnabled:false,
-}
+ 
 
 ".seperator1":{
 	bottom:80,
@@ -165,3 +159,6 @@
   bottom:0, 
   height: Ti.UI.SIZE,
 }
+
+
+ 

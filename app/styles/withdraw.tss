@@ -89,6 +89,8 @@
 "#amount":{
 	backgroundColor:"transparent",
 	width:Ti.UI.SIZE,
+
+	height:Ti.UI.SIZE, 
 	keyboardType: Ti.UI.KEYBOARD_TYPE_DECIMAL_PAD,
 	padding: {
 		right: 7,
@@ -114,7 +116,7 @@
 	}
 }
 ".fiatView":{
-	top:45
+	top:0
 }
 
 ".fiat" : {
@@ -125,6 +127,7 @@
 	},
 	textAlign:"center",
 	width:Ti.UI.SIZE, 
+	height:Ti.UI.SIZE, 
 	backgroundColor:"transparent",
 	keyboardType: Ti.UI.KEYBOARD_TYPE_DECIMAL_PAD,
 	padding: {
@@ -215,10 +218,6 @@
 	right: 10,
 	textAlign:"right"
 }
+ 
 
-".overlay":{
-	backgroundImage:"/images/gradientOverlay.png",
-	width: Ti.UI.FILL,
-	height: Ti.UI.FILL,
-	touchEnabled:false,
-}
+ 

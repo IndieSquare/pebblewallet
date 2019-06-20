@@ -2,6 +2,8 @@
 	backgroundColor: Alloy.Globals.windowColor,
 	fullscreen: true,
 }
+
+ 
 "#walletName" : {
 	width: Ti.UI.SIZE,
 	left: 10,
@@ -14,7 +16,7 @@
 	textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT
 }
 
-"#syncStatus" : { 
+"#syncStatus" : {  
 	width: Ti.UI.SIZE,
 	height: Ti.UI.SIZE,
 	layout:"vertical", 
@@ -108,13 +110,6 @@
 	style: Ti.UI.ActivityIndicatorStyle.BIG, 
 }
  
-".overlay":{
-	backgroundImage:"/images/gradientOverlay.png",
-	width: Ti.UI.FILL,
-	height: Ti.UI.FILL,
-	touchEnabled:false,
-}
-
 "#globeIcon":{
 	bottom:10,
 	left:10,
@@ -150,4 +145,4 @@
 "#depositButton[if=Alloy.Globals.isiPhoneX]" : {
 	top: 30
 }
- 
+

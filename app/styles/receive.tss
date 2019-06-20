@@ -125,10 +125,5 @@
 	opacity:0.7,
 	backgroundColor:"#454647"
 }
-
-".overlay":{
-	backgroundImage:"/images/gradientOverlay.png",
-	width: Ti.UI.FILL,
-	height: Ti.UI.FILL,
-	touchEnabled:false,
-}
+ 
+ 

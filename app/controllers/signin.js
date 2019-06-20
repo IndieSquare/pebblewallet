@@ -95,12 +95,14 @@ function createAccount(passphrase, fromPrevious) {
         
                 
                 globals.console.log("closing sign");
+
+                if(OS_IOS){
                 $.signin.close();
+                }
                 
                 globals.screenView = Alloy.createController("frame").getView();
                 globals.screenView.open();
-                
-       
+  
               }
         
             });
@@ -387,6 +389,10 @@ function createNewAccount() {
 
 function hasPassphrase() {
 
+  alert("not yet implemented");
+  return;
+
+
   if (!isMoving) {
     isMoving = true;
 
@@ -519,8 +525,6 @@ function showLoading(show) {
 }
 
 function signInFromExisting(passphrase) {
-alert("not yet implemented");
-  return;
 
   /*double check all the words are valid*/
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Alloy>
-	<Window class="container" onPostlayout="didLoad" id="win">
+	<Window class="container" onPostlayout="didLoad" id="win"> 
 		<ImageView id="pattern" image="/images/pattern.png" />
 		<Require id="transactions" src="transactions" />
 		<View id="syncStatus">
@@ -14,13 +14,14 @@
 		<View id="nodeInfo">
 			<Require src="node_info" />
 		</View>
-		<ImageView class="overlay" />
+		<View platform="android" class="overlay" /> 
+		<ImageView platform="ios" class="overlay" /> 
 		<ImageView id="globeIcon" image="/images/globeIcon.png" onClick="loadDiscover" />
 		<ImageView id="scanIcon" image="/images/scanIcon.png" onClick="scanNormal" />
 		<ImageView id="networkIcon" image="/images/networkSymbol.png" onClick="goToChannels" />
 		<Label id="depositButton" onClick="goToDeposit">L('deposit')</Label>
 		<View id="discover">
 			<Require src="dapps" />
-		</View>
+		</View> 
 	</Window>
 </Alloy>

@@ -6,6 +6,7 @@
 	height: 0,
 	visible: false,
 	top: 0,
+    style: Ti.UI.ActivityIndicatorStyle.BIG,
 	indicatorColor:Alloy.Globals.mainColor
 }
 ".logo" : {
@@ -69,7 +70,7 @@
 	color:"black",
 	font: {
 		fontFamily: Alloy.Globals.lightFont,
-		fontSize: 25
+		fontSize: 20
 	}
 }
 ".recoverTitle" : {
@@ -141,13 +142,7 @@
 	visible: false
 }
  
-".overlay":{
-	backgroundImage:"/images/gradientOverlay.png",
-	width: Ti.UI.FILL,
-	height: "60%",
-	bottom:0,
-	touchEnabled:false,
-}
+ 
 "#pattern":{
 	top:0,
 	width:"100%", 

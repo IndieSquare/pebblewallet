@@ -1,8 +1,6 @@
 var args = arguments[0] || {};
 var currencyFiat = Ti.App.Properties.getString("currency", "USD");
-$.blockingView.hide();
-$.qrcode.hide();
-
+  
 var cryptoCurrency = globals.LNCurrencySat;
 var denomination = Ti.App.Properties.getString("denomination", "SAT");
 
@@ -257,17 +255,18 @@ if (OS_ANDROID) {
 
 $.memo.hintText = L("request_memo");
 $.memo.hintTextColor = "gray";
-
+ 
 $.background.animate({
   "opacity": 0.5,
   "duration": 200
 });
+ 
 if (OS_IOS) {
   $.mainView.animate({
     "left": 0,
     "duration": 200
   });
-}
+} 
 
 $.amount.value = "0";
 $.amountBTC.text = globals.LNCurrencySat;

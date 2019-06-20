@@ -5,7 +5,8 @@
 		<View class="mainView" id="mainView">
 			<ImageView id="pattern" image="/images/pattern.png" />
 			<View class="receiveViewOuter">
-				<ImageView class="overlay" />
+				<View platform="android" class="overlay" /> 
+				<ImageView platform="ios" class="overlay" />
 				<Label id="closeButton" onClick="close">L("label_goback")</Label>
 				<Label id="walletButton" onClick="goToWallet">L("label_wallet")</Label>
 				<ActivityIndicator id="spinner" />

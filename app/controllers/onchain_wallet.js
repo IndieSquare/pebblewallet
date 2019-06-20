@@ -1,12 +1,12 @@
 
-  
+
 var walletConfirmedBalance = 0;
 var walletUnconfirmedBalance = 0;
- 
+
 setBalances();
 
 globals.currentOnchainBalance = 0;
- 
+
 
 function close(e) {
   globals.console.log("closed");
@@ -43,16 +43,16 @@ if (OS_IOS) {
     "duration": 200
   });
 }
- 
+
 $.totalBalanceFiat.hide();
 $.totalBalance.hide();
-function getWalletBalance() { 
+function getWalletBalance() {
   $.totalBalanceFiat.hide();
   $.totalBalance.hide();
   globals.console.log("getting wallet balance");
 
   globals.lnGRPC.getWalletBalance(function (error, response) {
-     
+
     $.onchain_description.show();
     if (error == true) {
       globals.console.error("error", error);
@@ -83,7 +83,7 @@ function getWalletBalance() {
 }
 
 setTimeout(function () {
-   getWalletBalance();
+  getWalletBalance();
 }, 300);
 
 function setBalances() {
@@ -173,9 +173,9 @@ function setBalances() {
   $.totalBalanceFiat.attributedString = attrTotal;
 
 }
- 
- 
- 
+
+
+
 
 $.noTransactions.hide();
 
@@ -195,90 +195,90 @@ var didLoadOnce = false;
 $.paymentList.refreshControl = control;
 
 
-      function loadTransactions(){
+function loadTransactions() {
 
-        globals.console.log("get transactions");
-        if(didLoadOnce == false){
-          didLoadOnce = true; 
-        }
-        globals.lnGRPC.getTransactions(function (error, transactionsResponse) {
+  globals.console.log("get transactions");
+  if (didLoadOnce == false) {
+    didLoadOnce = true;
+  }
+  globals.lnGRPC.getTransactions(function (error, transactionsResponse) {
 
-          if (error == true) {
-            globals.console.error("get transactions error", error);
-  
-            alert("error getting transactions");
-            return;
-          } 
-          globals.console.log("get transactions", transactionsResponse);
-  
-          if (OS_IOS) {
-            if (transactionsResponse.transactions == undefined) {
-              transactionsResponse.transactions = [];
-            }
-  
-            transactionsResponse = transactionsResponse.transactions;
-            delete transactionsResponse.transactions;
-          }
-  
-          var fitleredTransactions = [];
-   
-          for (var i = 0; i < transactionsResponse.length; i++) {
-            var aTransaction = transactionsResponse[i];
-            aTransaction.creation_date = aTransaction.time_stamp;
-            aTransaction.isTransaction = true;
-            if(aTransaction.amount != undefined && aTransaction.amount != 0){
-              fitleredTransactions.push(aTransaction); 
-            }
-  
-          }
+    if (error == true) {
+      globals.console.error("get transactions error", error);
 
-            if(fitleredTransactions.reverse != undefined){
-              fitleredTransactions = fitleredTransactions.reverse();
-            } 
-          if (fitleredTransactions.length == 0) { 
-            $.noTransactions.show();
-          }
-  
-          addPayments(fitleredTransactions);
-  
-        });
-      }
-      
+      alert("error getting transactions");
+      return;
+    }
+    globals.console.log("get transactions", transactionsResponse);
 
-      function addPayments(payments) { 
-        control.endRefreshing();
-        var tableData = [];
-      
-        for (var i = 0; i < payments.length; i++) {
-          var aPayment = payments[i];
-      
-          var args = {
-            "id": i,
-            "payment": aPayment,
-      
-          };
-      
-          var row = Ti.UI.createTableViewRow({
-            className: 'payment',
-            backgroundSelectedColor: 'transparent',
-            rowIndex: i,
-            height: Ti.UI.SIZE
-          });
-      
-          row.add(Alloy.createController('components/component_payment_cell', args).getView());
-      
-          tableData.push(row);
-      
-        }
- 
-      
-        $.paymentList.data = tableData;
-        globals.console.log("finished payments");
+    if (OS_IOS) {
+      if (transactionsResponse.transactions == undefined) {
+        transactionsResponse.transactions = [];
       }
 
+      transactionsResponse = transactionsResponse.transactions;
+      delete transactionsResponse.transactions;
+    }
 
-      loadTransactions();
+    var fitleredTransactions = [];
 
-      function showSend(){
-        Alloy.createController("withdraw").getView().open();
+    for (var i = 0; i < transactionsResponse.length; i++) {
+      var aTransaction = transactionsResponse[i];
+      aTransaction.creation_date = aTransaction.time_stamp;
+      aTransaction.isTransaction = true;
+      if (aTransaction.amount != undefined && aTransaction.amount != 0) {
+        fitleredTransactions.push(aTransaction);
       }
+
+    }
+
+    if (fitleredTransactions.reverse != undefined) {
+      fitleredTransactions = fitleredTransactions.reverse();
+    }
+    if (fitleredTransactions.length == 0) {
+      $.noTransactions.show();
+    }
+
+    addPayments(fitleredTransactions);
+
+  });
+}
+
+
+function addPayments(payments) {
+  control.endRefreshing();
+  var tableData = [];
+
+  for (var i = 0; i < payments.length; i++) {
+    var aPayment = payments[i];
+
+    var args = {
+      "id": i,
+      "payment": aPayment,
+
+    };
+
+    var row = Ti.UI.createTableViewRow({
+      className: 'payment',
+      backgroundSelectedColor: 'transparent',
+      rowIndex: i,
+      height: Ti.UI.SIZE
+    });
+
+    row.add(Alloy.createController('components/component_payment_cell', args).getView());
+
+    tableData.push(row);
+
+  }
+
+
+  $.paymentList.data = tableData;
+  globals.console.log("finished payments");
+}
+
+
+loadTransactions();
+
+function showSend() {
+  Alloy.createController("withdraw").getView().open();
+}

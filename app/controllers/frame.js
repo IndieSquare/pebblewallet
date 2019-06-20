@@ -18,12 +18,7 @@ globals.lnConnected = false;
 globals.fiatMode = false;
 
 globals.updateValuesFuncs = [];
-
-if (OS_ANDROID) {
-  $.walletName.top = Alloy.Globals.infoTop + 10;
-  $.syncStatus.top = Alloy.Globals.infoTop + 10;
-}
-
+ 
 function setTestnet() {
   globals.console.log("setting testnet");
   Alloy.Globals.network = "testnet";
@@ -248,7 +243,7 @@ globals.continuePay = function (req) {
               globals.console.log("response data", this.responseText);
               requestResult = JSON.parse(this.responseText);
 
-              callbackUrl = requestResult.callback + "?k1=" + requestResult.k1 + "&remoteid=" + globals.currentPubkey + "&private=0";
+              callbackUrl = requestResult.callback + "?k1=" + requestResult.k1 + "&remoteid=" + globals.currentPubkey + "&private=1";
 
               globals.console.log("callback url", callbackUrl);
 
@@ -486,8 +481,7 @@ if (globals.unlocked == true) {
   });
 }
 
-function continueLoad() {
-
+function continueLoad() { 
   startLoadFromCache()
 
 }
@@ -530,9 +524,7 @@ function startLoadFromCache() {
     }
 
     $.connecting.visible = true;
-    $.syncStatus.visible = false;
-    // $.statusText.text = L("initializing_wallet");
-
+    $.syncStatus.visible = false; 
 
     if (globals.alreadyUnlocked == false) {
       globals.console.log("starting lnd mobile");
@@ -540,8 +532,8 @@ function startLoadFromCache() {
       $.connecting.visible = true;
       globals.lnGRPC.startLNDMobile(function (error, response) {
 
-        console.log("lndMobile1", error);
-        console.log("lndMobile1", response);
+        globals.console.log("lndMobile1", error);
+        globals.console.log("lndMobile1", response);
 
         if (error == true) {
           alert(response);
@@ -549,8 +541,8 @@ function startLoadFromCache() {
         }
 
         globals.lnGRPC.unlockWallet(globals.createPassword(globals.passCodeHash), -1, "", function (error, response) {
-          console.log("unlock wallet err ", error);
-          console.log("unlock wallet", response);
+          globals.console.log("unlock wallet err ", error);
+          globals.console.log("unlock wallet", response);
 
           if (error == true) {
             alert(response);
@@ -692,9 +684,9 @@ function checkSyncStatus() {
         nextCheckTime = 6000;
       }
 
-
-
-      var percentageText = percentage + "%";
+      var percentageString = percentage + "";
+      var percentSign = "%"; 
+      var percentageText = percentageString + percentSign;
       var attrTotal = Ti.UI.createAttributedString({
         text: percentageText,
         attributes: [{
@@ -704,7 +696,7 @@ function checkSyncStatus() {
             fontFamily: Alloy.Globals.lightFont,
             fontWeight: "light",
           },
-          range: [percentageText.indexOf(percentage + ""), percentage + "".length]
+          range: [percentageText.indexOf(percentageString), percentageString.length]
         },
         {
           type: Ti.UI.ATTRIBUTE_FONT,
@@ -713,7 +705,7 @@ function checkSyncStatus() {
             fontFamily: Alloy.Globals.lightFont,
             fontWeight: "light",
           },
-          range: [percentageText.indexOf("%"), "%".length]
+          range: [percentageText.indexOf(percentSign), percentSign.length]
         },
         ]
       });

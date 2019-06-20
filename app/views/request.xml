@@ -2,14 +2,15 @@
 <Alloy>
 	<Window id="win">
 		<View class="transparent">
-			<View class="tifill background" id="background" />
+			<View class="background" id="background" />
 			<View class="tifill mainView" id="mainView">
 				<ImageView id="pattern" image="/images/pattern.png" />
-				<ImageView class="overlay" />
-				<View class="outer">
-					<View class="amounts">
-						<View class="tisize pull-bottom" layout="vertical">
-							<View class="tisize">
+				<View platform="android" class="overlay" /> 
+				<ImageView platform="ios" class="overlay" />
+				<View class="outer transparent">
+					<View class="amounts transparent">
+						<View class="tisize transparent" layout="vertical">
+							<View class="tisize transparent" layout="vertical">
 								<View class="tisize amountView" id="amountView" layout="horizontal">
 									<TextField class="amount" id="amount" onFocus="selectedCrypto" onChange="updateValues">
 										<KeyboardToolbar platform="ios">

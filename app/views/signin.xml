@@ -45,6 +45,7 @@
          </View>
       </View>
 	  </ScrollView>
-      <ImageView class="overlay" />
+		<View platform="android" class="overlay" /> 
+		<ImageView platform="ios" class="overlay" />
    </Window>
 </Alloy> 

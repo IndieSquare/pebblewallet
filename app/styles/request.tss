@@ -8,13 +8,17 @@
 	"windowSoftInputMode": Ti.UI.Android.SOFT_INPUT_STATE_ALWAYS_HIDDEN
 }
 ".background" : {
-	backgroundColor: "#000000",
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL,
+	backgroundColor: "black",
 	opacity: 0
 }
  
 "#blockingView" : {
 	width: Ti.UI.FILL,
-	height: Ti.UI.FILL
+	height: Ti.UI.FILL,
+	"backgroundColor": "transparent",
+	visible:false,
 }
 
 ".seperator1":{ 
@@ -103,9 +107,10 @@
 	autocapitalization:Titanium.UI.TEXT_AUTOCAPITALIZATION_NONE,
 	autocorrect:false
 }
-"#amount":{
+"#amount":{ 
 	backgroundColor:"transparent",
 	width:Ti.UI.SIZE,
+	height:Ti.UI.SIZE,
 	keyboardType: Ti.UI.KEYBOARD_TYPE_DECIMAL_PAD,
 	padding: {
 		right: 7,
@@ -123,6 +128,9 @@
 	},
 	bottom: 5
 }
+".inner":{
+	backgroundColor:"transparent",
+}
 ".amount":{
 	font: {
 		fontSize: 60,
@@ -131,7 +139,7 @@
 	}
 }
 ".fiatView":{
-	top:45
+	top:0
 }
 
 ".fiat" : {
@@ -140,6 +148,7 @@
 		fontFamily: 'GillSans-Light',
 		fontWeight: 'light'
 	},
+	height:Ti.UI.SIZE,
 	textAlign:"center",
 	width:Ti.UI.SIZE, 
 	backgroundColor:"transparent",
@@ -232,14 +241,7 @@
 	right: 10,
 	textAlign:"right"
 }
-
-".overlay":{
-	backgroundImage:"/images/gradientOverlay.png",
-	width: Ti.UI.FILL,
-	height: Ti.UI.FILL,
-	touchEnabled:false,
-}
-
+ 
 
 "#closeButton" : {
 	top: 0,
@@ -274,7 +276,9 @@
 
 "#qrcode" : {
 	width: Ti.UI.FILL,
-	height: Ti.UI.FILL
+	height: Ti.UI.FILL,
+	visible:false,
+	"backgroundColor": "transparent",
 }
 ".qrCodeBackground" : {
 	width: Ti.UI.FILL,
