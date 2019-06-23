@@ -529,7 +529,7 @@ globals.lockBrowser = function (val) {
 globals.loadWebView = function () {
   if (globals.loadedWebView == false) {
     globals.loadedWebView = true;
-    if (globals.stopHyperloop == false) {
+    if (globals.enableLiveView == false) {
       loadWebView();
     }
   }

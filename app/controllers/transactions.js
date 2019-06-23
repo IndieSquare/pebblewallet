@@ -177,9 +177,7 @@ control.id = "refreshControl";
 
 control.addEventListener('refreshstart', function (e) {
 
-
-  setBalances();
-  listPayments(true);
+  globals.loadMainScreen(); 
 
 
 });

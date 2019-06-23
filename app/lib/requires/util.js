@@ -773,16 +773,14 @@ module.exports = (function () {
     } 
     
     configString += "neutrino.connect=" + neutrinoPeer + "\n";
-
-
+ 
     if (network == "testnet") {
      configString += "neutrino.addpeer=btcd-testnet.lightning.computer\n" 
     }else{
       configString += "neutrino.addpeer=faucet.lightning.community\n"; 
       
     }
-
-
+ 
     if(OS_ANDROID){
     globals.console.log("config string", configString);
     }

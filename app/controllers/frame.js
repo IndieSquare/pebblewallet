@@ -504,10 +504,7 @@ globals.startLNDMobile = function () {
 function startLoadFromCache() {
   globals.console.log("starting");
   globals.nodeInfo = null;
-  $.walletName.text = "";
-  if (globals.stopHyperloop == true) {
-    return;
-  }
+  $.walletName.text = ""; 
 
   if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
 

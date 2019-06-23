@@ -4,7 +4,7 @@ globals.unlocked = false;
 globals.dataDir = "";
 globals.lndMobileStarted = false;
 globals.alreadyUnlocked = false;
-globals.stopHyperloop = false; //needed as live view doesnt work when hyperloop libs are used so slows down dev
+globals.enableLiveView = false; //needed as live view doesnt work when hyperloop libs are used so slows down dev
 globals.lnGRPC = require("/requires/lnrpc_controller"); 
 globals.currentPubkey = "";
 if (Ti.App.Properties.getString("mode", "") == "lndMobile") {

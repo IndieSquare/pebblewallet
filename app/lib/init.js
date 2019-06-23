@@ -5,7 +5,7 @@ globals.allwaysShowGuides = false;
 globals.callbackApp = null;
 globals.canProcessArgs = false;
 
-var logLevel = "none";
+var logLevel = "debug";
 
 globals.blockHeight = {
   testnet:1541579,

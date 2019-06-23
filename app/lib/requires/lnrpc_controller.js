@@ -25,6 +25,11 @@ module.exports = (function () {
   }
 
   self.checkCapacity = function () {
+
+    if(globals.enableLiveView == true){
+      return true;
+    } 
+    
     var freeSpace = 0;
     if (OS_IOS) {
       freeSpace = LNUtils.getFreeDiskSpace() + "";
@@ -94,7 +99,13 @@ module.exports = (function () {
     return [error, response];
   }
 
+  if(globals.enableLiveView == false){
+   
+
   if (OS_ANDROID) {
+
+    
+
     lngrpc = require('Lngrpc');
     var CallbackInterface = require("CallbackInterface");
 
@@ -139,7 +150,15 @@ module.exports = (function () {
 
   }
 
+}
+
   self.signOutGoogleDrive = function () {
+
+    if(globals.enableLiveView == true){
+      return;
+    } 
+
+
     if (OS_IOS) {
 
       try {
@@ -157,6 +176,10 @@ module.exports = (function () {
 
   self.loadLogs = function (directory) {
 
+    if(globals.enableLiveView == true){
+      return;
+    } 
+
     if (OS_ANDROID) {
 
       return lndMobileWrapper.readLogs(directory);
@@ -166,6 +189,12 @@ module.exports = (function () {
   }
 
   self.linkGoogleDrive = function (callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,{});
+      return;
+    } 
+
     if (OS_IOS) {
 
       try {
@@ -223,6 +252,11 @@ module.exports = (function () {
 
   var isUploading = false;
   self.uploadGoogleDrive = function (data, callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,{});
+      return;
+    } 
 
     if (isUploading == true) {
       callback(true, L("already_uploading"));
@@ -293,7 +327,10 @@ module.exports = (function () {
   }
 
   self.downloadGoogleDrive = function (folderName, shortFileName, callback) {
-
+    if(globals.enableLiveView == true){
+      callback(false,{});
+      return;
+    } 
     if (OS_IOS) {
 
       try {
@@ -348,6 +385,12 @@ module.exports = (function () {
   }
 
   self.deleteData = function (callback) {
+    
+    if(globals.enableLiveView == true){
+      callback(false,{});
+      return;
+    } 
+
     if (OS_ANDROID) {
       callback(false, null);
     } else if (OS_IOS) {
@@ -365,6 +408,12 @@ module.exports = (function () {
   }
 
   self.stopLND = function (callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,{});
+      return;
+    } 
+
     if (OS_IOS) {
       lndMobileObj.stopLNDWithCallback(function (response, error) {
         globals.console.log("stopLND err ", error);
@@ -398,6 +447,11 @@ module.exports = (function () {
   }
 
   self.createWallet = function (password, seed, scanBlocksForRecovery, channelBackup, callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["createWallet"]);
+      return;
+    }  
 
     if (OS_ANDROID) {
       var seedString = seed.join(" ");
@@ -433,6 +487,11 @@ module.exports = (function () {
 
     globals.console.log("unlocking wallet");
 
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["unlockWallet"]);
+      return;
+    }  
+
     if (globals.lndMobileStarted) {
       callback(false, "already started");
       return;
@@ -466,8 +525,15 @@ module.exports = (function () {
 
   }
 
-
+  var dummyData = require('vendor/util/dummyData');
+  
   self.startLNDMobile = function (callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["startLNDMobile"]);
+      return;
+    }
+
 
     if (globals.lndMobileStarted) {
       callback(false, "already started");
@@ -514,9 +580,14 @@ module.exports = (function () {
     }
   }
 
-
-
   self.generateSeed = function (callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["generateSeed"]);
+      return;
+    }
+
+
     if (OS_ANDROID) {
 
       var bytes = lngrpc.makeGenerateSeedRequest();
@@ -548,11 +619,17 @@ module.exports = (function () {
 
     }
   }
+
   globals.stopPing = function () {
     clearTimeout(currentPing);
   }
 
   function keepConnectionAliveViaPing() {
+
+    if(globals.enableLiveView == true){
+      return;
+    }
+
     if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
       globals.stopPing();
       return;
@@ -599,6 +676,11 @@ module.exports = (function () {
     return false;
   }
   self.connect = function (host, port, cert, macaroon, callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["connect"]);
+      return;
+    }
 
     if (OS_ANDROID) {
       if (cert == "") {
@@ -648,6 +730,13 @@ module.exports = (function () {
   };
 
   self.getInfo = function (forceMode, callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["getInfo"]);
+      return;
+    }
+
+
     var lndController = getController();
     if (forceMode == "grpc") {
       globals.console.log("forcing grpc mode");
@@ -766,6 +855,12 @@ module.exports = (function () {
 
 
   self.exportAllChannelBackups = function (callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["exportAllChannelBackup"]);
+      return;
+    }
+
     var lndController = getController();
     if (OS_ANDROID) {
       if (lndController == lndMobileWrapper) {
@@ -808,6 +903,12 @@ module.exports = (function () {
   };
 
   self.getWalletBalance = function (callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["getWalletBalance"]);
+      return;
+    }
+
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -870,6 +971,12 @@ module.exports = (function () {
   };
 
   self.getChannelBalance = function (callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["getChannelBalance"]);
+      return;
+    }
+
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -942,6 +1049,12 @@ module.exports = (function () {
   };
 
   self.listPayments = function (callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["listPayments"]);
+      return;
+    }
+
     var lndController = getController();
     if (OS_ANDROID) {
       if (lndController == lndMobileWrapper) {
@@ -1007,6 +1120,12 @@ module.exports = (function () {
   }
 
   self.getTransactions = function (callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["getTransactions"]);
+      return;
+    }
+
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -1072,6 +1191,12 @@ module.exports = (function () {
   }
 
   self.listInvoices = function (callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["listInvoices"]);
+      return;
+    }
+
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -1140,7 +1265,14 @@ module.exports = (function () {
 
     }
   }
+
   self.newAddress = function (type, callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["newAddress"]);
+      return;
+    }
+
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -1209,6 +1341,12 @@ module.exports = (function () {
   }
 
   self.listChannels = function (callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["listChannels"]);
+      return;
+    }
+    
     var lndController = getController();
     if (OS_ANDROID) {
       if (lndController == lndMobileWrapper) {
@@ -1273,6 +1411,12 @@ module.exports = (function () {
   }
 
   self.pendingChannels = function (callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["pendingChannels"]);
+      return;
+    }
+
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -1342,6 +1486,12 @@ module.exports = (function () {
   }
 
   self.decodePayReq = function (payReq, callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["decodePayReq"]);
+      return;
+    }
+
     var lndController = getController();
     if (OS_ANDROID) {
       if (lndController == lndMobileWrapper) {
@@ -1405,6 +1555,12 @@ module.exports = (function () {
   }
 
   self.sendPayment = function (payReq, amount, callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["sendPayment"]);
+      return;
+    }
+
     globals.console.log("sending payment amount ", amount);
     var lndController = getController();
     if (OS_ANDROID) {
@@ -1472,6 +1628,12 @@ module.exports = (function () {
   }
 
   self.connectPeer = function (nodeURI, callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["connectPeer"]);
+      return;
+    }
+
     var lndController = getController();
     if (OS_ANDROID) {
       var components = nodeURI.split("@");
@@ -1543,6 +1705,10 @@ module.exports = (function () {
   }
 
   self.sendCoins = function (amount, destination, fee, callback) {
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["sendCoins"]);
+      return;
+    }
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -1641,6 +1807,10 @@ module.exports = (function () {
   
   self.openChannel = function(pub_key, amount, callback) {
 
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["openChannel"]);
+      return;
+    }
     var isPrivate = false;
     var lndController = getController();
     if (OS_ANDROID) {
@@ -1735,6 +1905,9 @@ module.exports = (function () {
   }
 
   function checkIfChannelIsOpening(pub_key, callback) {
+    if(globals.enableLiveView == true){
+      return;
+    }
     globals.console.log("checking pending channels");
     self.pendingChannels(function (error, res) {
       globals.console.log("checking pending channels", res);
@@ -1763,6 +1936,12 @@ module.exports = (function () {
   }
 
   self.closeChannel = function (txid, output, force, callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["closeChannel"]);
+      return;
+    }
+
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -1833,6 +2012,12 @@ module.exports = (function () {
   }
 
   self.subscribeTransactions = function (callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["subscribeTransactions"]);
+      return;
+    }
+
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -1936,6 +2121,12 @@ module.exports = (function () {
   }
 
   self.subscribeInvoices = function (callback) {
+
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["subscribeInvoices"]);
+      return;
+    } 
+
     var lndController = getController();
     if (OS_ANDROID) {
 
@@ -2009,6 +2200,12 @@ module.exports = (function () {
   }
 
   self.addInvoice = function (amount, memo, expiry, callback) {
+    
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["addInvoice"]);
+      return;
+    } 
+
     globals.console.log("expiry is ", expiry);
     var lndController = getController();
     if (OS_ANDROID) {
@@ -2324,6 +2521,12 @@ module.exports = (function () {
   }
 
   self.getNodeInfo = function (pubkey, callback) {
+    
+    if(globals.enableLiveView == true){
+      callback(false,dummyData["getNodeInfo"]);
+      return;
+    }  
+
     var lndController = getController();
     if (OS_ANDROID) {
 

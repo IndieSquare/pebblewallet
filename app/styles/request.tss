@@ -224,8 +224,10 @@
 		fontFamily: 'GillSans-Light',
 		fontWeight: 'light'
 	},
-	top:50
+	top:10
 }
+
+
 "#numberPadDel" : {
 	title: L('label_del')
 }
