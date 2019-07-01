@@ -783,6 +783,7 @@ module.exports = (function () {
     if (customPeer != "") {
       neutrinoPeer = customPeer;
     }
+    
     configString += "neutrino.connect=" + neutrinoPeer + "\n"; 
  
     if (network == "testnet") {
