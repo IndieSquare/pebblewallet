@@ -336,6 +336,35 @@ function showDisclaimer(callback) {
 }
 
 function createNewAccount() {
+
+
+  var dialog = globals.util.createDialog({
+    title: L("label_warning"),
+    message: L("label_which_chain"),
+    buttonNames: [L("label_testnet"), L("label_close"), L("label_mainnet")],
+    cancel: 1
+  });
+  dialog.addEventListener("click", function (e) {
+    globals.console.log(e.index + " " + e.source.cancel);
+
+    if (e.index != e.source.cancel) {
+
+      if (e.index == 0) {
+        Alloy.Globals.network = "testnet";
+
+      }
+      else if (e.index == 2) {
+        Alloy.Globals.network = "mainnet";
+      }
+
+      Ti.App.Properties.setString("lndMobileNetwork", Alloy.Globals.network);
+
+      didShowTestnetWarning = true;
+      globals.console.log("network", Alloy.Globals.network);
+
+
+
+
  
     showLoading(true);
     setTimeout(function () {
@@ -383,6 +412,20 @@ function createNewAccount() {
       });
 
     }, 100);
+
+
+
+      
+
+    }
+
+  });
+  dialog.show();
+
+
+
+
+
  
 
 };

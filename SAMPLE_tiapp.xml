@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ti:app 
+  xmlns:ti="http://ti.appcelerator.org">
+  <guid>ENTERGUID</guid>
+  <id>com.mandelduck.nayuta</id>
+  <name>Nayuta</name>
+  <version>0.0.2</version>
+  <publisher>Nayuta</publisher>
+  <url>https://nayuta.com</url>
+  <description>nayuta</description>
+  <copyright>2019 by Nayuta</copyright>
+  <icon>appicon.png</icon>
+  <fullscreen>true</fullscreen>
+  <navbar-hidden>true</navbar-hidden>
+  <analytics>false</analytics>
+  <ios>
+    <log-server-port>2984</log-server-port>
+    <enable-launch-screen-storyboard>false</enable-launch-screen-storyboard>
+    <use-app-thinning>true</use-app-thinning>
+    <plist>
+      <dict>
+        <key>CFBundleDevelopmentRegion</key>
+        <string>en</string>
+        <key>UISupportedInterfaceOrientations~iphone</key>
+        <array>
+          <string>UIInterfaceOrientationPortrait</string>
+        </array>
+        <key>UISupportedInterfaceOrientations~ipad</key>
+        <array>
+          <string>UIInterfaceOrientationPortrait</string>
+        </array>
+        <key>CFBundleURLTypes</key>
+        <array>
+          <dict>
+            <key>CFBundleURLName</key>
+            <string>com.mandelduck.nayuta</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+              <string>lightning</string>
+            </array>
+          </dict>
+          <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>com.mandelduck.nayuta</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+              <string>com.googleusercontent.apps.755718566094-19ioe9glkud228ocfqp4ack4s2gapgp2</string>
+            </array>
+          </dict>
+        </array>
+        <key>LSApplicationQueriesSchemes</key>
+        <array>
+          <string>lightning</string>
+        </array>
+        <key>NSFaceIDUsageDescription</key>
+        <string>For authorization</string>
+        <key>UIRequiresPersistentWiFi</key>
+        <false/>
+        <key>UIPrerenderedIcon</key>
+        <false/>
+        <key>UIStatusBarHidden</key>
+        <false/>
+        <key>UIStatusBarStyle</key>
+        <string>UIStatusBarStyleLightContent</string>
+        <key>CFBundleSupportedPlatforms</key>
+        <array>
+          <string>iPhoneOS</string>
+        </array>
+        <key>CFBundleIconFiles</key>
+        <array>
+          <string>appicon.png</string>
+          <string>appicon@2x.png</string>
+          <string>appicon-120.png</string>
+          <string>appicon-60.png</string>
+          <string>appicon-60@2x.png</string>
+          <string>appicon-60@3x.png</string>
+          <string>appicon-72.png</string>
+          <string>appicon-72@2x.png</string>
+          <string>appicon-76.png</string>
+          <string>appicon-76@2x.png</string>
+          <string>appicon-Small-40.png</string>
+          <string>appicon-Small-40@2x.png</string>
+          <string>appicon-Small-40@3x.png</string>
+          <string>appicon-Small-50.png</string>
+          <string>appicon-Small-50@2x.png</string>
+          <string>appicon-Small.png</string>
+          <string>appicon-Small@2x.png</string>
+          <string>appicon-Small@3x.png</string>
+        </array>
+        <key>UIBackgroundModes</key>
+        <array>
+          <string>fetch</string>
+        </array>
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>This app requires access to the Photo library.</string>
+        <key>NSCameraUsageDescription</key>
+        <string>In order to scan payment requests</string>
+        <key>NSAppleMusicUsageDescription</key>
+        <string>This app requires access to the AppleMusic.</string>
+      </dict>
+    </plist>
+  </ios>
+  <android 
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <manifest android:versionCode="2" android:versionName="0.0.2" 
+      xmlns:tools="http://schemas.android.com/tools">
+      <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="28"/>
+      <application android:allowBackup="false" android:debuggable="true" android:hardwareAccelerated="true" tools:replace="android:icon">
+        <activity android:name=".IntentActivity">
+          <intent-filter>
+            <action android:name="android.intent.action.SEND"/>
+            <category android:name="android.intent.category.DEFAULT"/>
+            <category android:name="android.intent.category.BROWSABLE"/>
+            <data android:scheme="lightning"/>
+          </intent-filter>
+        </activity>
+        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:name="org.appcelerator.titanium.TiActivity"/>
+        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:name="org.appcelerator.titanium.TiTranslucentActivity"/>
+      </application>
+      <uses-permission android:name="android.permission.INTERNET"/>
+      <uses-permission android:name="android.permission.WAKE_LOCK"/>
+      <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+      <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+      <uses-permission android:name="android.permission.VIBRATE"/>
+      <uses-permission android:name="android.permission.CAMERA"/>
+      <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+      <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+      <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+      <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+    </manifest>
+  </android>
+  <modules>
+    <module platform="android">ti.identity</module>
+    <module platform="iphone">ti.identity</module>
+    <module platform="android">ti.barcode</module>
+    <module platform="iphone">ti.barcode</module>
+    <module platform="commonjs">ti.cloud</module>
+    <module platform="android">hyperloop</module>
+    <module platform="iphone">hyperloop</module>
+    <module platform="android">ti.playservices</module>
+    <module platform="commonjs">ti.oauth</module>
+  </modules>
+  <deployment-targets>
+    <target device="android">true</target>
+    <target device="ipad">false</target>
+    <target device="iphone">true</target>
+  </deployment-targets>
+  <sdk-version>8.0.0.GA</sdk-version>
+  <plugins>
+    <plugin version="1.0">ti.alloy</plugin>
+  </plugins>
+  <property name="run-on-main-thread" type="bool">true</property>
+  <property name="ti.ui.defaultunit" type="string">dip</property>
+</ti:app>

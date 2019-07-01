@@ -15,7 +15,8 @@ demoLNDConnect.txt
 app/lib/node_modules
 app/lib/package-json.lock
 package-json.lock
-platform
+Lndmobile.framework
+lndmobile.aar
 GoogleService-Info.plist
 google-services.json
 modules/

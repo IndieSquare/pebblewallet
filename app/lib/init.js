@@ -8,8 +8,8 @@ globals.canProcessArgs = false;
 var logLevel = "debug";
 
 globals.blockHeight = {
-  testnet:1541579,
-  mainnet:580066,
+  testnet:1566547,
+  mainnet:583001,
 }
 if (Alloy.CFG.isDevelopment != true) {
   logLevel = "none";
