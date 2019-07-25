@@ -2,6 +2,7 @@ module.exports = (function () {
   var self = {};
 
   self.bootStrapChannel = function () {
+    return;
 
     if (Ti.App.Properties.getInt("didBootstrap", 0) == 1) {
       return;

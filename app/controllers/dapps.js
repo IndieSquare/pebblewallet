@@ -263,7 +263,7 @@ if (OS_ANDROID) {
     var encoded = tools.buffer(web3Script).toString('base64');
 
     var injectjs =
-      " if(typeof web3 === 'undefined'){var parent = document.getElementsByTagName('head').item(0);" +
+      " if(typeof webln === 'undefined'){var parent = document.getElementsByTagName('head').item(0);" +
       "var script = document.createElement('script');" +
       "script.type = 'text/javascript';" +
       "script.innerHTML = window.atob('" + encoded + "');" +
@@ -476,6 +476,31 @@ function handleWebViewData(evalResult, error) {
         lock = true;
 
         handleWebLN.handleWebLNURL(evalResult);
+      }
+      else if (evalResult.type == "signMessage") {
+        lock = true;
+
+        handleWebLN.handleSignMessage(evalResult);
+      }
+      else if (evalResult.type == "verifyMessage") {
+        lock = true;
+
+        handleWebLN.handleVerifyMessage(evalResult);
+      }
+      else if (evalResult.type == "makeInvoice") {
+        lock = true;
+
+        handleWebLN.handleMakeInvoice(evalResult);
+      }
+      else if (evalResult.type == "sendPayment") {
+        lock = true;
+
+        handleWebLN.handlePayLNRequest(evalResult);
+      }
+      else if (evalResult.type == "getInfo") {
+        lock = true; 
+
+        handleWebLN.handleGetInfo(evalResult);
       }
     } else if (evalResult.chain == "utils") {
 

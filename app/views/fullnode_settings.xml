@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Alloy>
+   <Window id="win">
+      <View class="tifill background" id="background">
+         <View class="backgroundInner" id="backgroundInner" />
+         <View class="innerView">
+<Label id="backButton" onClick="close">back</Label>
+<View class="option" onClick="goToConfig">
+                  <View class="optionBackground" />
+                  <View class="optionLabels">
+                     <Label class="optionLabel">config</Label>
+                     <Label class="optionDescription">view and update bitcoin.conf</Label>
+                  </View>
+                  <ImageView class="optionButton" />
+               </View>
+
+
+               <View class="option" onClick="viewLogs">
+                  <View class="optionBackground" />
+                  <View class="optionLabels">
+                     <Label class="optionLabel">logs</Label>
+                     <Label class="optionDescription">view logs</Label>
+                  </View>
+                  <ImageView class="optionButton" />
+               </View>
+
+               <View class="option" onClick="goToConsole">
+                  <View class="optionBackground" />
+                  <View class="optionLabels">
+                     <Label class="optionLabel">console</Label>
+                     <Label class="optionDescription">run bitcoin rpc commands</Label>
+                  </View>
+                  <ImageView class="optionButton" />
+               </View>
+
+
+               <View class="option" onClick="deleteData">
+                  <View class="optionBackground" />
+                  <View class="optionLabels">
+                     <Label class="optionLabel">delete</Label>
+                     <Label class="optionDescription">delete data directory, will require your node to resync</Label>
+                  </View>
+                  <ImageView class="optionButton" />
+               </View>
+
+                     </View>
+
+                       </View>
+   </Window>
+</Alloy>

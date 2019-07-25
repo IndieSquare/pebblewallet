@@ -292,11 +292,11 @@ function updateChannelsList() {
 
 function connectToPebbleHUB() {
 
-  var openChannelsFormObject = Alloy.createController("components/component_open_channel_form", {
+ /* var openChannelsFormObject = Alloy.createController("components/component_open_channel_form", {
     parent: globals.channelsFundsView
   })
 
-  openChannelsFormObject.API.setPubKey(globals.getIndieSquareHub());
+  openChannelsFormObject.API.setPubKey(globals.getIndieSquareHub());*/
 }
 
 setTimeout(function () {

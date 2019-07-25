@@ -1,6 +1,6 @@
 module.exports = (function () {
   var self = {};
-
+  var currentTimeout = 10000;
   function onerror(params, e, error) {
     var message = {
       code: "unknown",
@@ -69,7 +69,7 @@ module.exports = (function () {
   };
 
   self.getStartUpInfo = function (callback) {
-
+ 
     var xhr = Ti.Network.createHTTPClient();
 
     var url = Alloy.CFG.pebble_api;
@@ -92,8 +92,15 @@ module.exports = (function () {
     },
       xhr.onerror = function (e) {
         globals.console.error("start up error", e);
-        callback(e, null);
+
+        var cachedRes = globals.getCachedStartUp();
+
+        globals.console.log("calling cache",cachedRes);
+
+        callback(null,cachedRes);
       };
+    
+    xhr.timeout = currentTimeout;
     xhr.send();
 
     return xhr;
@@ -105,6 +112,11 @@ module.exports = (function () {
       "validatesSecureCertificate": !Alloy.CFG.isLocal
     });
 
+    if(params.url != undefined){
+      url = params.url;
+    }
+    else{
+
     var url = Alloy.CFG.api_uri + "/" + params.version + "/" + params.method;
 
     if (params.chain != undefined) {
@@ -115,9 +127,11 @@ module.exports = (function () {
 
     globals.console.warn("curl -H \"Content-Type: application/json\" -H \"X-Api-Key:" + Alloy.Globals.api_key + "\" -X GET -d \"" + JSON.stringify(params.post) + "\" " + url);
 
-    xhr.open("GET", url);
 
     xhr.setRequestHeader("X-Api-Key", Alloy.Globals.api_key);
+
+  }
+    xhr.open("GET", url);
 
     xhr.onload = function () {
 
@@ -136,6 +150,7 @@ module.exports = (function () {
         onerror(params, e, this.responseText);
         if (params.always != null) params.always();
       };
+    xhr.timeout = currentTimeout;
     xhr.send();
 
     return xhr;

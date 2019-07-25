@@ -25,6 +25,14 @@
 	left: 5,
 	top:0,
 }
+
+"#torIcon" : {
+	height: 25,
+	right: 5,
+	top: Alloy.Globals.infoTopExtra, 
+	visible: false, 
+}
+
 "#syncText" : {
 	left: 40,
 	color: "white",

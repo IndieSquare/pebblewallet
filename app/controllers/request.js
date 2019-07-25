@@ -111,6 +111,7 @@ function close(e) {
 
   if (OS_ANDROID) {
     $.win.close();
+    return;
   }
   $.background.animate({
     "opacity": 0,
@@ -252,10 +253,12 @@ function pressedRequest() {
 
   quantity = parseInt(quantity);
 
+  /*
   if (quantity == 0) {
     alert(L("enter_amount_request"));
     return;
-  }
+  }*/
+  
   showHideLoading(false);
 
   var memo = $.inputMemo.value;

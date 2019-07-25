@@ -219,6 +219,152 @@ module.exports = (function() {
 
   };
 
+  self.handleGetInfo = function(evalResult) { 
+    var returnMessage = JSON.stringify({
+      "chain": evalResult.chain,
+      "type": evalResult.type,
+      "data": {node:{alias:globals.nodeInfo.alias,pubkey:globals.nodeInfo.identity_pubkey,color:globals.nodeInfo.color}}
+    });
+ 
+    globals.evaluateJS("START_CALLBACK('" + returnMessage + "')", function(response, error) {
+      if (error != undefined) {
+        globals.console.error(error);
+      }
+      globals.lockBrowser(false);
+    });
+
+  };
+
+  self.handleMakeInvoice = function(evalResult) {
+ 
+  
+    var params = evalResult.data; 
+    var amount = parseInt(params.amount);
+    var memo = null; 
+    if(params.memo){
+       memo = params.defaultMemo;
+    }
+    var expiry = globals.defaultExpiry * 60;
+    if(params.expiry){
+      var expiry = parseInt(params.expiry);
+    } 
+    globals.lnGRPC.addInvoice(amount, memo, expiry,  function(error, res) {
+      globals.console.log("callback");
+      globals.console.log("callback",error);
+
+      globals.console.log("callback",res);
+      if (error == true) {
+        globals.clearTask();
+        alert(error);
+        return;
+      }
+ 
+      var returnMessage = JSON.stringify({
+        "chain": evalResult.chain,
+        "type": evalResult.type,
+        "data": res
+      });
+
+      globals.evaluateJS("START_CALLBACK('" + returnMessage + "')", function(response, error) {
+        if (error != undefined) {
+          globals.console.error(error);
+        }
+        globals.lockBrowser(false);
+      });
+
+    });
+  
+};
+
+  self.handleVerifyMessage = function(evalResult) {
+ 
+    var message = evalResult.data.message; 
+    var signature = evalResult.data.signature;  
+ 
+    globals.lnGRPC.verifyMessage(message,signature,  function(error, res) {
+      globals.console.log("callback");
+      globals.console.log("callback",error);
+
+      globals.console.log("callback",res);
+      if (error == true) {
+        globals.clearTask();
+        alert(error);
+        return;
+      }
+ 
+      var returnMessage = JSON.stringify({
+        "chain": evalResult.chain,
+        "type": evalResult.type,
+        "data":{valid:res.valid, pubkey:res.pubkey } 
+      }); 
+ 
+      globals.console.log("returnMessage",returnMessage);
+
+      globals.evaluateJS("START_CALLBACK('" + returnMessage + "')", function(response, error) {
+        if (error != undefined) {
+          globals.console.error(error);
+        }
+        globals.lockBrowser(false);
+      });
+
+    });
+  
+};
+ 
+  self.handleSignMessage = function(evalResult) {
+ 
+    var message = evalResult.data;  
+
+    var  messageText =  message ;
+    if ( messageText.length > 70) {
+      messageText =  messageText.substring(0, 70) + "...";
+    }
+
+    Alloy.createController("transaction_conf", {
+      "message": L('text_request_sign_message').format({
+        "url": globals.extractHostname(globals.getCurrentUrl()),
+        "message": messageText, 
+      }), 
+      "cancel": function() {
+        globals.clearTask();
+        globals.clearCallback('user cancelled');
+      },
+      "confirm": function() {
+
+     globals.console.log("signing message",evalResult)
+    globals.lnGRPC.signMessage(message,  function(error, res) {
+      globals.console.log("callback");
+      globals.console.log("callback",error);
+
+      globals.console.log("callback",res);
+      if (error == true) {
+        globals.clearTask();
+        alert(error);
+        return;
+      }
+ 
+      var returnMessage = JSON.stringify({
+        "chain": evalResult.chain,
+        "type": evalResult.type,
+        "data":{message:message,signature:res.signature } 
+      }); 
+ 
+      globals.console.log("returnMessage",returnMessage);
+
+      globals.evaluateJS("START_CALLBACK('" + returnMessage + "')", function(response, error) {
+        if (error != undefined) {
+          globals.console.error(error);
+        }
+        globals.lockBrowser(false);
+      });
+
+    });
+
+  }
+});
+
+};
+
 
   self.handleAddInvoice = function(evalResult) {
  

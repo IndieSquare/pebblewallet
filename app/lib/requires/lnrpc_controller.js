@@ -1,9 +1,12 @@
 module.exports = (function() {
   var self = {};
   var lngrpc = null;
+  var lnTor = null;
   var lndMobileObj = null;
   var currentPendingOpenChannelChecker = null; //open channel doesnt response so check if is in pendings list
   var currentPing = null;
+
+  globals.isTor = false;
 
   function getController() {
     if (OS_IOS) {
@@ -18,7 +21,13 @@ module.exports = (function() {
         globals.console.log("returning mobile controller");
         return lndMobileWrapper;
       }
+      if(globals.isTor == true){
+        return lnTor;
+      }
+
+
       globals.console.log("returning lngrpc controller");
+
       return lngrpc;
 
     }
@@ -86,10 +95,11 @@ module.exports = (function() {
 
   if (OS_ANDROID) {
     lngrpc = require('Lngrpc');
+    lnTor = require('/requires/lnTor');
     var CallbackInterface = require("CallbackInterface");
 
     var Activity = require('android.app.Activity');
-    var lndMobileWrapper = require("com.indiesquare.lndmobilewrapper.LndMobileWrapper")
+    var lndMobileWrapper = require("com.indiesquare.lndmobilewrapper.LndMobileWrapper");
     var CallbackInterfaceLND = require("com.indiesquare.lndmobilewrapper.CallbackInterface");
     var CallbackInterfaceGoogleDrive = require("com.indiesquare.googledrive.CallbackInterface");
     var CallbackInterfaceWebSocket = require("com.indiesquare.websocket.CallbackInterface");
@@ -100,6 +110,8 @@ module.exports = (function() {
     googleDrive = new googleDrive(activity);
 
     websocket = new websocket(activity);
+
+    
 
 
   } else if (OS_IOS) {
@@ -493,6 +505,145 @@ module.exports = (function() {
     }
   }
 
+  self.signMessage = function (message, callback) {
+   
+    var lndController = getController();
+    if (OS_ANDROID) {
+
+
+      if (lndController == lndMobileWrapper) {
+
+        globals.console.log("start sm",message);
+        var bytes = lngrpc.makeSignMessageRequest(message);
+
+        globals.console.log("start sm");
+        lndController.signMessage(bytes, new CallbackInterfaceLND({
+          eventFired: function (res) {
+
+            globals.console.log("callback sm", res);
+
+            res = JSON.parse(res);
+            if (res.error != true) {
+              res = lngrpc.parseSignMessageResponse(res.response);
+              res = JSON.parse(res);
+            }
+
+            globals.console.log("callback sm 2", res);
+
+            if (res.error == true) {
+              console.error("sm error");
+            }
+
+            globals.console.log(res.response);
+
+            callback(res.error, res.response);
+
+
+          }
+        }));
+      } else {
+        lndController.SignMessage(message, new CallbackInterface({
+          eventFired: function (res) {
+            globals.console.log(res);
+            res = JSON.parse(res);
+
+            if (res.error == true) {
+              console.error("sm error");
+            }
+
+            globals.console.log("sm", res.response);
+
+            if (ignoreResponse(res.response) == false) {
+              callback(res.error, res.response);
+            }
+
+          }
+        }));
+
+      }
+
+    } else if (OS_IOS) {
+
+      lndController.signMessageWithMessageCallback(message, function (response, error) {
+
+        globals.console.log("sign message", "error:" + error, " res:" + response);
+        var _res = formatResponse(error, response)
+        error = _res[0];
+        response = _res[1];
+        callback(error, response);
+      });
+    }
+  }
+
+
+  self.verifyMessage = function (message,signature, callback) {
+    
+    var lndController = getController();
+    if (OS_ANDROID) {
+
+
+      if (lndController == lndMobileWrapper) {
+        var bytes = lngrpc.makeVerifyMessageRequest(message,signature);
+
+        globals.console.log("start vm");
+        lndController.verifyMessage(bytes, new CallbackInterfaceLND({
+          eventFired: function (res) {
+
+            globals.console.log("callback vm", res);
+
+            res = JSON.parse(res);
+            if (res.error != true) {
+              res = lngrpc.parseVerifyMessageResponse(res.response);
+              res = JSON.parse(res);
+            }
+
+            globals.console.log("callback vm 2", res);
+
+            if (res.error == true) {
+              console.error("vm error");
+            }
+
+            globals.console.log(res.response);
+
+            callback(res.error, res.response);
+
+
+          }
+        }));
+      } else {
+        lndController.VerifyMessage(message, new CallbackInterface({
+          eventFired: function (res) {
+            globals.console.log(res);
+            res = JSON.parse(res);
+
+            if (res.error == true) {
+              console.error("sm error");
+            }
+
+            globals.console.log("sm", res.response);
+
+            if (ignoreResponse(res.response) == false) {
+              callback(res.error, res.response);
+            }
+
+          }
+        }));
+
+      }
+
+    } else if (OS_IOS) {
+
+      lndController.verifyMessageWithMessageSignatureCallback(message, function (response, error) {
+
+        globals.console.log("verify message", "error:" + error, " res:" + response);
+        var _res = formatResponse(error, response)
+        error = _res[0];
+        response = _res[1];
+        callback(error, response);
+      });
+    }
+  }
+
 
 
   self.generateSeed = function(callback) {
@@ -532,6 +683,7 @@ module.exports = (function() {
   }
 
   function keepConnectionAliveViaPing() {
+
     if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
       globals.stopPing();
       return;
@@ -542,6 +694,13 @@ module.exports = (function() {
     var lndController = getController();
 
     if (OS_ANDROID) {
+
+      if(globals.isTor){
+        globals.stopPing();
+        return;
+      }
+      
+      globals.console.log("calling ping");
 
       lngrpc.GetInfo(
         new CallbackInterface({
@@ -596,6 +755,18 @@ module.exports = (function() {
       globals.console.log(typeof port);
       globals.console.log(typeof cert);
       globals.console.log(typeof macaroon);
+
+      
+      globals.isTor = lnTor.isOnionAddress(host);
+
+      if(globals.isTor){
+        globals.console.log("is tor");
+        lnTor.setUp(host, macaroon);
+        callback(false, "initialized");
+        return;
+
+      }
+
       lngrpc.Connect(host, port, cert, macaroon, new CallbackInterface({
         eventFired: function(res) {
 
@@ -635,7 +806,16 @@ module.exports = (function() {
     }
     if (OS_ANDROID) {
 
-      if (lndController == lndMobileWrapper) {
+      if(globals.isTor){
+
+        lnTor.getInfo(function(error,response){
+ 
+          callback(error,response)
+           
+        });
+
+      }
+      else if (lndController == lndMobileWrapper) {
         var bytes = lngrpc.makeGetInfoRequest();
 
         globals.console.log("start getinfo");
@@ -854,7 +1034,16 @@ module.exports = (function() {
 
 
 
-      if (lndController == lndMobileWrapper) {
+      if(lndController == lnTor){
+
+        lndController.getChannelBalance(function(error,response){
+ 
+          callback(error,response)
+           
+        });
+
+      }
+      else if (lndController == lndMobileWrapper) {
         var bytes = lngrpc.makeGetChannelBalanceRequest();
 
         globals.console.log("start gcb");
@@ -924,7 +1113,17 @@ module.exports = (function() {
   self.listPayments = function(callback) {
     var lndController = getController();
     if (OS_ANDROID) {
-      if (lndController == lndMobileWrapper) {
+
+      if(lndController == lnTor){
+
+        lndController.listPayments(function(error,response){
+ 
+          callback(error,response)
+           
+        });
+
+      }
+      else if (lndController == lndMobileWrapper) {
         var bytes = lngrpc.makeListPaymentsRequest();
 
         globals.console.log("start listpayments");
@@ -1054,8 +1253,20 @@ module.exports = (function() {
   self.listInvoices = function(callback) {
     var lndController = getController();
     if (OS_ANDROID) {
+      if(lndController == lnTor){
 
-      if (lndController == lndMobileWrapper) {
+        lndController.listInvoices(function(error,response){
+          
+          if(error == false){
+            response = response.invoices;
+          }
+
+          callback(error,response)
+           
+        });
+
+      }
+      else if (lndController == lndMobileWrapper) {
         var bytes = lngrpc.makeListInvoiceRequest();
 
         globals.console.log("start listpinvoice");
@@ -1815,6 +2026,11 @@ module.exports = (function() {
     var lndController = getController();
     if (OS_ANDROID) {
 
+      if(globals.isTor){
+        globals.stopPing();
+        return;
+      }
+
       lndController.subscribeTransactions(new CallbackInterface({
         eventFired: function(res) {
           globals.console.log(res);
@@ -1850,9 +2066,15 @@ module.exports = (function() {
   }
 
   self.subscribeSingleInvoice = function(rhash, callback) {
+  
+
     var lndController = getController();
     if (OS_ANDROID) {
 
+        
+      if(globals.isTor){ ;
+        return;
+      }
 
       if (lndController == lndMobileWrapper) {
         var bytes = lngrpc.makeSubscribeSingleInvoiceRequest(rhash);
@@ -1917,6 +2139,10 @@ module.exports = (function() {
   self.subscribeInvoices = function(callback) {
     var lndController = getController();
     if (OS_ANDROID) {
+
+      if(globals.isTor){
+        return;
+      }
 
 
       if (lndController == lndMobileWrapper) {

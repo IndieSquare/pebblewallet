@@ -1,4 +1,5 @@
 require("init");
+globals.display.width70 = globals.display.width * 0.7;
 globals.synced = false;
 globals.unlocked = false;
 globals.dataDir = "";
@@ -13,8 +14,8 @@ if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
 }
 
 globals.blockHeight = {
-  "mainnet": 564591,
-  "testnet": 1486786
+  "mainnet": 583798,
+  "testnet": 1567424
 };
 
 if (Ti.App.Properties.getInt("autoPilot", 3) == 3) { //no record
@@ -57,13 +58,14 @@ globals.getRecommendedChannelAmount = function () {
   return valueAmt;
 
 }
+/*
 globals.getIndieSquareHub = function () {
   if (Alloy.Globals.network == "testnet") {
     return globals.hubURITestnet;
   } else {
     return globals.hubURIMainnet;
   }
-}
+}*/
 /*
 globals.lnGRPC.setUpEnv(function(error, response) {
   globals.console.log("setup env", error);
@@ -249,6 +251,9 @@ globals.parseConfig = function (config) {
 
     var mainConfig = configs[0];
 
+    if(mainConfig.host == undefined){
+      mainConfig.host = mainConfig.uri;
+    }
     var url = mainConfig.host;
 
     mainConfig.certificate = "";
@@ -389,6 +394,7 @@ globals.checkConnection = function (configRaw, callback) {
     callback(false, "error unable to parse config");
     return;
   }
+   
   globals.console.log("connecting via grpc");
   globals.lnGRPC.connect(config.url, config.port, config.certificate, config.macaroon, function (error, response) {
     globals.console.log("connected grpc", response);
@@ -424,6 +430,57 @@ if (OS_IOS) {
   });
 }
 
+globals.setCurrentCache = function(network,blockHeight){
+
+    var currentCache = globals.getCachedStartUp();
+
+    if(network == "testnet"){
+      currentCache.testnetHeight = blockHeight;
+    }
+    if(network == "mainnet"){
+      currentCache.mainnetHeight = blockHeight;
+    }
+    currentCache.timestamp = parseInt((new Date).getTime()/1000);
+
+    globals.console.log("saving current cache",currentCache);
+
+    Ti.App.Properties.setString("cachedStartUp",JSON.stringify(currentCache));
+}
+
+globals.getCachedStartUp = function(){
+
+  var cachedStartUp = Ti.App.Properties.getString("cachedStartUp",undefined);
+  if(cachedStartUp == undefined){
+    
+    cachedStartUp = {
+      "mainnetHeight": 586040,
+      "testnetHeight": 1569586,
+      "timestamp":1563526975,
+      "maintenanceMode": false,
+      "discoverUrl": "https://lightning-survey.com/surveys/f3d20e4a-dc57-43d6-94c0-10142f9a92cf"
+    };
+  
+  }
+  else{
+    cachedStartUp = JSON.parse(cachedStartUp);
+  }
+
+   var startDate = new Date(cachedStartUp.timestamp*1000); 
+   var endDate   = new Date();
+   var seconds = parseInt((endDate.getTime() - startDate.getTime()) / 1000);
+   globals.console.log("diff in seconds",seconds);
+    
+   var estNumberOfNewBlocks = parseInt((seconds/600));
+   globals.console.log("number of new blocks",estNumberOfNewBlocks );
+   
+   cachedStartUp.mainnetHeight += estNumberOfNewBlocks;
+   cachedStartUp.testnet += estNumberOfNewBlocks;
+
+   return cachedStartUp;
+
+
+}
+
 globals.getStartUpInfo = function (callback) {
   globals.networkAPI.getStartUpInfo(function (error, res) {
 
@@ -445,10 +502,10 @@ globals.getStartUpInfo = function (callback) {
     } else {
       globals.blockHeight.testnet = res.testnetHeight;
       globals.blockHeight.mainnet = res.mainnetHeight;
-      globals.hubURITestnet = res.hubUriTestnet;
-      globals.hubURIMainnet = res.hubUriMainnet;
+     // globals.hubURITestnet = res.Testnet;
+      //globals.hubURIMainnet = res.hubUriMainnet;
       globals.discoverEndpoint = res.discoverUrl;
-      globals.console.log("res", res.hubUriMainnet);
+       
       if (res.maintenanceMode == true) {
         alert("maintenance");
       } else {
@@ -485,7 +542,21 @@ globals.createPassword = function (usersPassCodeHash) {
 
 
  
+/*
 
 
-
-
+setTimeout(function(){
+ 
+  var Activity = require('android.app.Activity');
+  var qrcodeScanner = require("com.mandelduck.qrcodescanner.CodeScannerLauncher");
+  var activity = new Activity(Ti.Android.currentActivity);
+  var contextValue = activity.getApplicationContext();
+  var CallbackInterface= require("com.mandelduck.qrcodescanner.CallbackInterface");
+    
+  qrcodeScanner.launchQrCodeActivity(contextValue,new CallbackInterface({
+    eventFired: function(response) {
+      var res = JSON.parse(response);
+      alert(res.response);
+    }}));
+},2000);
+*/

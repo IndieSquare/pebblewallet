@@ -20,7 +20,21 @@ module.exports = (function () {
 
       },
       "onError": function (error) {
-        if (callback != null) callback();
+        globals.console.log("loading from backup tiker")
+        network.connectGET({
+          "url": "https://blockchain.info/ticker", 
+          "callback": function (tiker) {
+    
+            globals.tikerType["BTC"] = tiker;
+    
+            if (callback != null) callback(tiker);
+    
+          },
+          "onError": function (error) {
+            
+            if (callback != null) callback();
+          }
+        }); 
       }
     });
   };

@@ -6,7 +6,7 @@
 		<View class="topbar" id="tokenTopBar">
 
 			<View class="topBarTop" id="topBarTop">
-
+				<ImageView id="torIcon" image="/images/tor_icon.png"/>
 				<View id="syncStatus">
 					<ImageView id="syncIcon" image="/images/syncIcon.png"/>
 					<Label id="syncText">L('syncing_text')</Label>

@@ -107,6 +107,7 @@ function lnPay() {
   globals.launchPayScan();
 
 }
+ 
 
 globals.loadFavourites = function () {
   var favs = JSON.parse(Ti.App.Properties.getString("favourites", "{}"));
@@ -174,6 +175,12 @@ function scanNormal() {
 
     }
   }, true);
+}
+
+function openFullNode() {
+  
+  Alloy.createController("fullnode").getView().open();
+  openCloseMenu();
 }
 
 function loadDiscover() {

@@ -449,6 +449,67 @@ module.exports = (function () {
   self.readQRcode = function (params, any) {
     globals.console.log("read qr code");
     currentCallbackQR = params.callback;
+
+    if(OS_ANDROID){
+       
+  var Activity = require('android.app.Activity');
+  var qrcodeScanner = require("com.mandelduck.qrcodescanner.CodeScannerLauncher");
+  var activity = new Activity(Ti.Android.currentActivity);
+  var contextValue = activity.getApplicationContext();
+  var CallbackInterface= require("com.mandelduck.qrcodescanner.CallbackInterface");
+    
+  qrcodeScanner.launchQrCodeActivity(contextValue, !enterInfoButton.visible, L("label_close"),enterInfoButton.title,new CallbackInterface({
+    eventFired: function(response) {
+      var res = JSON.parse(response);
+
+      if(res.error != false){
+        alert(res.response);
+        return;
+      }
+
+      if(res.response == "button 2 clicked"){
+        if (qrMode == "invoice") {
+
+          Alloy.createController("transaction_conf", {
+            "small": true,
+            "message": L("enter_payment_request_description"),
+            "enterRequest": true,
+            "cancel": function () {
+    
+            },
+            "confirm": function () {
+    
+              globals.loadMainScreen();
+    
+            },
+    
+          });
+    
+        } else if (qrMode == "account") {
+    
+          Alloy.createController("transaction_conf", {
+            "small": true,
+            "conf": true,
+            "message": L("enter_grpc_config"),
+            "enterConfig": true,
+            "cancel": function () {
+    
+            },
+            "confirm": function (res) {
+              currentCallbackQR(res);
+    
+            },
+    
+          });
+    
+        }
+        return;
+      }
+      params.callback(res.response);
+       
+    }}));
+    return;
+    }
     if (any == false) {
 
       self.openScanner({
@@ -719,7 +780,6 @@ module.exports = (function () {
   self.getConfig = function (network) {
 
     var configString = "[Application Options]\n\n";
-
     configString += "maxbackoff=2s\n"
     configString += "debuglevel=info\n"
     configString += "nolisten=1\n"
@@ -730,8 +790,8 @@ module.exports = (function () {
     configString += "no-macaroons=1\n"
     configString += "maxpendingchannels=2\n"
 
-    configString += "\n[Bitcoin]\n"
-    configString += "bitcoin.active=1\n"
+    configString += "\n[Bitcoin]\n\n"
+    configString += "bitcoin.active=1\n" 
     globals.console.log("config network", network);
 
     if (network == "testnet") {
@@ -746,7 +806,7 @@ module.exports = (function () {
     configString += "bitcoin.node=neutrino\n"
 
     configString += "\n[Routing]\n\n"
-    configString += "routing.assumechanvalid=1"
+    configString += "routing.assumechanvalid=1\n"
 
     configString += "\n[Autopilot]\n\n"
 
@@ -757,24 +817,28 @@ module.exports = (function () {
 
       configString += "autopilot.active=1\n"
     }
- 
+    
+    configString += "autopilot.active=0\n"
 
-    configString += "autopilot.allocation=0.95\n"
+    configString += "autopilot.allocation=0.95\n" 
     configString += "autopilot.minconfs=1\n"
     configString += "autopilot.private=1\n"
-    configString += "autopilot.allocation=0.95\n"
-    configString += "autopilot.minchansize=20000\n"
-    configString += "autopilot.maxchansize=16000000\n"
+    configString += "autopilot.allocation=0.95\n" 
+
+    configString += "autopilot.heuristic=externalscore:0.95\n"
+    configString += "autopilot.heuristic=preferential:0.05\n"
 
     configString += "\n[Neutrino]\n\n"
 
     var neutrinoPeer = "";
 
     if (network == "testnet") {
-      neutrinoPeer = globals.hubURITestnet.split("@")[1];
+      //neutrinoPeer = globals.hubURITestnet.split("@")[1];
+      neutrinoPeer = "btcd-testnet.lightning.computer";
 
     } else {
-      neutrinoPeer = globals.hubURIMainnet.split("@")[1];
+     // neutrinoPeer = globals.hubURIMainnet.split("@")[1];
+      neutrinoPeer = "btcd-mainnet.lightning.computer";
     }
 
     globals.defaultPeer = neutrinoPeer;
@@ -782,18 +846,33 @@ module.exports = (function () {
     var customPeer = Ti.App.Properties.getString("customPeer", "");
     if (customPeer != "") {
       neutrinoPeer = customPeer;
-    }
+    } 
+ 
     
-    configString += "neutrino.connect=" + neutrinoPeer + "\n"; 
+    configString += "neutrino.connect=" + neutrinoPeer + "\n";
  
     if (network == "testnet") {
-      configString += "neutrino.addpeer=btcd-testnet.lightning.computer\n"
-    } else {
-      configString += "neutrino.addpeer=faucet.lightning.community\n";
+     configString += "neutrino.addpeer=btcd-testnet.lightning.computer\n" 
 
+    }else{
+      configString += "neutrino.addpeer=faucet.lightning.community\n"; 
+      configString += "neutrino.addpeer=btcd-mainnet.lightning.computer\n"; 
     }
-
+     
+    configString += "neutrino.feeurl=https://nodes.lightning.computer/fees/v1/btc-fee-estimates.json\n" 
+    
+    if(OS_ANDROID){
     globals.console.log("config string", configString);
+    }
+    else if(OS_IOS){
+      globals.console.log("config string");
+      var parts = configString.split("\n");
+      for(var i = 0; i< parts.length;i++){
+
+        globals.console.log(parts[i]);
+
+      }
+    }
     return configString;
 
   }
@@ -801,9 +880,8 @@ module.exports = (function () {
 
     var configString = self.getConfig(network);
 
-    if (OS_IOS) {
-      var filePath = Ti.Filesystem.applicationSupportDirectory + "lnd/lnd.conf";
-      var file = Ti.Filesystem.getFile(filePath);
+    if (OS_IOS) { 
+      var file = Ti.Filesystem.getFile( Ti.Filesystem.applicationDataDirectory,"lnd.conf");
       file.write(configString);
     }
 

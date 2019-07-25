@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Alloy>
+   <Window id="win">
+      <View class="tifill background" id="background">
+         <View class="backgroundInner" id="backgroundInner" />
+         <View class="innerView">
+            
+            
+            <View class="loadingSection">
+               <Widget src="de.manumaticx.circularprogress" id="progress" />
+               <Widget src="de.manumaticx.circularprogress" id="progressGreen" />
+               <View id="centerControls">
+                  <View id="centerButton" onClick="startDownload">
+                     <Label id="valueLabel" />
+                     <Label id="percentageLabel" />
+                  </View>
+                  <Label id="statusLabel" />
+               </View>
+            </View>
+           
+           
+            <View class="options">
+               
+               <View class="option">
+                  <View class="optionBackground" />
+                  <View class="optionLabels">
+                     <Label class="optionLabel">hybrid mode</Label>
+                     <Label class="optionDescription">only runs when your device is on wifi and charging</Label>
+                  </View>
+                  <Switch class="optionSwitch" value="true" />
+               </View>
+               
+               <View class="option">
+                  <View class="optionBackground" />
+                  <View class="optionLabels">
+                     <Label class="optionLabel">full mode</Label>
+                     <Label class="optionDescription">always running, the lightning node will use this as the backend</Label>
+                  </View>
+                  <Switch class="optionSwitch" />
+               </View>
+              
+               <View class="option" onClick="goToSettings">
+                  <View class="optionBackground" />
+                  <View class="optionLabels">
+                     <Label class="optionLabel">settings</Label>
+                     <Label class="optionDescription">change config, run commands, debug etc</Label>
+                  </View>
+                  <ImageView class="optionButton" />
+               </View>
+            </View>
+            
+            </View>
+            
+            <View class="backgroundInner" id="page1">
+               <Label class="title" id="title1">full node</Label>
+               <Label class="description">this wallet can run a fully validating bitcoin node in the background</Label>
+               <ImageView id="fullNode" />
+               <Label class="nextButton" onClick="goToPage2" />
+            </View>
+            <View class="backgroundInner" id="page2" visible="false">
+               <Label class="title" id="title2">hybrid</Label>
+               <Label class="description">running along side the Neutrino light client the full node validates the chain when your device is charging and on wifi</Label>
+               <ImageView id="bitcoin" />
+               <Label class="nextButton" onClick="closeIntro" />
+            </View>
+
+             <Label id="backButton" onClick="close">close</Label>
+             <Label id="stopButton" onClick="stopCore">stop</Label>
+       
+      </View>
+   </Window>
+</Alloy>

@@ -56,6 +56,20 @@
 				</View>
 			</View>
 
+			<!--
+			<View class="aModeView" id="fullNodeMode" onClick="openFullNode" platform="android">
+				<View class="aModeLeft">
+					<View class="aModeShadow"></View>
+					<View class="aModeInnerView" id="lightningInnerView">
+						<Label class="innerLabel" id="lappsBrowserTitle">L('full_node')</Label>
+					</View>
+				</View>
+				<View class="aModeIconView">
+					<View class="aModeIconShadowView"></View>
+					<ImageView class="modeImage" image="/images/fullNodeIconSmall.png"/>
+				</View>
+			</View>-->
+
 		</View>
 
 		<View class="othersView" id="othersView">

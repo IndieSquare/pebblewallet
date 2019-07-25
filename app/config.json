@@ -4,21 +4,21 @@
     "isLocal": false,
     "isDevelopment": true,
     "api_uri": "https://api3.indiesquare.me/",
-    "pebble_api":"https://pebbleapi.indiesquare.net/",
+    "pebble_api": "https://pebbleapi.indiesquare.net/",
     "network": "mainnet"
   },
   "env:test": {
     "isLocal": false,
     "isDevelopment": true,
     "api_uri": "https://api3.indiesquare.me/",
-    "pebble_api":"https://pebbleapi.indiesquare.net/",
+    "pebble_api": "https://pebbleapi.indiesquare.net/",
     "network": "mainnet"
   },
   "env:production": {
     "isLocal": false,
     "isDevelopment": false,
     "api_uri": "https://api3.indiesquare.me/",
-    "pebble_api":"https://pebbleapi.indiesquare.net/",
+    "pebble_api": "https://pebbleapi.indiesquare.net/",
     "network": "mainnet"
   },
   "os:android": {
@@ -28,5 +28,7 @@
   "os:ios": {},
   "os:mobileweb": {},
   "os:windows": {},
-  "dependencies": {}
+  "dependencies": {
+    "de.manumaticx.circularprogress": "*"
+  }
 }

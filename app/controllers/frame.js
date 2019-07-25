@@ -48,9 +48,7 @@ globals.connectLNDGRPC = function (config) {
   globals.hideNoTransactions();
   stopSyncUI();
   clearTimeout(continueSyncTimeout);
-  /*if (OS_IOS) {
-    Ti.App.iOS.cancelLocalNotification("check");
-  }*/
+  
   globals.console.log("connectLNDGRPC")
   globals.clearTransactionsTable();
   globals.showTransactionsLoader();
@@ -94,6 +92,12 @@ globals.connectLNDGRPC = function (config) {
       globals.console.log("error", error);
       alert(error);
       return;
+    }
+
+    if(globals.isTor){
+      $.torIcon.show();
+    }else{
+      $.torIcon.hide();
     }
 
     globals.console.log("response", response);
@@ -172,13 +176,13 @@ globals.loadMainScreen = function (dontShowSpinner) {
       channelConfirmedBalance = parseInt(response.balance);
     }
 
-    if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
+   /* if (Ti.App.Properties.getString("mode", "") == "lndMobile") {
       Ti.App.Properties.setInt("last_channel_balance", channelConfirmedBalance);
       if (globals.bootstrap == true) {
         globals.lightning_manager.bootStrapChannel(); //try to open one channel to pebble hub
       }
 
-    }
+    }*/
     totalConfirmedBalance = channelConfirmedBalance;
 
     setBalances(true);
@@ -921,10 +925,8 @@ function checkSyncStatus() {
         globals.hideSyncingInfo();
         try {
 
-          Ti.App.Properties.setInt("latest_block_height_" + Alloy.Globals.network, response.block_height);
-          var currentTimeStamp = Math.floor(Date.now() / 1000);
-          Ti.App.Properties.setInt("latest_time_stamp_" + Alloy.Globals.network, currentTimeStamp);
-
+       
+          globals.setCurrentCache(Alloy.Globals.network,response.block_height);
           $.syncStatus.visible = false;
           globals.nodeInfo = response;
           globals.setNodeInfo(globals.nodeInfo);

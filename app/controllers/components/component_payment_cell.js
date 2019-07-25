@@ -28,6 +28,10 @@ function updateInvoice(argsNew) {
 }
 
 if (isInvoice(aPayment)) {
+
+  if(aPayment.memo != undefined){
+    aPayment.memo = aPayment.memo.substring(0,40)+"...";
+    }
  
   if (aPayment.settled == true || aPayment.settled == 1) {
     $.type.image = "/images/checkSymbol.png";
@@ -41,6 +45,11 @@ if (isInvoice(aPayment)) {
   }
 
   aPayment.value = aPayment.value;
+
+  if(aPayment.amt_paid_sat != 0){
+    aPayment.value = aPayment.amt_paid_sat;
+  }
+ 
   globals.invoiceUpdateFunctions[aPayment.r_hash] = updateInvoice;
 
 }
@@ -64,6 +73,7 @@ if (isTransaction(aPayment)) {
     isMinus = true;
     amt = amt.replace("-", "");
   }
+
 
   if (aPayment.dest_addresses != undefined && aPayment.dest_addresses.length > 0) {
 
@@ -216,3 +226,4 @@ function clickAction() {
     }
   }
 }
+

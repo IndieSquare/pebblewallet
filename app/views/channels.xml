@@ -12,9 +12,9 @@
 			</HeaderView>
 
 			<FooterView>
-				<View height="70">
+				<!--<View height="70">
 					<Label id="connectToPebbleHUB" onClick="connectToPebbleHUB">L('connect_pebble_hub')</Label>
-				</View>
+				</View>-->
 			</FooterView>
 		</TableView>
 

@@ -616,10 +616,10 @@ globals.networkAPI.getStartUpInfo(function (error, res) {
   } else {
     globals.blockHeight.testnet = res.testnetHeight;
     globals.blockHeight.mainnet = res.mainnetHeight;
-    globals.hubURITestnet = res.hubUriTestnet;
-    globals.hubURIMainnet = res.hubUriMainnet;
+   // globals.hubURITestnet = res.hubUriTestnet;
+    //globals.hubURIMainnet = res.hubUriMainnet;
     globals.discoverEndpoint = res.discoverUrl;
-    globals.console.log("res", res.hubUriMainnet);
+    //globals.console.log("res", res.hubUriMainnet);
 
     if (res.maintenanceMode == true) {
       alert("maintenance");

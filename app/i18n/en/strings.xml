@@ -306,4 +306,6 @@
   <string name="label_settings_password">password</string>
   <string name="label_settings_password_description">the password used to encrypt your passphrase (based on your pin)</string>
   <string name="channel_request">{uri} is requesting to give you a channel\n\ncapacity {capacity} sat, push amount {push} sat</string>
+  <string name="full_node">full node</string>
+  <string name="text_request_sign_message">{url} wants to sign the message\n\n"{message}"</string>
 </resources>

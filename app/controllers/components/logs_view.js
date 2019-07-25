@@ -74,7 +74,7 @@ $.scrollView.width = $.logs_text.width;
 
 function loadLogs() {
   //absorb jar catch swift bulb water host chef planet slam arrow olympic case muffin kite number curve gather pluck cherry able jar thing they
-  globals.dataDir = Ti.Filesystem.applicationSupportDirectory + "lnd/logs/bitcoin/" + globals.network + "/lnd.log";
+  globals.dataDir = Ti.Filesystem.applicationDataDirectory + "logs/bitcoin/" + globals.network + "/lnd.log";
 
   console.log("logs", globals.dataDir);
   try {
